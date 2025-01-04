@@ -95,21 +95,30 @@ function switchRate() public onlyInState(LoanState.Taken){
 }
 
 
-function repay() public onlyInState(LoanState.Taken){
+    function repay() public onlyInState(LoanState.Taken) {
         require(msg.sender == borrower, "Only the borrower can repay the loan");
 
         uint256 interestRate = (rateType == InterestRateType.Fixed) ? terms.fixedRate : terms.floatingRate;
-        uint256 interestPaid = (terms.loanDaiAmount*interestRate)/10000;
+        uint256 interestPaid = (terms.loanDaiAmount * interestRate) / 10000; // Using basis points for precision
         uint256 repaymentAmount = terms.loanDaiAmount + interestPaid;
-        require(IERC20(daiAddress).transferFrom(borrower, lender, repaymentAmount),"DAI transfer failed");
 
+        console.log("Repayment amount: %s", repaymentAmount);
+
+        // Ensure the borrower has approved the contract to transfer the repayment amount
+        require(IERC20(daiAddress).allowance(borrower, address(this)) >= repaymentAmount, "Insufficient allowance");
+
+        // Transfer the repayment amount from the borrower to the lender
+        require(IERC20(daiAddress).transferFrom(borrower, lender, repaymentAmount), "DAI transfer failed");
+
+        // Update the loan state to Repaid
         state = LoanState.Repaid;
 
-        (bool success,) = borrower.call{value:terms.ethCollateralAmount}("");
-        require(success,"Collateral refund failed");
+        // Refund the ETH collateral to the borrower
+        (bool success, ) = borrower.call{value: terms.ethCollateralAmount}("");
+        require(success, "Collateral refund failed");
 
-        emit LoanRepaid(msg.sender,repaymentAmount,interestPaid);
-}
+        emit LoanRepaid(msg.sender, repaymentAmount, interestPaid);
+    }
 
 function liquidate() public onlyInState(LoanState.Taken){
 require(msg.sender == lender, "Only lender can liquidate loan");

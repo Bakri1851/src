@@ -9,8 +9,10 @@ contract("LoanRequest", (accounts) => {
         // Deploy MockDAI
         mockDAI = await MockDAI.new(web3.utils.toWei("1000000", "ether"), { from: deployer });
 
-        // Transfer MockDAI to lender
+        // Transfer MockDAI to lender and borrower
         await mockDAI.transfer(lender, web3.utils.toWei("1000", "ether"), { from: deployer });
+        await mockDAI.transfer(borrower, web3.utils.toWei("1100", "ether"), { from: deployer });
+
 
         // Define loan terms
         const terms = {
@@ -53,34 +55,38 @@ contract("LoanRequest", (accounts) => {
     });
 
     it("should allow borrower to repay the loan", async () => {
-        // Fund and take the loan
-        await mockDAI.approve(loanRequest.address, web3.utils.toWei("1000", "ether"), { from: lender });
-        await loanRequest.fundLoan({ from: lender });
-        await loanRequest.takeALoanAndAcceptLoanTerms({ from: borrower, value: web3.utils.toWei("1050", "ether") });
+      
+      // Lender approves and funds the loan
+      await mockDAI.approve(loanRequest.address, web3.utils.toWei("1000", "ether"), { from: lender });
+      await loanRequest.fundLoan({ from: lender });
 
-        // Transfer DAI tokens to borrower to cover repayment
-        const borrowerBalance = await mockDAI.balanceOf(borrower);
-        console.log("Borrower DAI Balance:", web3.utils.fromWei(borrowerBalance.toString(), "ether"));
+      // Borrower accepts the loan terms and provides collateral
+      await loanRequest.takeALoanAndAcceptLoanTerms({ from: borrower, value: web3.utils.toWei("1", "ether") });
 
-        const allowance = await mockDAI.allowance(borrower, loanRequest.address);
-        console.log("Allowance for LoanRequest:", web3.utils.fromWei(allowance.toString(), "ether"));
+      // Calculate the repayment amount
+      const interestRate = 500; // 5% in basis points
+      const loanAmount = web3.utils.toWei("1000", "ether");
+      const interestPaid = (loanAmount * interestRate) / 10000;
+      const repaymentAmount = loanAmount + interestPaid;
 
+      // Borrower approves the contract to transfer the repayment amount
+      await mockDAI.approve(loanRequest.address, repaymentAmount.toString(), { from: borrower });
 
-        const repaymentAmount = web3.utils.toWei("1", "ether"); // 1000 DAI + 5% interest
-        console.log("Amount to Repay:", repaymentAmount);
+      // Borrower repays the loan
+      await loanRequest.repay({ from: borrower });
 
-        await mockDAI.transfer(borrower, repaymentAmount, { from: lender });
+      // Verify the loan state is updated to Repaid
+      const state = await loanRequest.state();
+      assert.equal(state.toString(), "3", "LoanState should be 'Repaid'");
 
-        // Approve repayment
-        await mockDAI.approve(loanRequest.address, repaymentAmount, { from: borrower });
+      // Verify the lender received the repayment amount
+      const lenderBalance = await mockDAI.balanceOf(lender);
 
-        // Repay the loan
-        // here is where the problem is 
-        await loanRequest.repay({ from: borrower });
+      console.log("Lender Balance: ", lenderBalance.toString());
+      assert.equal(lenderBalance.toString(), repaymentAmount.toString(), "Lender should receive the repayment amount");
 
-        // Check LoanRequest state
-        const state = await loanRequest.state();
-        assert.equal(state.toString(), "3", "LoanState should be 'Repaid'");
-
-    });
+      // Verify the borrower received the collateral back
+      const borrowerCollateral = await web3.eth.getBalance(borrower);
+      assert(borrowerCollateral >= web3.utils.toWei("1", "ether"), "Borrower should receive the collateral back");
+  });
 });
