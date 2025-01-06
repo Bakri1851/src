@@ -4,14 +4,10 @@ const LoanRequest = artifacts.require("LoanRequest");
 module.exports = async function (deployer, network, accounts) {
     const [deployerAddress, lenderAddress] = accounts;
 
-
     // Deploy MockDAI
     const initialSupply = web3.utils.toWei("1000000", "ether"); // 1 million mDAI
-
     await deployer.deploy(MockDAI, initialSupply);
-
     const mockDAI = await MockDAI.deployed();
-
 
     // Transfer some MockDAI to lender
     await mockDAI.transfer(lenderAddress, web3.utils.toWei("1000", "ether"));
@@ -25,7 +21,6 @@ module.exports = async function (deployer, network, accounts) {
         fixedRate: 500, // 5% interest
         floatingRate: 300, // 3% interest
     };
-    
 
     // Deploy LoanRequest with MockDAI address
     await deployer.deploy(LoanRequest, terms, mockDAI.address);

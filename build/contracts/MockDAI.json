@@ -8757,12 +8757,12 @@
     "5777": {
       "events": {},
       "links": {},
-      "address": "0x5D3537ff1142FbbF2Abfc74b2F63960464103F0E",
-      "transactionHash": "0xe56ad8682dfc28cea472d86c1186492cdb8de4b9e269bb4fd809b47d6c762567"
+      "address": "0x146F84F68E253969a9c648B2a0274a12B63c9d91",
+      "transactionHash": "0xd6abcd82b89220b73cc239c1f8ceae5c2738ec3fbb9a3235d72916e88aaa6152"
     }
   },
   "schemaVersion": "3.4.16",
-  "updatedAt": "2025-01-04T17:56:53.999Z",
+  "updatedAt": "2025-01-06T15:05:51.206Z",
   "networkType": "ethereum",
   "devdoc": {
     "kind": "dev",
