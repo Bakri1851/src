@@ -2,8 +2,6 @@ const { assert } = require('chai');
 const LoanRequest = artifacts.require("LoanRequest");
 const MockDAI = artifacts.require("MockDAI");
 
-//import "chainlink/contracts/src/v0.6/interfaces/AggregatorV3Interface.sol";
-
 contract("LoanRequest", (accounts) => {
     const [deployer, lender, borrower] = accounts;
     let mockDAI, loanRequest;

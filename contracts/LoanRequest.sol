@@ -2,6 +2,8 @@
 pragma solidity ^0.8.13;
 import {IERC20} from "./IERC20.sol";
 import "hardhat/console.sol";
+import {AggregatorV3Interface} from "./AggregatorV3Interface.sol";
+
 
 contract LoanRequest {
     enum LoanState { Created, Funded, Taken, Repaid, Liquidated }
@@ -9,6 +11,9 @@ contract LoanRequest {
 
     LoanState public state;
     InterestRateType public currentRateType;
+
+    AggregatorV3Interface internal interestRateFeed;
+
 
     address public lender;
     address public borrower;
@@ -28,6 +33,7 @@ contract LoanRequest {
         uint256 _fixedRate,
         uint256 _floatingRate,
         address _daiToken
+        //address _oracleAddress
     ) {
         lender = msg.sender;
         loanDaiAmount = _loanDaiAmount;
@@ -39,6 +45,7 @@ contract LoanRequest {
         daiToken = IERC20(_daiToken);
         state = LoanState.Created;
         currentRateType = InterestRateType.Fixed; // Default to fixed rate
+        //interestRateFeed = AggregatorV3Interface(_oracleAddress);
     }
 
     function fundLoan() external {
@@ -83,6 +90,10 @@ contract LoanRequest {
         require(success, "Collateral transfer failed");
 
         emit LoanLiquidated(borrower, lender, ethCollateralAmount);
+    }
+
+    function updateFloatingRate() public{
+
     }
 
     event LoanRepaid(address indexed borrower, uint256 repaymentAmount, uint256 interestPaid);
