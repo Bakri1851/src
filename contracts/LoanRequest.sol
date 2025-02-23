@@ -33,7 +33,7 @@ contract LoanRequest {
         uint256 _fixedRate,
         uint256 _floatingRate,
         address _daiToken
-        //address _oracleAddress
+        address _oracleAddress
     ) {
         lender = msg.sender;
         loanDaiAmount = _loanDaiAmount;
@@ -45,7 +45,7 @@ contract LoanRequest {
         daiToken = IERC20(_daiToken);
         state = LoanState.Created;
         currentRateType = InterestRateType.Fixed; // Default to fixed rate
-        //interestRateFeed = AggregatorV3Interface(_oracleAddress);
+        interestRateFeed = AggregatorV3Interface(_oracleAddress);
     }
 
     function fundLoan() external {
@@ -93,7 +93,14 @@ contract LoanRequest {
     }
 
     function updateFloatingRate() public{
+        (, int rate,,,) = interestRateFeed.latestRoundData();
+        require(rate > 0, "Invalid price");
+        floatingRate = uint256(rate);
 
+    }
+    
+    function getFloatingRate() public view returns (uint256){
+        return floatingRate;
     }
 
     event LoanRepaid(address indexed borrower, uint256 repaymentAmount, uint256 interestPaid);
