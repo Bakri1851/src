@@ -32,7 +32,7 @@ contract LoanRequest {
         uint256 _repayByTimestamp,
         uint256 _fixedRate,
         uint256 _floatingRate,
-        address _daiToken
+        address _daiToken,
         address _oracleAddress
     ) {
         lender = msg.sender;
