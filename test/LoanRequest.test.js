@@ -1,40 +1,27 @@
-const { assert } = require('chai');
-const LoanRequest = artifacts.require("LoanRequest");
-const MockDAI = artifacts.require("MockDAI");
+const { expect } = require('chai');
+const { ethers } = require('hardhat');
 
-contract("LoanRequest", (accounts) => {
-    const [deployer, lender, borrower] = accounts;
-    let mockDAI, loanRequest;
 
-    beforeEach(async () => {
+
+describe("LoanRequest", function() {
+    let LoanRequest, loanRequest, MockDAI, mockDAI;
+    let deployer, borrower, lender;
+
+    beforeEach(async function () {
         // Deploy MockDAI with an initial supply of 1 million mDAI
-        mockDAI = await MockDAI.new(web3.utils.toWei("1000000", "ether"), { from: deployer });
+        mockDAI = await ethers.getContractFactory("MockDAI");
+        mockDAI = await mockDAI.deploy(ethers.utils.parseEther("1000000"));
+        await mockDAI.deployed();
 
-        // Transfer MockDAI to lender and borrower
-        await mockDAI.transfer(lender, web3.utils.toWei("1000", "ether"), { from: deployer });
-        await mockDAI.transfer(borrower, web3.utils.toWei("1100", "ether"), { from: deployer });
+        const MockAggregator = await ethers.getContractFactory("MockAggregator");
+        mockAggregator = await MockAggregator.deploy(8, 2000 * 10 ** 8);
+        await mockAggregator.deployed();
 
-        // Define loan terms
-        const terms = {
-            loanDaiAmount: web3.utils.toWei("1000", "ether"),
-            feeDaiAmount: web3.utils.toWei("50", "ether"),
-            ethCollateralAmount: web3.utils.toWei("1", "ether"),
-            repayByTimestamp: Math.floor(Date.now() / 1000) + 7 * 24 * 60 * 60, // 7 days
-            fixedRate: 500,
-            floatingRate: 300,
-        };
+        // Deploy LoanRequest contract
+        LoanRequest = await ethers.getContractFactory("LoanRequest");
+        loanRequest = await LoanRequest.deploy(mockDAI.address);
+        await loanRequest.deployed();
 
-        // Deploy LoanRequest contract with the defined terms and MockDAI address
-        loanRequest = await LoanRequest.new(
-            terms.loanDaiAmount,
-            terms.feeDaiAmount,
-            terms.ethCollateralAmount,
-            terms.repayByTimestamp,
-            terms.fixedRate,
-            terms.floatingRate,
-            mockDAI.address,
-            { from: lender }
-        );
     });
 
     it("should fund the loan", async () => {
