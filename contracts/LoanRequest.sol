@@ -103,6 +103,14 @@ contract LoanRequest {
         return floatingRate;
     }
 
+    function switchRateType() public {
+        if (currentRateType == InterestRateType.Fixed) {
+            currentRateType = InterestRateType.Floating;
+        } else {
+            currentRateType = InterestRateType.Fixed;
+        }
+    }
+
     event LoanRepaid(address indexed borrower, uint256 repaymentAmount, uint256 interestPaid);
     event LoanLiquidated(address indexed borrower, address indexed lender, uint256 collateralAmount);
 }
