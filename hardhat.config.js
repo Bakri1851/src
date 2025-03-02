@@ -9,9 +9,9 @@ module.exports = {
     hardhat: {
       chainId: 31337,
     },
-    goerli: {
-      url: "https://goerli.infura.io/v3/your-infura-project-id",// Replace with your Infura Project ID
-      accounts: [`0x${process.env.PRIVATE_KEY}`]  // Replace with your private key
+    sepolia: {
+      url: `https://sepolia.infura.io/v3/${process.env.INFURA_PROJECT_ID}`,
+      accounts: [`0x${process.env.PRIVATE_KEY}`]
     },
   },
   mocha: {

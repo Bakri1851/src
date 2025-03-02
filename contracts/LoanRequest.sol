@@ -12,8 +12,19 @@ contract LoanRequest {
     LoanState public state;
     InterestRateType public currentRateType;
 
+    AggregatorV3Interface internal oracleAddress;
     AggregatorV3Interface internal interestRateFeed;
 
+    struct Terms {
+        uint256 loanDaiAmount;
+        uint256 feeDaiAmount;
+        uint256 ethCollateralAmount;
+        uint256 repayByTimestamp;
+        uint256 fixedRate;
+        uint256 floatingRate;
+    }
+
+    Terms public terms;
 
     address public lender;
     address public borrower;
@@ -35,17 +46,20 @@ contract LoanRequest {
         address _daiToken,
         address _oracleAddress
     ) {
-        lender = msg.sender;
-        loanDaiAmount = _loanDaiAmount;
-        feeDaiAmount = _feeDaiAmount;
-        ethCollateralAmount = _ethCollateralAmount;
-        repayByTimestamp = _repayByTimestamp;
-        fixedRate = _fixedRate;
-        floatingRate = _floatingRate;
+        terms = Terms({
+            loanDaiAmount: _loanDaiAmount,
+            feeDaiAmount: _feeDaiAmount,
+            ethCollateralAmount: _ethCollateralAmount,
+            repayByTimestamp: _repayByTimestamp,
+            fixedRate: _fixedRate,
+            floatingRate: _floatingRate
+
+        });
         daiToken = IERC20(_daiToken);
+        oracleAddress = AggregatorV3Interface(_oracleAddress);
         state = LoanState.Created;
         currentRateType = InterestRateType.Fixed; // Default to fixed rate
-        interestRateFeed = AggregatorV3Interface(_oracleAddress);
+        lender = payable(msg.sender);
     }
 
     function fundLoan() external {
