@@ -12,6 +12,7 @@
   "devDependencies": {
     "@nomicfoundation/edr-win32-x64-msvc": "^0.8.0",
     "@nomicfoundation/hardhat-toolbox": "^5.0.0",
+    "@nomicfoundation/hardhat-verify": "^2.0.13",
     "dotenv": "^16.4.7",
     "hardhat": "^2.22.19"
   }

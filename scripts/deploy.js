@@ -16,8 +16,8 @@ async function main() {
   const floatingRate = 300;
 
 
-  const SEPOLIA_DAI_ADDRESS = hre.ethers.getAddress("0x11fE4B6AE13d2a6055C8D9cF65c55bac32B5d844"); // Sepolia DAI (Goerli)
-  const AA_ORACLE_ADDRESS = hre.ethers.getAddress("0xceA6Aa74E6A86a7f85B571Ce1C34f1A60B77CD29") // Aave Borrow Rate Oracle (Goerli)
+  const SEPOLIA_DAI_ADDRESS = "0x11fE4B6AE13d2a6055C8D9cF65c55bac32B5d844"; // Sepolia DAI (Goerli)
+  const AA_ORACLE_ADDRESS = "0xceA6Aa74E6A86a7f85B571Ce1C34f1A60B77CD29"; // Aave Borrow Rate Oracle (Goerli)
 
   // Get the contract factory and deploy
   const LoanRequest = await hre.ethers.getContractFactory("LoanRequest");
@@ -35,7 +35,8 @@ async function main() {
   );
 
   await loanRequest.waitForDeployment();
-  console.log("LoanRequest deployed to:", loanRequest.address);
+  const deployedAddress = await loanRequest.getAddress();
+  console.log("LoanRequest deployed to:", deployedAddress);
 }
 
 main()
