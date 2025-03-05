@@ -16,6 +16,7 @@ module.exports = {
       accounts: [`0x${process.env.PRIVATE_KEY}`]
     },
     sourcify: {
+      url: "https://sourcify.dev/server",
       enabled: true,
     }
   },
