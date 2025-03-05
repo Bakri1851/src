@@ -5,7 +5,7 @@ module.exports = [
     "1712000000",
     "500",
     "300",
-    "0x11fE4B6AE13d2a6055C8D9Fc2d48FD931defdBE46A50",
+    "0x11fE4B6AE13d2a6055C8D9cF65c55bac32B5d844",
     "0xceA6Aa74E6A86a7f85B571Ce1C34f1A60B77CD29"
   ];
   
