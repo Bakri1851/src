@@ -61,18 +61,20 @@ contract LoanRequest {
         lender = payable(msg.sender);
     }
 
-    function fundLoan() external {
+    function fundLoan() external payable{
         require(state == LoanState.Created, "Loan is not in Created state");
         require(msg.sender == lender, "Only lender can fund the loan");
+        require(msg.value == ethCollateralAmount, "Incorrect collateral amount");
         state = LoanState.Funded;
     }
 
     function takeALoanAndAcceptLoanTerms() external payable {
         require(state == LoanState.Funded, "Loan is not in Funded state");
         require(msg.sender != lender, "Lender cannot take the loan");
-        require(msg.value == ethCollateralAmount, "Incorrect collateral amount");
         borrower = msg.sender;
         state = LoanState.Taken;
+
+        payable(borrower).transfer(ethCollateralAmount);
     }
 
     function repay() external {
