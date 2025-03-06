@@ -13,7 +13,7 @@ module.exports = {
     },
     sepolia: {
       url: `https://sepolia.infura.io/v3/${process.env.INFURA_PROJECT_ID}`,
-      accounts: [`0x${process.env.PRIVATE_KEY}`]
+      accounts: [`0x${process.env.PRIVATE_KEY_LENDER}`,`0x${process.env.PRIVATE_KEY_BORROWER}`]
     },
     sourcify: {
       url: "https://sourcify.dev/api",

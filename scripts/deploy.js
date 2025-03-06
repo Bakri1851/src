@@ -4,7 +4,7 @@ async function main() {
   // Get the list of accounts
   const [deployer] = await hre.ethers.getSigners();
 
-  console.log("Deploying contracts with the account:", deployer.address);
+  console.log("Deploying contracts with the accounts:", deployer.address);
 
 
   //Loan Parameters
