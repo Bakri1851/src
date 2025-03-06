@@ -46,15 +46,14 @@ contract LoanRequest {
         address _daiToken,
         address _oracleAddress
     ) {
-        terms = Terms({
-            loanDaiAmount: _loanDaiAmount,
-            feeDaiAmount: _feeDaiAmount,
-            ethCollateralAmount: _ethCollateralAmount,
-            repayByTimestamp: _repayByTimestamp,
-            fixedRate: _fixedRate,
-            floatingRate: _floatingRate
+        loanDaiAmount = _loanDaiAmount;
+        feeDaiAmount = _feeDaiAmount;
+        ethCollateralAmount= _ethCollateralAmount;
+        repayByTimestamp= _repayByTimestamp;
+        fixedRate= _fixedRate;
+        floatingRate= _floatingRate;
 
-        });
+        
         daiToken = IERC20(_daiToken);
         oracleAddress = AggregatorV3Interface(_oracleAddress);
         state = LoanState.Created;
