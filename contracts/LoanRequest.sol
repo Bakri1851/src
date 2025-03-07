@@ -1,6 +1,5 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.0;
-import {IERC20} from "./IERC20.sol";
 import "hardhat/console.sol";
 import {AggregatorV3Interface} from "./AggregatorV3Interface.sol";
 
@@ -16,8 +15,8 @@ contract LoanRequest {
     AggregatorV3Interface internal interestRateFeed;
 
     struct Terms {
-        uint256 loanDaiAmount;
-        uint256 feeDaiAmount;
+        uint256 loanAmount;
+        uint256 feeAmount;
         uint256 ethCollateralAmount;
         uint256 repayByTimestamp;
         uint256 fixedRate;
@@ -26,35 +25,31 @@ contract LoanRequest {
 
     Terms public terms;
 
-    address public lender;
-    address public borrower;
-    IERC20 public daiToken;
-    uint256 public loanDaiAmount;
-    uint256 public feeDaiAmount;
+    address payable public lender;
+    address payable public borrower;
+    uint256 public loanAmount;
+    uint256 public feeAmount;
     uint256 public ethCollateralAmount;
     uint256 public repayByTimestamp;
     uint256 public fixedRate; // in basis points
     uint256 public floatingRate; // in basis points
 
     constructor(
-        uint256 _loanDaiAmount,
-        uint256 _feeDaiAmount,
+        uint256 _loanAmount,
+        uint256 _feeAmount,
         uint256 _ethCollateralAmount,
         uint256 _repayByTimestamp,
         uint256 _fixedRate,
         uint256 _floatingRate,
-        address _daiToken,
         address _oracleAddress
     ) {
-        loanDaiAmount = _loanDaiAmount;
-        feeDaiAmount = _feeDaiAmount;
+        loanAmount = _loanAmount;
+        feeAmount = _feeAmount;
         ethCollateralAmount= _ethCollateralAmount;
         repayByTimestamp= _repayByTimestamp;
         fixedRate= _fixedRate;
         floatingRate= _floatingRate;
 
-        
-        daiToken = IERC20(_daiToken);
         oracleAddress = AggregatorV3Interface(_oracleAddress);
         state = LoanState.Created;
         currentRateType = InterestRateType.Fixed; // Default to fixed rate
@@ -64,52 +59,47 @@ contract LoanRequest {
     function fundLoan() external payable{
         require(state == LoanState.Created, "Loan is not in Created state");
         require(msg.sender == lender, "Only lender can fund the loan");
-        require(msg.value == loanDaiAmount, "Incorrect loan amount");
+        require(msg.value == loanAmount, "Incorrect loan amount");
+
+        lender = payable(msg.sender);     
         state = LoanState.Funded;
+
+        emit LoanFunded(msg.sender, loanAmount);
     }
 
-    function takeALoanAndAcceptLoanTerms() external payable {
-        require(state == LoanState.Funded, "Loan is not in Funded state");
-        require(msg.sender != lender, "Lender cannot accept the loan terms");
-        borrower = msg.sender;
-        state = LoanState.Taken;
 
-        payable(borrower).transfer(ethCollateralAmount);
-    }
 
     function acceptLoanTerms() external payable {
         require(state == LoanState.Funded, "Loan is not in Funded state");
         require(msg.sender != lender, "Lender cannot take the loan");
         require(msg.value == ethCollateralAmount, "Incorrect collateral amount");
-        borrower = msg.sender;
+        borrower = payable(msg.sender);
         state = LoanState.Accepted;
+        emit LoanTermsAccepted(msg.sender, ethCollateralAmount);
     }
 
     function takeALoan() external payable {
         require(state == LoanState.Accepted, "Loan is not in accepted state");
-        require(msg.sender != lender, "Lender cannot take the loan");
-        require(daiToken.balanceOf(address(this))>= loanDaiAmount, "Insufficient DAI balance in contract");
+        require(msg.sender == borrower, "Only borrower can take the loan");
 
         state = LoanState.Taken;
+        borrower.transfer(loanAmount);
+        emit LoanTaken(msg.sender, loanAmount);
 
-        daiToken.transfer(borrower, loanDaiAmount);
     }
 
-    function repay() external {
+    function repay() external payable {
         require(state == LoanState.Taken, "Loan is not in Taken state");
         require(msg.sender == borrower, "Only borrower can repay the loan");
 
-        uint256 interestPaid = (loanDaiAmount * fixedRate) / 10000; // Using fixed rate for now
-        uint256 repaymentAmount = loanDaiAmount + interestPaid;
+        uint256 repaymentAmount = loanAmount + calculateInterest();
 
-        require(daiToken.transferFrom(borrower, lender, repaymentAmount), "DAI transfer failed");
-
+        require(msg.value == repaymentAmount, "Incorrect repayment amount");
         state = LoanState.Repaid;
+        lender.transfer(repaymentAmount);
+        borrower.transfer(ethCollateralAmount);
 
-        (bool success,) = borrower.call{value: ethCollateralAmount}("");
-        require(success, "Collateral refund failed");
-
-        emit LoanRepaid(msg.sender, repaymentAmount, interestPaid);
+        emit LoanRepaid(msg.sender, repaymentAmount);
     }
 
     function liquidate() external {
@@ -131,7 +121,10 @@ contract LoanRequest {
         floatingRate = uint256(rate);
 
     }
-    
+    function getFixedRate() public view returns (uint256){
+        return fixedRate;
+    }
+
     function getFloatingRate() public view returns (uint256){
         return floatingRate;
     }
@@ -144,6 +137,18 @@ contract LoanRequest {
         }
     }
 
-    event LoanRepaid(address indexed borrower, uint256 repaymentAmount, uint256 interestPaid);
+    function calculateInterest() public view returns (uint256) {
+        if (currentRateType == InterestRateType.Fixed) {
+            return (loanAmount * fixedRate) / 10000;
+        } else {
+            return (loanAmount * floatingRate) / 10000;
+        }
+    }
+
+    event LoanFunded(address indexed lender, uint256 loanAmount);
+    event LoanTermsAccepted(address indexed borrower, uint256 collateralAmount);
+    event LoanTaken(address indexed borrower, uint256 loanAmount);
+    event LoanRepaid(address indexed borrower, uint256 repaymentAmount);
     event LoanLiquidated(address indexed borrower, address indexed lender, uint256 collateralAmount);
+    
 }
