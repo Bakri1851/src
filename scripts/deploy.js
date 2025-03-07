@@ -8,8 +8,8 @@ async function main() {
 
 
   //Loan Parameters
-  const loanDaiAmount = hre.ethers.parseEther("1000");
-  const feeDaiAmount = hre.ethers.parseEther("50");
+  const loanDaiAmount = hre.ethers.parseEther("0.002");
+  const feeDaiAmount = hre.ethers.parseEther("0.0005");
   const collateralEthAmount = hre.ethers.parseEther("0.001");
   const repayByTimestamp = Math.floor(Date.now() / 1000) + 60 * 60 * 24 * 7; // 30 days from now
   const fixedRate = 500;

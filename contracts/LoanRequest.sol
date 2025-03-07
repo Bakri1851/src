@@ -6,7 +6,7 @@ import {AggregatorV3Interface} from "./AggregatorV3Interface.sol";
 
 
 contract LoanRequest {
-    enum LoanState { Created, Funded, Taken, Repaid, Liquidated }
+    enum LoanState { Created, Funded, Accepted, Taken, Repaid, Liquidated }
     enum InterestRateType { Fixed, Floating }
 
     LoanState public state;
@@ -64,17 +64,35 @@ contract LoanRequest {
     function fundLoan() external payable{
         require(state == LoanState.Created, "Loan is not in Created state");
         require(msg.sender == lender, "Only lender can fund the loan");
-        require(msg.value == ethCollateralAmount, "Incorrect collateral amount");
+        require(msg.value == loanDaiAmount, "Incorrect loan amount");
         state = LoanState.Funded;
     }
 
     function takeALoanAndAcceptLoanTerms() external payable {
         require(state == LoanState.Funded, "Loan is not in Funded state");
-        require(msg.sender != lender, "Lender cannot take the loan");
+        require(msg.sender != lender, "Lender cannot accept the loan terms");
         borrower = msg.sender;
         state = LoanState.Taken;
 
         payable(borrower).transfer(ethCollateralAmount);
+    }
+
+    function acceptLoanTerms() external payable {
+        require(state == LoanState.Funded, "Loan is not in Funded state");
+        require(msg.sender != lender, "Lender cannot take the loan");
+        require(msg.value == ethCollateralAmount, "Incorrect collateral amount");
+        borrower = msg.sender;
+        state = LoanState.Accepted;
+    }
+
+    function takeALoan() external payable {
+        require(state == LoanState.Accepted, "Loan is not in accepted state");
+        require(msg.sender != lender, "Lender cannot take the loan");
+        require(daiToken.balanceOf(address(this))>= loanDaiAmount, "Insufficient DAI balance in contract");
+
+        state = LoanState.Taken;
+
+        daiToken.transfer(borrower, loanDaiAmount);
     }
 
     function repay() external {
