@@ -11,8 +11,7 @@ contract LoanRequest {
     LoanState public state;
     InterestRateType public currentRateType;
 
-    AggregatorV3Interface internal oracleAddress;
-    AggregatorV3Interface internal interestRateFeed;
+    AggregatorV3Interface internal oracle;
 
     struct Terms {
         uint256 loanAmount;
@@ -41,7 +40,7 @@ contract LoanRequest {
         uint256 _repayByTimestamp,
         uint256 _fixedRate,
         uint256 _floatingRate,
-        address _oracleAddress
+        address _oracle
     ) {
         loanAmount = _loanAmount;
         feeAmount = _feeAmount;
@@ -50,7 +49,7 @@ contract LoanRequest {
         fixedRate= _fixedRate;
         floatingRate= _floatingRate;
 
-        oracleAddress = AggregatorV3Interface(_oracleAddress);
+        oracle = AggregatorV3Interface(_oracle);
         state = LoanState.Created;
         currentRateType = InterestRateType.Fixed; // Default to fixed rate
         lender = payable(msg.sender);
@@ -78,7 +77,7 @@ contract LoanRequest {
         emit LoanTermsAccepted(msg.sender, ethCollateralAmount);
     }
 
-    function takeALoan() external payable {
+    function takeLoan() external payable {
         require(state == LoanState.Accepted, "Loan is not in accepted state");
         require(msg.sender == borrower, "Only borrower can take the loan");
 
@@ -108,15 +107,13 @@ contract LoanRequest {
         require(msg.sender == lender, "Only lender can liquidate the loan");
 
         state = LoanState.Liquidated;
-
-        (bool success,) = lender.call{value: ethCollateralAmount}("");
-        require(success, "Collateral transfer failed");
-
+        lender.transfer(ethCollateralAmount);
         emit LoanLiquidated(borrower, lender, ethCollateralAmount);
+
     }
 
     function updateFloatingRate() public{
-        (, int rate,,,) = interestRateFeed.latestRoundData();
+        (, int rate,,,) = oracle.latestRoundData();
         require(rate > 0, "Invalid price");
         floatingRate = uint256(rate);
 
@@ -138,12 +135,17 @@ contract LoanRequest {
     }
 
     function calculateInterest() public view returns (uint256) {
-        if (currentRateType == InterestRateType.Fixed) {
-            return (loanAmount * fixedRate) / 10000;
-        } else {
-            return (loanAmount * floatingRate) / 10000;
-        }
+        uint256 interestAmount = (currentRateType == InterestRateType.Fixed) ? fixedRate : floatingRate;
+        uint256 timeElapsed = block.timestamp - terms.repayByTimestamp;
+
+        uint256 interest = (terms.loanAmount * interestAmount * timeElapsed) / (100*355 days);
+
+        return interest;
+
+        // switch to use oracle for floating rate
+
     }
+
 
     event LoanFunded(address indexed lender, uint256 loanAmount);
     event LoanTermsAccepted(address indexed borrower, uint256 collateralAmount);
