@@ -54,7 +54,7 @@ contract LoanRequest {
         currentRateType = InterestRateType.Fixed; // Default to fixed rate
         lender = payable(msg.sender);
     }
-
+    // Lender funds the loan
     function fundLoan() external payable{
         require(state == LoanState.Created, "Loan is not in Created state");
         require(msg.sender == lender, "Only lender can fund the loan");
@@ -67,7 +67,7 @@ contract LoanRequest {
     }
 
 
-
+    // Borrower accepts the loan terms
     function acceptLoanTerms() external payable {
         require(state == LoanState.Funded, "Loan is not in Funded state");
         require(msg.sender != lender, "Lender cannot take the loan");
@@ -77,6 +77,7 @@ contract LoanRequest {
         emit LoanTermsAccepted(msg.sender, ethCollateralAmount);
     }
 
+    // Borrower takes the loan
     function takeLoan() external payable {
         require(state == LoanState.Accepted, "Loan is not in accepted state");
         require(msg.sender == borrower, "Only borrower can take the loan");
@@ -87,6 +88,7 @@ contract LoanRequest {
 
     }
 
+    // Borrower repays the loan
     function repay() external payable {
         require(state == LoanState.Taken, "Loan is not in Taken state");
         require(msg.sender == borrower, "Only borrower can repay the loan");
@@ -100,7 +102,7 @@ contract LoanRequest {
 
         emit LoanRepaid(msg.sender, repaymentAmount);
     }
-
+    // Lender liquidates the loan when loan isnt repaid by deadline
     function liquidate() external {
         require(state == LoanState.Taken, "Loan is not in Taken state");
         require(block.timestamp > repayByTimestamp, "Repayment deadline has not passed");
