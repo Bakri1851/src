@@ -10,8 +10,13 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@wagmi/chains": "^1.8.0",
+    "@wagmi/core": "^2.16.5",
+    "@walletconnect/web3-provider": "^1.8.0",
+    "ethers": "^6.13.5",
     "react": "^19.0.0",
-    "react-dom": "^19.0.0"
+    "react-dom": "^19.0.0",
+    "wagmi": "^2.14.12"
   },
   "devDependencies": {
     "@eslint/js": "^9.21.0",
