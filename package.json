@@ -15,5 +15,8 @@
     "@nomicfoundation/hardhat-verify": "^2.0.13",
     "dotenv": "^16.4.7",
     "hardhat": "^2.22.19"
+  },
+  "dependencies": {
+    "@wagmi/core": "^2.16.5"
   }
 }

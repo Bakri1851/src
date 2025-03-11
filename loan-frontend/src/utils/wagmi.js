@@ -1,7 +1,9 @@
 import {createClient, configureChains} from '@wagmi/core';
 import {mainnet, sepolia} from '@wagmi/chains';
 import {MetaMaskConnector} from '@wagmi/connectors';
-import {publicProvider} from '@wagmi/providers';
+import {publicProvider} from '@wagmi/providers/public';
+//import { InjectedConnector } from '@wagmi/connectors/injected';
+
 
 const {chains, provider, webSocketProvider} = configureChains(
     [mainnet,sepolia],
