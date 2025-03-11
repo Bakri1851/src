@@ -1,9 +1,9 @@
 import React, {useState} from "react";
-import {useProvider} from "@wagmi/core";
+import {usePublicClient} from "wagmi";
 import {getContract} from "../utils/contract";
 
 const LoanActions = () => {
-    const provider = userProvider();
+    const provider = usePublicClient();
     const contract = getContract(provider);
     const [loanAmount, setLoanAmount] = useState("");
 

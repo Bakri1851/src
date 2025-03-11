@@ -1,8 +1,8 @@
 import React from 'react';
-import {useAccount, useConnect, useDisconnect} from '@wagmi/core';
+import {useAccount,useConnect, useDisconnect} from 'wagmi';
 
 const WalletConnect = () => {
-    const {isConnected, account} = useAccount();
+    const {isConnected, address} = useAccount();
     const {connect, connectors} = useConnect();
     const {disconnect} = useDisconnect();
 

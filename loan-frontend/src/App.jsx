@@ -8,7 +8,6 @@ import WalletConnect from './utils/walletConnect'
 import LoanActions from './components/LoanActions'
 
 const App = () => {
-  const [count, setCount] = useState(0)
 
   return (
     <div>
