@@ -1,15 +1,15 @@
 import {createClient, configureChains} from '@wagmi/core';
-import {mainnet, sepolia} from '@wagmi/chains';
+import {mainnet, sepolia} from '@wagmi/core/chains';
 import {MetaMaskConnector} from '@wagmi/connectors';
-import {publicProvider} from '@wagmi/providers/public';
-//import { InjectedConnector } from '@wagmi/connectors/injected';
+import {publicProvider} from '@wagmi/core';
+import { InjectedConnector } from '@wagmi/connectors';
 
 
 const {chains, provider, webSocketProvider} = configureChains(
     [mainnet,sepolia],
     [publicProvider()]);
 
-const client = createClient({
+export const client = createClient({
     autoConnect: true,
     connectors: [
         new MetaMaskConnector({chains}),

@@ -38,8 +38,8 @@
       ]
     },
     "C:\\Users\\Bakri\\IdeaProjects\\Loan Switching Smart Contract\\src\\contracts\\LoanRequest.sol": {
-      "lastModificationDate": 1741453004041,
-      "contentHash": "f839a42dcd09862177f9df1ec0457e57",
+      "lastModificationDate": 1741555475739,
+      "contentHash": "b53f858e5973a1569dbcc236ffdcc515",
       "sourceName": "contracts/LoanRequest.sol",
       "solcConfig": {
         "version": "0.8.28",
@@ -74,6 +74,42 @@
       ],
       "artifacts": [
         "LoanRequest"
+      ]
+    },
+    "C:\\Users\\Bakri\\IdeaProjects\\Loan Switching Smart Contract\\src\\node_modules\\hardhat\\console.sol": {
+      "lastModificationDate": 1740614400605,
+      "contentHash": "681c532e816169606d13a5fe8b475074",
+      "sourceName": "hardhat/console.sol",
+      "solcConfig": {
+        "version": "0.8.28",
+        "settings": {
+          "evmVersion": "paris",
+          "optimizer": {
+            "enabled": false,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [],
+      "versionPragmas": [
+        ">=0.4.22 <0.9.0"
+      ],
+      "artifacts": [
+        "console"
       ]
     },
     "C:\\Users\\Bakri\\IdeaProjects\\Loan Switching Smart Contract\\src\\contracts\\IERC20.sol": {
@@ -113,42 +149,6 @@
       "artifacts": [
         "IERC20",
         "MockDAI"
-      ]
-    },
-    "C:\\Users\\Bakri\\IdeaProjects\\Loan Switching Smart Contract\\src\\node_modules\\hardhat\\console.sol": {
-      "lastModificationDate": 1740614400605,
-      "contentHash": "681c532e816169606d13a5fe8b475074",
-      "sourceName": "hardhat/console.sol",
-      "solcConfig": {
-        "version": "0.8.28",
-        "settings": {
-          "evmVersion": "paris",
-          "optimizer": {
-            "enabled": false,
-            "runs": 200
-          },
-          "outputSelection": {
-            "*": {
-              "*": [
-                "abi",
-                "evm.bytecode",
-                "evm.deployedBytecode",
-                "evm.methodIdentifiers",
-                "metadata"
-              ],
-              "": [
-                "ast"
-              ]
-            }
-          }
-        }
-      },
-      "imports": [],
-      "versionPragmas": [
-        ">=0.4.22 <0.9.0"
-      ],
-      "artifacts": [
-        "console"
       ]
     },
     "C:\\Users\\Bakri\\IdeaProjects\\Loan Switching Smart Contract\\src\\contracts\\Lock.sol": {
