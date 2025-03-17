@@ -5,8 +5,8 @@ import {metaMask} from 'wagmi/connectors';
 
 const WalletConnect = () => {
     const {address,isConnected} = useAccount();
-    const {connect} = useConnect({
-        connectors: metaMask(),
+    const {connect, connectors} = useConnect({
+        connector: metaMask(),
     });
     const {disconnect} = useDisconnect();
 
@@ -17,7 +17,7 @@ const WalletConnect = () => {
                     <p>
                         Connected as {address}
                     </p>
-                    <button onClick={() => disconnect}>
+                    <button onClick={() => disconnect()}>
                         Disconnect Wallet
                         </button>
                 </div>
