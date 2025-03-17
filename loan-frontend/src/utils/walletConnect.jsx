@@ -1,9 +1,13 @@
 import React from 'react';
 import {useAccount,useConnect, useDisconnect} from 'wagmi';
+import {metaMask} from 'wagmi/connectors'; 
+
 
 const WalletConnect = () => {
-    const {isConnected, address} = useAccount();
-    const {connect, connectors} = useConnect();
+    const {address,isConnected} = useAccount();
+    const {connect} = useConnect({
+        connectors: metaMask(),
+    });
     const {disconnect} = useDisconnect();
 
     return (
