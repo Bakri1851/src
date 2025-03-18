@@ -148,6 +148,10 @@ contract LoanRequest {
 
     }
 
+    function checkLoanState() public view returns (LoanState) {
+        return state;
+    }
+
 
     event LoanFunded(address indexed lender, uint256 loanAmount);
     event LoanTermsAccepted(address indexed borrower, uint256 collateralAmount);
