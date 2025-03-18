@@ -18,6 +18,7 @@ const LoanActions = () => {
             console.error(error);
             alert("Error fetching loan state", error);
         }
+    };
 
     const takeLoan = async () => {
         if (!provider){
@@ -57,7 +58,6 @@ const LoanActions = () => {
             console.error(error);
             alert("An error occurred while repaying the loan");
         }
-    };
     };
 
     useEffect(() => {
