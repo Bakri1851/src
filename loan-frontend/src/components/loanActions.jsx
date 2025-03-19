@@ -17,7 +17,7 @@ const LoanActions = () => {
         }
         catch (error) {
             console.error(error);
-            alert("Error fetching loan state :(", error);
+            alert(error);
         }
     };
 

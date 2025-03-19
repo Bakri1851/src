@@ -148,7 +148,7 @@ contract LoanRequest {
 
     }
 
-    function checkLoanState() public view returns (LoanState) {
+    function getLoanState() public view returns (LoanState) {
         return state;
     }
 
