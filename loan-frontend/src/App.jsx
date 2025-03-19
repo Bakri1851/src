@@ -9,7 +9,7 @@ const App = () => {
   return (
     <div>
       <h1>
-      Rate Swiching Loan
+      Rate Switching Loan
       </h1>
       <WalletConnect/>
       <LoanActions/>

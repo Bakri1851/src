@@ -12,11 +12,12 @@ const LoanActions = () => {
         try{
             const contract = getContract(provider);
             const state = await contract.getLoanState();
+            console.log(state);
             setLoanState(state);
         }
         catch (error) {
             console.error(error);
-            alert("Error fetching loan state", error);
+            alert("Error fetching loan state :(", error);
         }
     };
 
