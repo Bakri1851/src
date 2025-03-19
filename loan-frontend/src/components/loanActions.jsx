@@ -29,9 +29,7 @@ const LoanActions = () => {
 
         try{
             const contract = getContract(provider);
-            const transaction = await contract.takeLoan({
-                value: ethers.utils.parseEther(loanAmount),
-                });
+            const transaction = await contract.takeLoan({value: ethers.utils.parseEther(loanAmount),});
             await transaction.wait();
             alert("Loan taken successfully");
             getLoanState();
@@ -49,9 +47,7 @@ const LoanActions = () => {
 
         try {
             const contract = getContract(provider);
-            const transaction = await contract.repayLoan({
-                value: ethers.utils.parseEther(repayAmount),
-            });
+            const transaction = await contract.repayLoan({value: ethers.utils.parseEther(repayAmount),});
             await transaction.wait();
             alert("Loan repaid successfully");
             getLoanState();
