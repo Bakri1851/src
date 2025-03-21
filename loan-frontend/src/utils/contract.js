@@ -8,7 +8,7 @@ if (!window.ethereum) {
   alert("Please install MetaMask to use this dApp");
 }
 
-export const getContract = (provider) => {
+const getContract = (provider) => {
   if (!provider) throw new Error("Provider is required");
 
   const signer = provider.getSigner();

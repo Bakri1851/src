@@ -1,16 +1,23 @@
 import React, {useEffect, useState} from "react";
-import {usePublicClient} from "wagmi";
+import {usePublicClient, useWalletClient} from "wagmi";
 import {getContract} from "../utils/contract";
 
 const LoanActions = () => {
-    const provider = usePublicClient();
+    const publicClient = usePublicClient();
+
+    const {data: walletClient} = useWalletClient();
+    if (!walletClient) {
+        throw new Error("Wallet client not found");
+        return <p>Connect your wallet</p>;
+    }
+
     const [loanAmount, setLoanAmount] = useState("");
     const [repayAmount, setRepayAmount] = useState("");
     const [loanState, setLoanState] = useState("");
     
     const getLoanState = async () => {
         try{
-            const contract = getContract(provider);
+            const contract = getContract(publicClient);
             const state = await contract.getLoanState();
             console.log(state);
             setLoanState(state);
@@ -22,13 +29,13 @@ const LoanActions = () => {
     };
 
     const takeLoan = async () => {
-        if (!provider){
+        if (!publicClient){
             console.error("Metamask wallet not found");
             return;
         }
 
         try{
-            const contract = getContract(provider);
+            const contract = getContract(publicClient);
             const transaction = await contract.takeLoan({value: ethers.utils.parseEther(loanAmount),});
             await transaction.wait();
             alert("Loan taken successfully");
@@ -40,13 +47,13 @@ const LoanActions = () => {
     };
 
     const repayLoan = async () => {
-        if (!provider) {
+        if (!publicClient) {
             console.error("Metamask wallet not found");
             return;
         }
 
         try {
-            const contract = getContract(provider);
+            const contract = getContract(publicClient);
             const transaction = await contract.repayLoan({value: ethers.utils.parseEther(repayAmount),});
             await transaction.wait();
             alert("Loan repaid successfully");
@@ -58,10 +65,10 @@ const LoanActions = () => {
     };
 
     useEffect(() => {
-        if (provider) {
+        if (publicClient) {
             getLoanState();
         }
-    }, [provider]);
+    }, [publicClient]);
     
     return (
         <div>
