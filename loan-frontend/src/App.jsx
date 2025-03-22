@@ -10,10 +10,9 @@ import { createPublicClient } from 'viem'
 
 const queryClient = new QueryClient(); 
 
-const publicClient = new createPublicClient({
+const publicClient = createPublicClient({
   chain: sepolia,
   transport: http(),
-  queryClient
 });
 
 const config = createConfig({
