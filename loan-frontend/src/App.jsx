@@ -14,6 +14,7 @@ const queryClient = new QueryClient();
 const publicClient = createPublicClient({
   chain: sepolia,
   transport: http(),
+  queryClient
 });
 
 console.log("publicClient", publicClient);
