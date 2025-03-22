@@ -8,6 +8,7 @@ import { WagmiProvider, createConfig, http } from 'wagmi'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { createPublicClient } from 'viem'
 
+
 const queryClient = new QueryClient(); 
 
 const publicClient = createPublicClient({
@@ -15,13 +16,16 @@ const publicClient = createPublicClient({
   transport: http(),
 });
 
+console.log("publicClient", publicClient);
+
 const config = createConfig({
   autoConnect: true,
   publicClient
 });
 
-
 function App(){
+  console.log("config", config);
+  console.log("queryClient", queryClient);
 
   return (
     <WagmiProvider config={config}>
