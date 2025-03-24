@@ -4,16 +4,21 @@ import {getContract} from "../utils/contract";
 
 const LoanActions = () => {
     const publicClient = usePublicClient();
-
     const {data: walletClient} = useWalletClient();
-    if (!walletClient) {
-        throw new Error("Wallet client not found");
-        return <p>Connect your wallet</p>;
-    }
 
     const [loanAmount, setLoanAmount] = useState("");
     const [repayAmount, setRepayAmount] = useState("");
     const [loanState, setLoanState] = useState("");
+
+    if (!walletClient) {
+        return <p>Connect your wallet to continue</p>;
+    }
+
+
+    if (!publicClient) {
+        return <p>Connect your wallet to continue</p>;}
+
+
     
     const getLoanState = async () => {
         try{

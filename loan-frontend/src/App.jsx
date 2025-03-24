@@ -11,22 +11,26 @@ import { createPublicClient } from 'viem'
 
 const queryClient = new QueryClient(); 
 
-const publicClient = createPublicClient({
-  chain: sepolia,
-  transport: http(),
-  queryClient
-});
+//const publicClient = createPublicClient({
+  
+//  chain: sepolia,
+//  transport: http("", {url: "https://sepolia.infura.io/v3/"}),
+//});
 
-console.log("publicClient", publicClient);
 
 const config = createConfig({
   autoConnect: true,
-  publicClient
-});
+  chains: [mainnet, sepolia],
+  transports: {
+    [mainnet.id]: http("", {url: "https://mainnet.infura.io/v3/"}),
+    [sepolia.id]: http("", {url: "https://sepolia.infura.io/v3/"}),
+  }
+
+  });
+
 
 function App(){
-  console.log("config", config);
-  console.log("queryClient", queryClient);
+
 
   return (
     <WagmiProvider config={config}>
