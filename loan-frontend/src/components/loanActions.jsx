@@ -3,8 +3,7 @@ import {usePublicClient, useWalletClient} from "wagmi";
 import {getLoanContract} from "../utils/contract";
 
 const LoanActions = () => {
-    const publicClient = usePublicClient();
-    const {data: walletClient} = useWalletClient();
+    const {data: walletClient, isLoading: walletLoading} = useWalletClient();
 
     const [loanAmount, setLoanAmount] = useState("");
     const [repayAmount, setRepayAmount] = useState("");
@@ -12,7 +11,7 @@ const LoanActions = () => {
     
     const getLoanState = async () => {
         try{
-            const contract = getLoanContract(publicClient);
+            const contract = getLoanContract(walletClient);
             const state = await contract.getLoanState();
             console.log(state);
             setLoanState(state);
@@ -24,13 +23,13 @@ const LoanActions = () => {
     };
 
     const takeLoan = async () => {
-        if (!publicClient){
+        if (!walletClient){
             console.error("Metamask wallet not found");
             return;
         }
 
         try{
-            const contract = getLoanContract(publicClient);
+            const contract = getLoanContract(walletClient);
             const transaction = await contract.takeLoan({value: ethers.utils.parseEther(loanAmount),});
             await transaction.wait();
             alert("Loan taken successfully");
@@ -42,13 +41,13 @@ const LoanActions = () => {
     };
 
     const repayLoan = async () => {
-        if (!publicClient) {
+        if (!walletClient) {
             console.error("Metamask wallet not found");
             return;
         }
 
         try {
-            const contract = getLoanContract(publicClient);
+            const contract = getLoanContract(walletClient);
             const transaction = await contract.repayLoan({value: ethers.utils.parseEther(repayAmount),});
             await transaction.wait();
             alert("Loan repaid successfully");
@@ -60,12 +59,12 @@ const LoanActions = () => {
     };
 
     useEffect(() => {
-        if (publicClient) {
+        if (walletClient) {
             getLoanState();
         }
-    }, [publicClient]);
+    }, [walletClient]);
 
-    if (!walletClient||!publicClient) {
+    if (!walletClient||!walletLoading) {
         return <p>Connect your wallet to continue</p>;}
     
     return (
