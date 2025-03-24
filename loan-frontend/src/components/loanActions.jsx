@@ -9,18 +9,24 @@ const LoanActions = () => {
     const [repayAmount, setRepayAmount] = useState("");
     const [loanState, setLoanState] = useState("");
     
-    const getLoanState = async () => {
-        try{
-            const contract = getLoanContract(walletClient);
-            const state = await contract.getLoanState();
-            console.log(state);
-            setLoanState(state);
-        }
-        catch (error) {
-            console.error(error);
-            alert(error);
-        }
-    };
+    useEffect(() => {
+
+        const getLoanState = async () => {
+            if (!walletClient) return;
+            try{
+                const contract = getLoanContract(walletClient);
+                const state = await contract.getLoanState();
+                console.log(state);
+                setLoanState(state);
+            }
+            catch (error) {
+                console.error(error);
+                alert(error);
+            }
+        };
+
+        getLoanState();
+    }, [walletClient]);
 
     const takeLoan = async () => {
         if (!walletClient){
@@ -32,8 +38,7 @@ const LoanActions = () => {
             const contract = getLoanContract(walletClient);
             const transaction = await contract.takeLoan({value: ethers.utils.parseEther(loanAmount),});
             await transaction.wait();
-            alert("Loan taken successfully");
-            getLoanState();
+            getLoanState("Loan taken successfully");
         } catch (error) {
             console.error(error);
             alert("An error occurred while taking the loan");
@@ -50,19 +55,13 @@ const LoanActions = () => {
             const contract = getLoanContract(walletClient);
             const transaction = await contract.repayLoan({value: ethers.utils.parseEther(repayAmount),});
             await transaction.wait();
-            alert("Loan repaid successfully");
-            getLoanState();
+            getLoanState("Loan repaid successfully");
         } catch (error) {
             console.error(error);
             alert("An error occurred while repaying the loan");
         }
     };
 
-    useEffect(() => {
-        if (walletClient) {
-            getLoanState();
-        }
-    }, [walletClient]);
 
     if (!walletClient||!walletLoading) {
         return <p>Connect your wallet to continue</p>;}
