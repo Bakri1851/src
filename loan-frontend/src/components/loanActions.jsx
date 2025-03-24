@@ -9,16 +9,6 @@ const LoanActions = () => {
     const [loanAmount, setLoanAmount] = useState("");
     const [repayAmount, setRepayAmount] = useState("");
     const [loanState, setLoanState] = useState("");
-
-    if (!walletClient) {
-        return <p>Connect your wallet to continue</p>;
-    }
-
-
-    if (!publicClient) {
-        return <p>Connect your wallet to continue</p>;}
-
-
     
     const getLoanState = async () => {
         try{
@@ -74,6 +64,9 @@ const LoanActions = () => {
             getLoanState();
         }
     }, [publicClient]);
+
+    if (!walletClient||!publicClient) {
+        return <p>Connect your wallet to continue</p>;}
     
     return (
         <div>
