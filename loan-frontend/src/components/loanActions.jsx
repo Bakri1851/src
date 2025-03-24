@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from "react";
 import {usePublicClient, useWalletClient} from "wagmi";
-import {getContract} from "../utils/contract";
+import {getLoanContract} from "../utils/contract";
 
 const LoanActions = () => {
     const publicClient = usePublicClient();
@@ -12,7 +12,7 @@ const LoanActions = () => {
     
     const getLoanState = async () => {
         try{
-            const contract = getContract(publicClient);
+            const contract = getLoanContract(publicClient);
             const state = await contract.getLoanState();
             console.log(state);
             setLoanState(state);
@@ -30,7 +30,7 @@ const LoanActions = () => {
         }
 
         try{
-            const contract = getContract(publicClient);
+            const contract = getLoanContract(publicClient);
             const transaction = await contract.takeLoan({value: ethers.utils.parseEther(loanAmount),});
             await transaction.wait();
             alert("Loan taken successfully");
@@ -48,7 +48,7 @@ const LoanActions = () => {
         }
 
         try {
-            const contract = getContract(publicClient);
+            const contract = getLoanContract(publicClient);
             const transaction = await contract.repayLoan({value: ethers.utils.parseEther(repayAmount),});
             await transaction.wait();
             alert("Loan repaid successfully");
