@@ -13,9 +13,10 @@ const LoanActions = () => {
 
         const getLoanState = async () => {
             if (!walletClient) return;
+            console.log(walletClient);
             try{
                 const contract = getLoanContract(walletClient);
-                const state = await contract.getLoanState();
+                const state = await contract.read.getLoanState();
                 console.log(state);
                 setLoanState(state);
             }

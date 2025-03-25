@@ -11,13 +11,6 @@ import { createPublicClient } from 'viem'
 
 const queryClient = new QueryClient(); 
 
-//const publicClient = createPublicClient({
-  
-//  chain: sepolia,
-//  transport: http("", {url: "https://sepolia.infura.io/v3/"}),
-//});
-
-
 const config = createConfig({
   autoConnect: true,
   chains: [mainnet, sepolia],
