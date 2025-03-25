@@ -15,17 +15,28 @@ Coded by www.creative-tim.com
 
 import React from "react";
 import ReactDOM from "react-dom/client";
-import { BrowserRouter } from "react-router-dom";
 import App from "App";
 
+import {RainbowKitProvider} from "@rainbow-me/rainbowkit";
+import { WagmiProvider } from 'wagmi';
+
+
 // Soft UI Dashboard React Context Provider
+import { BrowserRouter } from "react-router-dom";
 import { SoftUIControllerProvider } from "context";
+
+import "@rainbow-me/rainbowkit/styles.css";
+import { wagmiConfig } from "./wagmi";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
-  <BrowserRouter>
-    <SoftUIControllerProvider>
-      <App />
-    </SoftUIControllerProvider>
-  </BrowserRouter>
+  <WagmiProvider config={wagmiConfig}>
+    <RainbowKitProvider>
+      <BrowserRouter>
+        <SoftUIControllerProvider>
+          <App />
+        </SoftUIControllerProvider>
+      </BrowserRouter>
+    </RainbowKitProvider>
+  </WagmiProvider>
 );
