@@ -11,6 +11,8 @@ import { createPublicClient } from 'viem'
 
 const queryClient = new QueryClient(); 
 
+
+
 const config = createConfig({
   autoConnect: true,
   chains: [mainnet, sepolia],
