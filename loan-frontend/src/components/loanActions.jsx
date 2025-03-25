@@ -64,8 +64,9 @@ const LoanActions = () => {
     };
 
 
-    if (!walletClient||!walletLoading) {
-        return <p>Connect your wallet to continue</p>;}
+    if (!walletClient) {
+        return <p>Connect your wallet to continue</p>;
+    }
     
     return (
         <div>
