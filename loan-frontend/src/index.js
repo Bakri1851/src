@@ -13,30 +13,21 @@ Coded by www.creative-tim.com
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 */
 
-import React from "react";
-import ReactDOM from "react-dom/client";
-import App from "App";
+import React from 'react';
+import ReactDOM from 'react-dom/client';
+import { WagmiConfig } from 'wagmi';
+import { RainbowKitProvider } from '@rainbow-me/rainbowkit';
+import App from './App';
+import { wagmiConfig, chains } from './wagmi';
+import '@rainbow-me/rainbowkit/styles.css';
 
-import {RainbowKitProvider} from "@rainbow-me/rainbowkit";
-import { WagmiProvider } from 'wagmi';
-
-
-// Soft UI Dashboard React Context Provider
-import { BrowserRouter } from "react-router-dom";
-import { SoftUIControllerProvider } from "context";
-
-import "@rainbow-me/rainbowkit/styles.css";
-import { wagmiConfig } from "./wagmi";
-
-const root = ReactDOM.createRoot(document.getElementById("root"));
+const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
-  <WagmiProvider config={wagmiConfig}>
-    <RainbowKitProvider>
-      <BrowserRouter>
-        <SoftUIControllerProvider>
-          <App />
-        </SoftUIControllerProvider>
-      </BrowserRouter>
-    </RainbowKitProvider>
-  </WagmiProvider>
+  <React.StrictMode>
+    <WagmiConfig config={wagmiConfig}>
+      <RainbowKitProvider chains={chains}>
+        <App />
+      </RainbowKitProvider>
+    </WagmiConfig>
+  </React.StrictMode>
 );

@@ -1,20 +1,24 @@
 import { getDefaultWallets } from '@rainbow-me/rainbowkit'
 import { createConfig, http } from 'wagmi'
-import { mainnet, sepolia } from 'wagmi/chains'
+import { mainnet, sepolia } from 'viem/chains'
+import { createPublicClient } from 'viem'
+import { injected } from 'wagmi/connectors'
 
-const { wallets } = getDefaultWallets({
+const chains = [mainnet, sepolia]
+
+const { connectors } = getDefaultWallets({
   appName: 'Loan dApp Dashboard',
-  projectId: '6c6156acc9ac40a7bf297c5e502bbd16',
-  chains: [mainnet, sepolia],
+  projectId: '27083116385d1296f7fd233f6f547755',
+  chains,
 })
 
 export const wagmiConfig = createConfig({
-  chains: [mainnet, sepolia],
-  transports: {
-    [mainnet.id]: http(),
-    [sepolia.id]: http(),
-  },
-  connectors: wallets,
+  autoConnect: true,
+  connectors,
+  publicClient: createPublicClient({
+    chain: sepolia ,
+    transport: http(),
+  }),
 })
 
-export { mainnet, sepolia as chains }
+export { chains }

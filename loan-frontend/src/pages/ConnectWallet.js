@@ -1,18 +1,25 @@
-import React from "react"
-import Card from "components/Card"
 import SoftBox from "components/SoftBox"
 import SoftTypography from "components/SoftTypography"
 import { ConnectButton } from "@rainbow-me/rainbowkit"
 
 export default function ConnectWallet() {
   return (
-    <Card>
-      <SoftBox p={3}>
-        <SoftTypography variant="h5">Connect Your Wallet</SoftTypography>
-        <SoftBox mt={2}>
-          <ConnectButton />
-        </SoftBox>
+    <SoftBox
+      p={3}
+      mt={5}
+      mx="auto"
+      width="fit-content"
+      borderRadius="xl"
+      boxShadow="lg"
+      backgroundColor="white"
+    >
+      <SoftTypography variant="h4">Welcome to the Loan Dashboard</SoftTypography>
+      <SoftTypography variant="body2" mt={1}>
+        Please connect your wallet to continue
+      </SoftTypography>
+      <SoftBox mt={3}>
+        <ConnectButton />
       </SoftBox>
-    </Card>
+    </SoftBox>
   )
 }
