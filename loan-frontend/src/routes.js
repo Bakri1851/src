@@ -43,7 +43,7 @@ Coded by www.creative-tim.com
 //import RTL from "layouts/rtl";
 //import Profile from "layouts/profile";
 //import SignIn from "layouts/authentication/sign-in";
-//import SignUp from "layouts/authentication/sign-up";
+import SignUp from "layouts/authentication/sign-up";
 
 import ConnectWallet from "pages/ConnectWallet";
 import Dashboard from "pages/Dashboard";
@@ -57,7 +57,6 @@ import SpaceShip from "examples/Icons/SpaceShip";
 import CustomerSupport from "examples/Icons/CustomerSupport";
 import CreditCard from "examples/Icons/CreditCard";
 import Cube from "examples/Icons/Cube";
-import icon from "assets/theme/components/icon";
 import ProtectedRoute from "protectedRoute";
 
 const routes = [
@@ -65,7 +64,6 @@ const routes = [
     type: "collapse",
     name: "Connect Wallet",
     key: "connect-wallet",
-    //icon: <Icon>link</Icon>,
     route: "/connect-wallet",
     component: <ConnectWallet />,
   },
@@ -74,7 +72,6 @@ const routes = [
     type: "collapse",
     name: "Dashboard",
     key: "dashboard",
-    //icon: <icon>dashboard</Icon>,
     route: "/dashboard",
     component: (
       <ProtectedRoute>
