@@ -45,7 +45,6 @@ Coded by www.creative-tim.com
 //import SignIn from "layouts/authentication/sign-in";
 import SignUp from "layouts/authentication/sign-up";
 
-import ConnectWallet from "pages/ConnectWallet";
 import Dashboard from "pages/Dashboard";
 
 // Soft UI Dashboard React icons
@@ -62,21 +61,11 @@ import ProtectedRoute from "protectedRoute";
 const routes = [
   {
     type: "collapse",
-    name: "Connect Wallet",
-    key: "connect-wallet",
-    route: "/connect-wallet",
-    component: <ConnectWallet />,
-  },
-
-  {
-    type: "collapse",
     name: "Dashboard",
     key: "dashboard",
     route: "/dashboard",
     component: (
-      <ProtectedRoute>
-        <Dashboard />
-      </ProtectedRoute>
+      <Dashboard />
     )
   },
 ];

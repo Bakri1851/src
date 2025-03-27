@@ -2,7 +2,7 @@ import { walletClient, initializeWallet } from './wallet';
 import { getContract } from 'viem';
 import contractABI from './utils/contractABI.json';
 
-const CONTRACT_ADDRESS = "0x4048BB34963358FEAEf9D577dbc32b4d25b4c10a";
+const CONTRACT_ADDRESS = "0x8d4B4095bc4239cd368D9bf720E0dBC73365e70a";
 
 export const isWalletConnected = async () => {
   if (!walletClient) {

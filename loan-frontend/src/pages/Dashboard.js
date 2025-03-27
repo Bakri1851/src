@@ -1,63 +1,33 @@
-import React from "react";
-import SoftBox from "components/SoftBox";
-import SoftTypography from "components/SoftTypography";
-import { useAccount,useBalance } from "wagmi";
-import Card from "@mui/material/Card";
+import SoftBox from "components/SoftBox"
+import SoftTypography from "components/SoftTypography"
+import { ConnectButton } from "@rainbow-me/rainbowkit"
+import { useAccount } from "wagmi"
+
 
 export default function Dashboard() {
-    const {address} = useAccount();
-
-    const {data:mainnetBalance,isLoading:loadingMainnet} = useBalance({
-        address,
-        chainId: 1,
-        watch:true,
-    })
-
-    const {data:sepoliaBalance,isLoading:loadingSepolia} = useBalance({
-        address,
-        chainId: 11155111,
-        watch:true
-    })
-
+    const {isConnected} = useAccount();
 
     return (
-        <SoftBox p={3} display="flex" flexDirection="column" alignItems="center" textAlign="center">
-            <SoftTypography variant="h3" mb={3}>
-                Dashboard
+    <SoftBox
+        p={3}
+        mt={5}
+        mx="auto"
+        width="fit-content"
+        borderRadius="xl"
+        boxShadow="lg"
+        backgroundColor="white"
+        
+    >
+
+        <SoftTypography variant="h4">Welcome to the Loan Dashboard</SoftTypography>
+        {!isConnected &&(
+            <SoftTypography variant="body2" mt={1}>
+            Please connect your wallet to continue
             </SoftTypography>
-
-            <Card style = {{padding: "20px", maginBottom: "20px"}}>
-                <SoftBox mb={2}>
-                    <SoftTypography variant="h6" color="text">
-                        Wallet Address:
-                    </SoftTypography>
-                    <SoftTypography variant="body1" color="dark">
-                        {address}
-                    </SoftTypography>
-                </SoftBox>
-            </Card>
-            <Card style = {{padding: "20px", maginBottom: "20px"}}>
-                <SoftBox>
-                    <SoftTypography variant="h6" color="text">
-                        ETH Balance (mainnet):
-                    </SoftTypography>
-                    <SoftTypography variant="body1" color="dark">
-                        {loadingMainnet ? "Loading..." : `${mainnetBalance?.formatted} ETH`}
-                    </SoftTypography>
-                </SoftBox>
-            </Card>
-
-            <Card style = {{padding: "20px", maginBottom: "20px"}}>
-                <SoftBox>
-                    <SoftTypography variant="h6" color="text">
-                        Sepolia Balance:
-                    </SoftTypography>
-                    <SoftTypography variant="body1" color="dark">
-                        {loadingSepolia ? "Loading..." : `${sepoliaBalance?.formatted} ETH`}
-                    </SoftTypography>
-                </SoftBox>
-            </Card>
-
+            )}
+        <SoftBox mt={3}>
+        <ConnectButton />
         </SoftBox>
+    </SoftBox>
     )
 }
