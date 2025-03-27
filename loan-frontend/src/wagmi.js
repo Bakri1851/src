@@ -1,10 +1,9 @@
 import { getDefaultWallets } from '@rainbow-me/rainbowkit'
 import { createConfig, http } from 'wagmi'
-import { mainnet, sepolia } from 'wagmi/chains'
-import { injected, walletConnect } from 'wagmi/connectors'
+import { mainnet, sepolia,polygon, arbitrum, goerli, optimism, base, avalanche, bsc, zora  } from 'wagmi/chains'
 
 // Define supported chains
-const chains = [mainnet, sepolia]
+const chains = [mainnet, sepolia, polygon, arbitrum, goerli, optimism, base, avalanche, bsc, zora]
 
 // Configure wallet connections
 const { connectors } = getDefaultWallets({
@@ -21,6 +20,14 @@ export const wagmiConfig = createConfig({
   transports: {
     [mainnet.id]: http(),
     [sepolia.id]: http(),
+    [polygon.id]: http(),
+    [arbitrum.id]: http(),
+    [goerli.id]: http(),
+    [optimism.id]: http(),
+    [base.id]: http(),
+    [avalanche.id]: http(),
+    [bsc.id]: http(),
+    [zora.id]: http(),
   },
 })
 

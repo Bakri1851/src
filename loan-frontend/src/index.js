@@ -15,19 +15,30 @@ Coded by www.creative-tim.com
 
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import { WagmiConfig } from 'wagmi';
+import { WagmiProvider } from 'wagmi';
 import { RainbowKitProvider } from '@rainbow-me/rainbowkit';
 import App from './App';
 import { wagmiConfig, chains } from './wagmi';
 import '@rainbow-me/rainbowkit/styles.css';
+import {QueryClient, QueryClientProvider} from '@tanstack/react-query';
+import { SoftUIControllerProvider } from 'context';
+import { BrowserRouter } from 'react-router-dom';
+
+const queryClient = new QueryClient();
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-    <WagmiConfig config={wagmiConfig}>
-      <RainbowKitProvider chains={chains}>
-        <App />
-      </RainbowKitProvider>
-    </WagmiConfig>
+    <WagmiProvider config={wagmiConfig}>
+      <QueryClientProvider client={queryClient}>
+        <RainbowKitProvider chains={chains}>
+          <SoftUIControllerProvider>
+            <BrowserRouter>
+              <App />
+            </BrowserRouter>
+          </SoftUIControllerProvider>
+        </RainbowKitProvider>
+      </QueryClientProvider>
+    </WagmiProvider>
   </React.StrictMode>
 );
