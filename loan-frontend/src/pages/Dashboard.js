@@ -3,12 +3,13 @@ import SoftTypography from "components/SoftTypography"
 import SoftButton from "components/SoftButton"
 import { ConnectButton } from "@rainbow-me/rainbowkit"
 import { useAccount, useReadContracts, useReadContract, useWriteContract } from "wagmi"
+import { waitForTransactionReceipt } from '@wagmi/core'
 import { rateSwitchingABI } from "constants/RateSwitchingABI"
 
 export default function Dashboard() {
   const { isConnected } = useAccount()
   const { writeContract, isPending, isSuccess } = useWriteContract()
-  const { writeContractAsync } = useWriteContract()
+  
   const contractConfig = {
     address: "0x45121b6AaC4a161Aeee190feB153471661f50B63",
     abi: rateSwitchingABI,
@@ -33,15 +34,20 @@ export default function Dashboard() {
   // ✅ Handle switch & update UI only after confirmation
   const handleSwitchRate = async () => {
     try {
-      const tx = await writeContractAsync({
-        ...contractConfig,
-        functionName: "switchRateType", 
-      })
-      tx.wait(1) // Wait for 1 block confirmation
+      const result = await writeContract({
+        address: contractConfig.address,
+        abi: contractConfig.abi,
+        functionName: 'switchRateType'
+      });
 
-      refetchRateType() // ✅ Re-fetch updated rate from contract
-    } catch (err) {
-      console.error("Transaction failed:", err)
+      await waitForTransactionReceipt({
+        hash: result.hash
+      });
+
+      // Refetch the current rate type
+      await refetchRateType();
+    } catch (error) {
+      console.error('Switch rate failed:', error);
     }
   }
 
