@@ -2,35 +2,47 @@ import SoftBox from "components/SoftBox"
 import SoftTypography from "components/SoftTypography"
 import SoftButton from "components/SoftButton"
 import { ConnectButton } from "@rainbow-me/rainbowkit"
-import { useAccount, useReadContract, useWriteContract } from "wagmi"
+import { useAccount, useReadContracts, useReadContract, useWriteContract } from "wagmi"
 import { rateSwitchingABI } from "constants/RateSwitchingABI"
 
 export default function Dashboard() {
   const { isConnected } = useAccount()
   const { writeContract, isPending, isSuccess } = useWriteContract()
-
-
+  const { writeContractAsync } = useWriteContract()
   const contractConfig = {
-    address: "0x8d4b4095bc4239cd368d9bf720e0dbc73365e70a",
+    address: "0x45121b6AaC4a161Aeee190feB153471661f50B63",
     abi: rateSwitchingABI,
     chainId: 11155111, // Sepolia
   }
 
-  // ✅ Reading rate type from the contract
-  const { data: rateType } = useReadContract({
+  // ✅ Read the current interest rate
+  const {
+    data: rateType,
+    refetch: refetchRateType,
+    isLoading: loadingRate,
+  } = useReadContract({
     ...contractConfig,
     functionName: "currentRateType",
-  })
-
-  // ✅ Writing to the contract
-  const switchRateType = useWriteContract({
-    ...contractConfig,
-    functionName: "switchRateType",
   })
 
   const rateTypeLabel = {
     0: "Fixed",
     1: "Floating",
+  }
+
+  // ✅ Handle switch & update UI only after confirmation
+  const handleSwitchRate = async () => {
+    try {
+      const tx = await writeContractAsync({
+        ...contractConfig,
+        functionName: "switchRateType", 
+      })
+      tx.wait(1) // Wait for 1 block confirmation
+
+      refetchRateType() // ✅ Re-fetch updated rate from contract
+    } catch (err) {
+      console.error("Transaction failed:", err)
+    }
   }
 
   return (
@@ -57,7 +69,7 @@ export default function Dashboard() {
 
       {isConnected && (
         <>
-          {/* Rate Type Display */}
+          {/* Interest Rate Display */}
           <SoftBox
             p={3}
             mt={3}
@@ -67,21 +79,17 @@ export default function Dashboard() {
           >
             <SoftTypography variant="h6">Current Interest Rate</SoftTypography>
             <SoftTypography variant="body1" color="dark">
-              {rateType !== undefined ? rateTypeLabel[rateType] : "Loading..."}
+              {loadingRate
+                ? "Loading..."
+                : rateTypeLabel[rateType] || "Unknown"}
             </SoftTypography>
           </SoftBox>
 
-          {/* Switch Rate Button */}
+          {/* Switch Button */}
           <SoftBox mt={2} textAlign="center">
             <SoftButton
               color="info"
-              onClick={() => writeContract(
-                {
-                    address: "0x8d4b4095bc4239cd368d9bf720e0dbc73365e70a",
-                    abi: rateSwitchingABI,
-                    functionName: "switchRateType",
-                }
-              )}
+              onClick={handleSwitchRate}
               disabled={isPending}
             >
               {isPending ? "Switching..." : "Switch Rate Type"}
@@ -89,7 +97,7 @@ export default function Dashboard() {
 
             {isSuccess && (
               <SoftTypography mt={2} color="success">
-                Transaction sent!
+                Switched successfully!
               </SoftTypography>
             )}
           </SoftBox>

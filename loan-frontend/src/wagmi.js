@@ -19,7 +19,7 @@ export const wagmiConfig = createConfig({
   connectors,
   transports: {
     [mainnet.id]: http(),
-    [sepolia.id]: http(),
+    [sepolia.id]: http("https://sepolia.infura.io/v3/6c6156acc9ac40a7bf297c5e502bbd16"),
     [polygon.id]: http(),
     [arbitrum.id]: http(),
     [goerli.id]: http(),
