@@ -9,12 +9,28 @@ import { rateSwitchingABI } from "constants/RateSwitchingABI"
 export default function Dashboard() {
   const { isConnected } = useAccount()
   const { writeContract, isPending, isSuccess } = useWriteContract()
-  
+  const contractAddress = "0x506f886322DC644C43a3Dee8e07DD7205bf7AC50"
   const contractConfig = {
-    address: "0x45121b6AaC4a161Aeee190feB153471661f50B63",
+    address: contractAddress,
     abi: rateSwitchingABI,
     chainId: 11155111, // Sepolia
   }
+
+  const { data: fixedRate } = useReadContract({
+    address: contractAddress,
+    abi: rateSwitchingABI,
+    chainId: 11155111,
+    functionName: "getFixedRate",
+  })
+  
+  const { data: floatingRate } = useReadContract({
+    address: contractAddress,
+    abi: rateSwitchingABI,
+    chainId: 11155111,
+    functionName: "getFloatingRate",
+  })
+  
+
 
   // ✅ Read the current interest rate
   const {
@@ -50,6 +66,10 @@ export default function Dashboard() {
       console.error('Switch rate failed:', error);
     }
   }
+
+  const formatRate = (rate) =>
+    rate ? `${(Number(rate) / 100).toFixed(2)}%` : "Loading..."
+  
 
   return (
     <SoftBox
@@ -89,6 +109,17 @@ export default function Dashboard() {
                 ? "Loading..."
                 : rateTypeLabel[rateType] || "Unknown"}
             </SoftTypography>
+
+            <SoftTypography variant="h6">Current Market Rates</SoftTypography>
+            
+            <SoftTypography variant="body2">
+              Fixed Rate: {formatRate(fixedRate)}
+            </SoftTypography>
+            <SoftTypography variant="body2">
+              Floating Rate: {formatRate(floatingRate)}
+            </SoftTypography>
+
+
           </SoftBox>
 
           {/* Switch Button */}
