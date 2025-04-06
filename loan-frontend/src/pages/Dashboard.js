@@ -27,7 +27,10 @@ export default function Dashboard() {
     functionName: "getFixedRate",
   })
   
-  const { data: floatingRate } = useReadContract({
+  const { data: floatingRate,
+    refetch: refetchFloatingRate,
+    isLoading: loadingFloatingRate,
+   } = useReadContract({
     address: contractAddress,
     abi: rateSwitchingABI,
     chainId: 11155111,
@@ -46,6 +49,9 @@ export default function Dashboard() {
     functionName: "currentRateType",
   })
 
+
+
+
   const rateTypeLabel = {
     0: "Fixed",
     1: "Floating",
@@ -57,7 +63,8 @@ export default function Dashboard() {
       const result = await writeContract({
         address: contractConfig.address,
         abi: contractConfig.abi,
-        functionName: 'switchRateType'
+        functionName: 'switchRateType',
+        chainId: contractConfig.chainId,
       });
 
       await waitForTransactionReceipt({
@@ -77,11 +84,11 @@ export default function Dashboard() {
         address: contractConfig.address,
         abi: contractConfig.abi,
         functionName: "updateFloatingRate",
+        chainId: contractConfig.chainId,
       });
-      await waitForTransactionReceipt({
-        hash: result.hash,
-      });
-      refetchFloatingRate()
+
+      
+      await refetchFloatingRate()
     } catch (err) {
       console.error("Failed to refresh floating rate", err)
     }
