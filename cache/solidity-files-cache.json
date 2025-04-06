@@ -38,8 +38,8 @@
       ]
     },
     "C:\\Users\\Bakri\\IdeaProjects\\Loan Switching Smart Contract\\src\\contracts\\LoanRequest.sol": {
-      "lastModificationDate": 1742351933470,
-      "contentHash": "7c2c335f6ce93185abbc34c7d7e3ec1e",
+      "lastModificationDate": 1743888221409,
+      "contentHash": "bb07bb9c8207d2a7ad09e8699e3acfe8",
       "sourceName": "contracts/LoanRequest.sol",
       "solcConfig": {
         "version": "0.8.28",

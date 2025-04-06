@@ -117,7 +117,7 @@ contract LoanRequest {
     function updateFloatingRate() public{
         (, int rate,,,) = oracle.latestRoundData();
         require(rate > 0, "Invalid price");
-        floatingRate = uint256(rate);
+        floatingRate = uint256(rate)/100e6;
 
     }
     function getFixedRate() public view returns (uint256){

@@ -9,8 +9,8 @@ async function main() {
   const AA_ORACLE_ADDRESS = "0xceA6Aa74E6A86a7f85B571Ce1C34f1A60B77CD29"; // Aave Borrow Rate Oracle (Goerli)
   const oracle = await hre.ethers.getContractAt("AggregatorV3Interface", AA_ORACLE_ADDRESS);
   const latestRoundData = await oracle.latestRoundData();
+  console.log("Latest round data:", latestRoundData.answer.toString());
   const marketFloatingRate = Number(latestRoundData[1]); // int256 => JS number
-
 
 
   //Loan Parameters
@@ -18,8 +18,8 @@ async function main() {
   const feeAmount = hre.ethers.parseEther("0.0005");
   const collateralEthAmount = hre.ethers.parseEther("0.001");
   const repayByTimestamp = Math.floor(Date.now() / 1000) + 60 * 60 * 24 * 7; // 30 days from now
-  const floatingRate = marketFloatingRate; 
-  const spread = 100; // 1% spread
+  const floatingRate = Math.floor(Number(marketFloatingRate)*100/1e6); 
+  const spread = 1; // 1% spread
   const fixedRate = floatingRate + spread; // 1% higher than the floating ratw
 
 

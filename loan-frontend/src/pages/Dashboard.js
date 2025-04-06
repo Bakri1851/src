@@ -9,7 +9,7 @@ import { rateSwitchingABI } from "constants/RateSwitchingABI"
 export default function Dashboard() {
   const { isConnected } = useAccount()
   const { writeContract, isPending, isSuccess } = useWriteContract()
-  const contractAddress = "0x506f886322DC644C43a3Dee8e07DD7205bf7AC50"
+  const contractAddress = "0xA5851D5e21051CD8Be517D56d998D5AC98423A02"
   const contractConfig = {
     address: contractAddress,
     abi: rateSwitchingABI,
