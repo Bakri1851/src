@@ -5,11 +5,15 @@ import { ConnectButton } from "@rainbow-me/rainbowkit"
 import { useAccount, useReadContracts, useReadContract, useWriteContract } from "wagmi"
 import { waitForTransactionReceipt } from '@wagmi/core'
 import { rateSwitchingABI } from "constants/RateSwitchingABI"
+import {useState} from "react"
 
 export default function Dashboard() {
   const { isConnected } = useAccount()
-  const { writeContract, isPending, isSuccess } = useWriteContract()
-  const contractAddress = "0xA5851D5e21051CD8Be517D56d998D5AC98423A02"
+  const { writeContract, switchPending, switchSuccess,
+    refreshPending,refreshSuccess } = useWriteContract()
+   
+  
+  const contractAddress = "0x78ecbdF776948Eb58cB50605762407509b9f8Fc3"
   const contractConfig = {
     address: contractAddress,
     abi: rateSwitchingABI,
@@ -64,6 +68,22 @@ export default function Dashboard() {
       await refetchRateType();
     } catch (error) {
       console.error('Switch rate failed:', error);
+    }
+  }
+
+  const handleRefreshRate = async () => {
+    try {
+      const result = await writeContract({
+        address: contractConfig.address,
+        abi: contractConfig.abi,
+        functionName: "updateFloatingRate",
+      });
+      await waitForTransactionReceipt({
+        hash: result.hash,
+      });
+      refetchFloatingRate()
+    } catch (err) {
+      console.error("Failed to refresh floating rate", err)
     }
   }
 
@@ -127,17 +147,38 @@ export default function Dashboard() {
             <SoftButton
               color="info"
               onClick={handleSwitchRate}
-              disabled={isPending}
+              disabled={switchPending}
             >
-              {isPending ? "Switching..." : "Switch Rate Type"}
+              {switchPending ? "Switching..." : "Switch Rate Type"}
             </SoftButton>
 
-            {isSuccess && (
+            {switchSuccess && (
               <SoftTypography mt={2} color="success">
                 Switched successfully!
               </SoftTypography>
             )}
           </SoftBox>
+          
+          {/* Refresh Button */}
+          <SoftBox mt={2} textAlign="center">
+            <SoftButton
+              color="primary"
+              onClick={handleRefreshRate}
+              disabled={refreshPending}
+            >
+              {refreshPending ? "Refreshing..." : "Refresh Floating Rate"}
+            </SoftButton>
+
+            {refreshSuccess && (
+              <SoftTypography mt={2} color="success">
+                Refreshed successfully!
+              </SoftTypography>
+            )}
+          </SoftBox>
+          
+
+
+
         </>
       )}
     </SoftBox>
