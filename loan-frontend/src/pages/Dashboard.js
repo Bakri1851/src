@@ -9,11 +9,12 @@ import {useState} from "react"
 
 export default function Dashboard() {
   const { isConnected } = useAccount()
-  const { writeContract, switchPending, switchSuccess,
-    refreshPending,refreshSuccess } = useWriteContract()
+  const { writeContract, switchPending, switchSuccess} = useWriteContract();
    
+  const [refreshPending, setRefreshPending] = useState(false);
+  const [refreshSuccess, setRefreshSuccess] = useState(false);
   
-  const contractAddress = "0x78ecbdF776948Eb58cB50605762407509b9f8Fc3"
+  const contractAddress = "0xE26e0Cee85cc8eC6ED36e43b185Acfb13C86C37E"
   const contractConfig = {
     address: contractAddress,
     abi: rateSwitchingABI,
@@ -60,15 +61,17 @@ export default function Dashboard() {
   // ✅ Handle switch & update UI only after confirmation
   const handleSwitchRate = async () => {
     try {
-      const result = await writeContract({
+      const hash = await writeContract({
         address: contractConfig.address,
         abi: contractConfig.abi,
         functionName: 'switchRateType',
         chainId: contractConfig.chainId,
       });
+      console.log("Transaction submitted with hash:", hash.hash);
 
       await waitForTransactionReceipt({
-        hash: result.hash
+        hash: hash.hash,
+        chainId: contractConfig.chainId 
       });
 
       // Refetch the current rate type
@@ -78,21 +81,31 @@ export default function Dashboard() {
     }
   }
 
+
+  
   const handleRefreshRate = async () => {
+    setRefreshPending(true);
+    setRefreshSuccess(false);
+  
     try {
-      const result = await writeContract({
+      const hash = await writeContract({
         address: contractConfig.address,
         abi: contractConfig.abi,
-        functionName: "updateFloatingRate",
+        functionName: "updateRates",
         chainId: contractConfig.chainId,
       });
-
       
-      await refetchFloatingRate()
+      console.log("Transaction submitted with hash:", hash);
+      
+
     } catch (err) {
-      console.error("Failed to refresh floating rate", err)
+      console.error("Failed to refresh floating rate:", err);
+      alert(`Failed to update rate: ${err.message || "Unknown error"}`);
+    } finally {
+      await refetchFloatingRate();
+      setRefreshPending(false);
     }
-  }
+  };
 
   const formatRate = (rate) =>
     rate ? `${(Number(rate) / 100).toFixed(2)}%` : "Loading..."
@@ -173,7 +186,7 @@ export default function Dashboard() {
               onClick={handleRefreshRate}
               disabled={refreshPending}
             >
-              {refreshPending ? "Refreshing..." : "Refresh Floating Rate"}
+              {refreshPending ? "Refreshing..." : "Refresh Rates"}
             </SoftButton>
 
             {refreshSuccess && (

@@ -114,11 +114,13 @@ contract LoanRequest {
 
     }
 
-    function updateFloatingRate() public{
-        (, int rate,,,) = oracle.latestRoundData();
-        require(rate > 0, "Invalid price");
-        floatingRate = uint256(rate)/100e6;
-
+    function updateRates() public {
+        // Update floating rate using oracle
+        (, int price, , ,) = oracle.latestRoundData();
+        uint256 newFloatingRate = uint256(price)*100 / 1e6; // Adjust based on the oracle's decimal places
+        floatingRate = newFloatingRate;
+        uint256 spread = 1;
+        fixedRate = floatingRate + spread;
     }
     function getFixedRate() public view returns (uint256){
         return fixedRate;
@@ -158,5 +160,4 @@ contract LoanRequest {
     event LoanTaken(address indexed borrower, uint256 loanAmount);
     event LoanRepaid(address indexed borrower, uint256 repaymentAmount);
     event LoanLiquidated(address indexed borrower, address indexed lender, uint256 collateralAmount);
-    
 }

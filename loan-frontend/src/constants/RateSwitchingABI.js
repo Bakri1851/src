@@ -405,7 +405,7 @@ export const rateSwitchingABI = [
     },
     {
       "inputs": [],
-      "name": "updateFloatingRate",
+      "name": "updateRates",
       "outputs": [],
       "stateMutability": "nonpayable",
       "type": "function"
