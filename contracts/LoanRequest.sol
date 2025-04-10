@@ -152,9 +152,22 @@ contract LoanRequest {
 
     function getLoanState() public view returns (LoanState) {
         return state;
+        
     }
 
+    function getLoanAmount() public view returns (uint256) {
+        return loanAmount;
+    }
+    function getFeeAmount() public view returns (uint256) {
+        return feeAmount;
+    }
+    function getEthCollateralAmount() public view returns (uint256) {
+        return ethCollateralAmount;
+    }
 
+    function getRepayByTimestamp() public view returns (uint256) {
+        return repayByTimestamp;
+    }
     event LoanFunded(address indexed lender, uint256 loanAmount);
     event LoanTermsAccepted(address indexed borrower, uint256 collateralAmount);
     event LoanTaken(address indexed borrower, uint256 loanAmount);

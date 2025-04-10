@@ -46,6 +46,9 @@ Coded by www.creative-tim.com
 import SignUp from "layouts/authentication/sign-up";
 
 import Dashboard from "pages/Dashboard";
+import Borrowing from "pages/Borrowing";
+import Lending from "pages/Lending";
+import Home from "pages/Home";
 
 // Soft UI Dashboard React icons
 import Shop from "examples/Icons/Shop";
@@ -61,13 +64,54 @@ import ProtectedRoute from "protectedRoute";
 const routes = [
   {
     type: "collapse",
+    name: "Home",
+    key: "home",
+    route: "/",
+    component: (
+      <Home />
+    )
+  },
+  {
+    type: "collapse",
     name: "Dashboard",
     key: "dashboard",
     route: "/dashboard",
     component: (
       <Dashboard />
     )
+
   },
+  {
+    type: "collapse",
+    name: "Borrowing",
+    key: "borrowing",
+    route: "/borrowing",
+    component: (
+      <ProtectedRoute>
+        <Borrowing />
+      </ProtectedRoute>
+    )
+  },
+  {
+    type: "collapse",
+    name: "Lending",
+    key: "lending",
+    route: "/lending",
+    component: (
+      <ProtectedRoute>
+        <Lending />
+      </ProtectedRoute>
+    )
+  },
+  {
+    type: "collapse",
+    name: "Sign Up",
+    key: "sign-up",
+    route: "/authentication/sign-up",
+    component: (
+      <SignUp />
+    )
+  }
 ];
 
 export default routes;

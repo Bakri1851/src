@@ -5,29 +5,65 @@ import { ConnectButton } from "@rainbow-me/rainbowkit"
 import { useAccount, useReadContracts, useReadContract, useWriteContract } from "wagmi"
 import { waitForTransactionReceipt } from '@wagmi/core'
 import { rateSwitchingABI } from "constants/RateSwitchingABI"
-import {useState} from "react"
 
 export default function Dashboard() {
   const { isConnected } = useAccount()
-  const { writeContract, switchPending, switchSuccess} = useWriteContract();
-   
-  const [refreshPending, setRefreshPending] = useState(false);
-  const [refreshSuccess, setRefreshSuccess] = useState(false);
-  
-  const contractAddress = "0xE26e0Cee85cc8eC6ED36e43b185Acfb13C86C37E"
+  const { writeContract, switchPending, switchSuccess, 
+    refreshPending, refreshSuccess
+  } = useWriteContract();
+
+
+
+
+  // ✅ Get the contract address and ABI
+  const contractAddress = "0xD3689c177f303cEdfBAB7D68026dA5815F81A25A"
   const contractConfig = {
     address: contractAddress,
     abi: rateSwitchingABI,
     chainId: 11155111, // Sepolia
   }
 
+  const { data: loanState, refetch: refetchState, isLoading:loadingState,} = useReadContract({
+    ...contractConfig,
+    functionName: "getLoanState",
+  })
+  
+  const {data : rawLoanAmount} = useReadContract({
+    ...contractConfig,
+    functionName: "getLoanAmount",
+  })
+  const {data: rawCollateralAmount} = useReadContract({
+    ...contractConfig,
+    functionName: "getEthCollateralAmount",
+  })
+
+  const {data: repayByTimestamp} = useReadContract({
+    ...contractConfig,
+    functionName: "getRepayByTimestamp",})
+
+
+  // coverts the raw amount to string
+  const loanAmount = rawLoanAmount ? Number(rawLoanAmount) / 1e18 : "Loading..."
+  const collateralAmount = rawCollateralAmount ? Number(rawCollateralAmount) / 1e18 : "Loading..."
+  const stateLabel = {
+    0:"Created",
+    1:"Funded",
+    2:"Accepted",
+    3:"Taken",
+    4:"Repaid",
+    5:"Liquidated",
+  }
+
+
+  // ✅ Read the current fixed rate
   const { data: fixedRate } = useReadContract({
     address: contractAddress,
     abi: rateSwitchingABI,
     chainId: 11155111,
     functionName: "getFixedRate",
   })
-  
+
+  // ✅ Read the current floating rate
   const { data: floatingRate,
     refetch: refetchFloatingRate,
     isLoading: loadingFloatingRate,
@@ -39,8 +75,7 @@ export default function Dashboard() {
   })
   
 
-
-  // ✅ Read the current interest rate
+  // ✅ Read the current rate type
   const {
     data: rateType,
     refetch: refetchRateType,
@@ -49,9 +84,6 @@ export default function Dashboard() {
     ...contractConfig,
     functionName: "currentRateType",
   })
-
-
-
 
   const rateTypeLabel = {
     0: "Fixed",
@@ -84,8 +116,6 @@ export default function Dashboard() {
 
   
   const handleRefreshRate = async () => {
-    setRefreshPending(true);
-    setRefreshSuccess(false);
   
     try {
       const hash = await writeContract({
@@ -103,7 +133,6 @@ export default function Dashboard() {
       alert(`Failed to update rate: ${err.message || "Unknown error"}`);
     } finally {
       await refetchFloatingRate();
-      setRefreshPending(false);
     }
   };
 
@@ -150,6 +179,19 @@ export default function Dashboard() {
                 : rateTypeLabel[rateType] || "Unknown"}
             </SoftTypography>
 
+            <SoftTypography variant="h6">Loan Terms</SoftTypography>
+            <SoftTypography variant="body2">
+              Loan Amount: {loanAmount ? `${Number(loanAmount) / 1e18} ETH` : "Loading..."}
+            </SoftTypography>
+            <SoftTypography variant="body2">
+              Collateral: {collateralAmount ? `${Number(collateralAmount) / 1e18} ETH` : "Loading..."}
+            </SoftTypography>
+            <SoftTypography variant="body2">
+              Repay By: {repayByTimestamp ? new Date(Number(repayByTimestamp) * 1000).toLocaleString() : "Loading..."}
+            </SoftTypography>
+
+
+
             <SoftTypography variant="h6">Current Market Rates</SoftTypography>
             
             <SoftTypography variant="body2">
@@ -161,6 +203,13 @@ export default function Dashboard() {
 
 
           </SoftBox>
+
+
+          {/* Loan State Display */}
+          <SoftTypography variant="h6">Loan Status</SoftTypography>
+          <SoftTypography variant = "body2">
+            {loadingState ? "Loading..." : stateLabel[loanState] || "Unknown"}
+          </SoftTypography>
 
           {/* Switch Button */}
           <SoftBox mt={2} textAlign="center">
