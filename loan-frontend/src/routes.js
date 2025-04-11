@@ -66,6 +66,7 @@ const routes = [
     type: "collapse",
     name: "Home",
     key: "home",
+    icon: <Shop size="12px" />,
     route: "/",
     component: (
       <Home />
@@ -75,6 +76,7 @@ const routes = [
     type: "collapse",
     name: "Dashboard",
     key: "dashboard",
+    icon: <Office size="12px" />,
     route: "/dashboard",
     component: (
       <Dashboard />
@@ -85,6 +87,7 @@ const routes = [
     type: "collapse",
     name: "Borrowing",
     key: "borrowing",
+    icon: <Cube size="12px" />,
     route: "/borrowing",
     component: (
       <ProtectedRoute>
@@ -96,6 +99,7 @@ const routes = [
     type: "collapse",
     name: "Lending",
     key: "lending",
+    icon: <CreditCard size="12px" />,
     route: "/lending",
     component: (
       <ProtectedRoute>
@@ -107,6 +111,7 @@ const routes = [
     type: "collapse",
     name: "Sign Up",
     key: "sign-up",
+    icon: <Document size="12px" />,
     route: "/authentication/sign-up",
     component: (
       <SignUp />

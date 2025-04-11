@@ -1,6 +1,7 @@
 import SoftBox from "components/SoftBox"
 import SoftTypography from "components/SoftTypography"
 import SoftButton from "components/SoftButton"
+import SoftAlert from "components/SoftAlert"
 import { ConnectButton } from "@rainbow-me/rainbowkit"
 import { useAccount, useReadContracts, useReadContract, useWriteContract } from "wagmi"
 import { waitForTransactionReceipt } from '@wagmi/core'
@@ -57,9 +58,7 @@ export default function Dashboard() {
 
   // ✅ Read the current fixed rate
   const { data: fixedRate } = useReadContract({
-    address: contractAddress,
-    abi: rateSwitchingABI,
-    chainId: 11155111,
+    ...contractConfig,
     functionName: "getFixedRate",
   })
 
@@ -68,9 +67,7 @@ export default function Dashboard() {
     refetch: refetchFloatingRate,
     isLoading: loadingFloatingRate,
    } = useReadContract({
-    address: contractAddress,
-    abi: rateSwitchingABI,
-    chainId: 11155111,
+    ...contractConfig,
     functionName: "getFloatingRate",
   })
   
@@ -150,7 +147,7 @@ export default function Dashboard() {
       boxShadow="lg"
       backgroundColor="white"
     >
-      <SoftTypography variant="h4">Welcome to the Loan Dashboard</SoftTypography>
+      <SoftTypography variant="h4" >Loan Dashboard</SoftTypography>
 
       {!isConnected && (
         <SoftTypography variant="body2" mt={1}>
@@ -173,31 +170,31 @@ export default function Dashboard() {
             backgroundColor="white"
           >
             <SoftTypography variant="h6">Current Interest Rate</SoftTypography>
-            <SoftTypography variant="body1" color="dark">
+            <SoftTypography variant="body1" color="dark" fontWeight="bold" mt={1} mb={1} >
               {loadingRate
                 ? "Loading..."
                 : rateTypeLabel[rateType] || "Unknown"}
             </SoftTypography>
 
             <SoftTypography variant="h6">Loan Terms</SoftTypography>
-            <SoftTypography variant="body2">
+            <SoftTypography variant="body2" mt={1} mb={1}>
               Loan Amount: {loanAmount ? `${Number(loanAmount) / 1e18} ETH` : "Loading..."}
             </SoftTypography>
-            <SoftTypography variant="body2">
+            <SoftTypography variant="body2" mb={1} >
               Collateral: {collateralAmount ? `${Number(collateralAmount) / 1e18} ETH` : "Loading..."}
             </SoftTypography>
-            <SoftTypography variant="body2">
+            <SoftTypography variant="body2" mb={1} >
               Repay By: {repayByTimestamp ? new Date(Number(repayByTimestamp) * 1000).toLocaleString() : "Loading..."}
             </SoftTypography>
 
 
 
-            <SoftTypography variant="h6">Current Market Rates</SoftTypography>
+            <SoftTypography variant="h6" >Current Market Rates</SoftTypography>
             
-            <SoftTypography variant="body2">
+            <SoftTypography variant="body2" mb={1} >
               Fixed Rate: {formatRate(fixedRate)}
             </SoftTypography>
-            <SoftTypography variant="body2">
+            <SoftTypography variant="body2" mb={1} >
               Floating Rate: {formatRate(floatingRate)}
             </SoftTypography>
 
@@ -206,8 +203,8 @@ export default function Dashboard() {
 
 
           {/* Loan State Display */}
-          <SoftTypography variant="h6">Loan Status</SoftTypography>
-          <SoftTypography variant = "body2">
+          <SoftTypography variant="h6" >Loan Status</SoftTypography>
+          <SoftTypography variant = "body2" mb={1} >
             {loadingState ? "Loading..." : stateLabel[loanState] || "Unknown"}
           </SoftTypography>
 
@@ -217,6 +214,12 @@ export default function Dashboard() {
               color="info"
               onClick={handleSwitchRate}
               disabled={switchPending}
+              variant="gradient"
+              gradient={{
+                from: "info",
+                to: "success",
+                deg: 45,
+              }}
             >
               {switchPending ? "Switching..." : "Switch Rate Type"}
             </SoftButton>
@@ -234,6 +237,13 @@ export default function Dashboard() {
               color="primary"
               onClick={handleRefreshRate}
               disabled={refreshPending}
+              variant="gradient"
+              gradient={{
+                from: "primary",
+                to: "success",
+                deg: 45,
+              }}
+
             >
               {refreshPending ? "Refreshing..." : "Refresh Rates"}
             </SoftButton>

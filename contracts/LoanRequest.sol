@@ -102,6 +102,9 @@ contract LoanRequest {
 
         emit LoanRepaid(msg.sender, repaymentAmount);
     }
+
+
+    
     // Lender liquidates the loan when loan isnt repaid by deadline
     function liquidate() external {
         require(state == LoanState.Taken, "Loan is not in Taken state");
