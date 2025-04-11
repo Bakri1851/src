@@ -35,8 +35,7 @@ export default function Borrowing() {
     const {data: fixedRate} = useReadContract({...contractConfig, functionName: "getFixedRate"});
     const {data: floatingRate} = useReadContract({...contractConfig, functionName: "getFloatingRate"});
     const {data: interestToPay} = useReadContract({...contractConfig, functionName: "calculateInterest",});
-    console.log("loan to pay", interestToPay)
-    const  repaymentAmount = BigInt(loanAmount) + BigInt(interestToPay);
+    const  repaymentAmount = BigInt(loanAmount); // add interest to this
 
     const handleAcceptLoan = async () => {
         try {
@@ -94,7 +93,7 @@ export default function Borrowing() {
         )}
         {isConnected && (
             <>
-            <SoftBox mt = "3" mb = "3" textAlign = "center" width = "100%">
+            <SoftBox mt = "3" mb = "3" textAlign = "center" width = "100%" >
                 <SoftTypography variant = "h6">Loan Terms</SoftTypography>
                 <SoftTypography variant = "body2">Loan Amount: {loanAmount} ETH</SoftTypography>
                 <SoftTypography variant = "body2">Collateral: {collateralAmount} ETH</SoftTypography>
@@ -103,7 +102,11 @@ export default function Borrowing() {
                 <SoftTypography variant = "body2">Fixed Rate: {formatRate(fixedRate)}</SoftTypography>
                 <SoftTypography variant = "body2">Floating Rate: {formatRate(floatingRate)}</SoftTypography>
             </SoftBox>
-         
+            <SoftBox mt = "3" mb = "3" textAlign = "center" width = "100%">
+                <SoftTypography variant = "h6">What you pay: {repaymentAmount}</SoftTypography>
+            </SoftBox>
+
+        
         {!loanState == 1 &&(
         <SoftButton
         color = "info"
