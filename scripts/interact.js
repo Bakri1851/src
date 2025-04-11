@@ -6,7 +6,7 @@ async function main() {
 
 
   //CHANGE WHEN TESTING
-  const contractAddress = "0x32f63C72f882dff83382410c66aA1c91a6C204Ab";
+  const contractAddress = "0x40d3345B2749c95d514523331c741fFC09117B95";
 
   const LoanRequest = await hre.ethers.getContractFactory("LoanRequest");
   const loanRequest = await LoanRequest.attach(contractAddress);

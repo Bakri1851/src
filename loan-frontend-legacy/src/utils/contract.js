@@ -1,7 +1,7 @@
 import { getContract } from 'viem';
 import contractABI from './contractABI.json';
 
-const contractAddress = "0x4048BB34963358FEAEf9D577dbc32b4d25b4c10a";
+const contractAddress = "0x40d3345B2749c95d514523331c741fFC09117B95";
 
 if (!window.ethereum) {
   alert("Please install MetaMask to use this dApp");

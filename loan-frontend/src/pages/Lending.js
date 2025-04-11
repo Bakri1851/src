@@ -12,7 +12,7 @@ export default function Lending() {
   const { writeContract, fundPending,fundSuccess} = useWriteContract();
 
   // ✅ Get the contract address and ABI
-  const contractAddress = "0xD3689c177f303cEdfBAB7D68026dA5815F81A25A"
+  const contractAddress = "0x40d3345B2749c95d514523331c741fFC09117B95"
   const contractConfig = {
     address: contractAddress,
     abi: rateSwitchingABI,

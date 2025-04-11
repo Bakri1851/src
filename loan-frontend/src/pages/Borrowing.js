@@ -13,7 +13,7 @@ export default function Borrowing() {
         takePending, repayPending} = useWriteContract();
     
     // ✅ Get the contract address and ABI
-    const contractAddress = "0xD3689c177f303cEdfBAB7D68026dA5815F81A25A"
+    const contractAddress = "0x40d3345B2749c95d514523331c741fFC09117B95"
     const contractConfig = {
         address: contractAddress,
         abi: rateSwitchingABI,
@@ -35,7 +35,9 @@ export default function Borrowing() {
     const {data: fixedRate} = useReadContract({...contractConfig, functionName: "getFixedRate"});
     const {data: floatingRate} = useReadContract({...contractConfig, functionName: "getFloatingRate"});
     const {data: interestToPay} = useReadContract({...contractConfig, functionName: "calculateInterest",});
-    const  repaymentAmount = BigInt(loanAmount); // add interest to this
+    console.log("loan Amount",typeof(loanAmount))
+    //console.log("interest",(interestToPay))
+    const  repaymentAmount = loanAmount  ; // add interest to this
 
     const handleAcceptLoan = async () => {
         try {

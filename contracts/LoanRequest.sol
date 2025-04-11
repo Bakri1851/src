@@ -32,6 +32,7 @@ contract LoanRequest {
     uint256 public repayByTimestamp;
     uint256 public fixedRate; // in basis points
     uint256 public floatingRate; // in basis points
+    uint256 public loanTakenTimestamp;
 
     constructor(
         uint256 _loanAmount,
@@ -83,6 +84,7 @@ contract LoanRequest {
         require(msg.sender == borrower, "Only borrower can take the loan");
 
         state = LoanState.Taken;
+        loanTakenTimestamp = block.timestamp; // Store when loan was taken
         borrower.transfer(loanAmount);
         emit LoanTaken(msg.sender, loanAmount);
 
@@ -142,15 +144,14 @@ contract LoanRequest {
     }
 
     function calculateInterest() public view returns (uint256) {
-        uint256 interestAmount = (currentRateType == InterestRateType.Fixed) ? fixedRate : floatingRate;
-        uint256 timeElapsed = block.timestamp - terms.repayByTimestamp;
-
-        uint256 interest = (terms.loanAmount * interestAmount * timeElapsed) / (100*355 days);
-
+        require(state == LoanState.Taken, "Loan is not in Taken state");
+        
+        uint256 interestRate = (currentRateType == InterestRateType.Fixed) ? fixedRate : floatingRate;
+        uint256 timeElapsed = block.timestamp - loanTakenTimestamp;
+        
+        uint256 interest = (loanAmount * interestRate * timeElapsed) / (100 * 365 days);
+        
         return interest;
-
-        // switch to use oracle for floating rate
-
     }
 
     function getLoanState() public view returns (LoanState) {
