@@ -5,19 +5,16 @@ import { ConnectButton } from "@rainbow-me/rainbowkit"
 import { useAccount, useReadContracts, useReadContract, useWriteContract } from "wagmi"
 import { waitForTransactionReceipt } from '@wagmi/core'
 import { rateSwitchingABI } from "constants/RateSwitchingABI"
-
+import ContractConfig from "constants/ContractConfig"
 
 export default function Lending() {
   const { isConnected } = useAccount()
   const { writeContract, fundPending,fundSuccess} = useWriteContract();
 
   // ✅ Get the contract address and ABI
-  const contractAddress = "0x40d3345B2749c95d514523331c741fFC09117B95"
-  const contractConfig = {
-    address: contractAddress,
-    abi: rateSwitchingABI,
-    chainId: 11155111, // Sepolia
-  };
+  const contractConfig = ContractConfig; 
+
+
   const formatRate = (rate) =>
     rate ? `${(Number(rate) / 100).toFixed(2)}%` : "Loading..."
   const formatTimestamp = (timestamp) =>

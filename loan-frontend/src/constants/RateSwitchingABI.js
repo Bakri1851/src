@@ -313,12 +313,12 @@ export const rateSwitchingABI = [
   },
   {
     "inputs": [],
-    "name": "getRepayByTimestamp",
+    "name": "getLoanState",
     "outputs": [
       {
-        "internalType": "uint256",
+        "internalType": "enum LoanRequest.LoanState",
         "name": "",
-        "type": "uint256"
+        "type": "uint8"
       }
     ],
     "stateMutability": "view",
@@ -326,12 +326,12 @@ export const rateSwitchingABI = [
   },
   {
     "inputs": [],
-    "name": "getLoanState",
+    "name": "getRepayByTimestamp",
     "outputs": [
       {
-        "internalType": "enum LoanRequest.LoanState",
+        "internalType": "uint256",
         "name": "",
-        "type": "uint8"
+        "type": "uint256"
       }
     ],
     "stateMutability": "view",
@@ -360,6 +360,19 @@ export const rateSwitchingABI = [
   {
     "inputs": [],
     "name": "loanAmount",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "loanTakenTimestamp",
     "outputs": [
       {
         "internalType": "uint256",

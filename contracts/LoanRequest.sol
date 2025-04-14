@@ -95,7 +95,7 @@ contract LoanRequest {
         require(state == LoanState.Taken, "Loan is not in Taken state");
         require(msg.sender == borrower, "Only borrower can repay the loan");
 
-        uint256 repaymentAmount = loanAmount + calculateInterest();
+        uint256 repaymentAmount = loanAmount;// + calculateInterest();
 
         require(msg.value == repaymentAmount, "Incorrect repayment amount");
         state = LoanState.Repaid;
