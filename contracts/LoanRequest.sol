@@ -9,6 +9,7 @@ contract LoanRequest {
     enum InterestRateType { Fixed, Floating }
 
     LoanState public state;
+    uint256 public interest; 
     InterestRateType public currentRateType;
 
     AggregatorV3Interface internal oracle;
@@ -95,7 +96,7 @@ contract LoanRequest {
         require(state == LoanState.Taken, "Loan is not in Taken state");
         require(msg.sender == borrower, "Only borrower can repay the loan");
 
-        uint256 repaymentAmount = loanAmount;// + calculateInterest();
+        uint256 repaymentAmount = loanAmount + interest;
 
         require(msg.value == repaymentAmount, "Incorrect repayment amount");
         state = LoanState.Repaid;
@@ -143,14 +144,17 @@ contract LoanRequest {
         }
     }
 
-    function calculateInterest() public view returns (uint256) {
+    function calculateInterest() external {
         require(state == LoanState.Taken, "Loan is not in Taken state");
         
         uint256 interestRate = (currentRateType == InterestRateType.Fixed) ? fixedRate : floatingRate;
         uint256 timeElapsed = block.timestamp - loanTakenTimestamp;
         
-        uint256 interest = (loanAmount * interestRate * timeElapsed) / (100 * 365 days);
+        interest = (loanAmount * interestRate * timeElapsed) / (100 * 365 days);
         
+    }
+
+    function getInterest() public view returns (uint256) {
         return interest;
     }
 

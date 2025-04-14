@@ -36,7 +36,7 @@ export default function Lending() {
                 functionName: "fundLoan",
                 value: loanAmount,
             });
-            alert("Successfully funded the loan!");
+            alert("Please confirm the transaction in your wallet.");
         } catch (error) {
             console.error("Error funding loan:", error);
             alert("Error funding loan. Please try again.");
@@ -49,7 +49,7 @@ export default function Lending() {
                 ...contractConfig,
                 functionName: "liquidate",
             });
-            alert("Successfully liquidated the loan!");
+            alert("Please confirm the transaction in your wallet.");
         } catch (error) {
             console.error("Error liquidating loan:", error);
             alert("Error liquidating loan. Please try again.");

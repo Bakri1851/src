@@ -4,14 +4,18 @@ import SoftButton from "components/SoftButton"
 import SoftAlert from "components/SoftAlert"
 import { ConnectButton } from "@rainbow-me/rainbowkit"
 import { useAccount, useReadContracts, useReadContract, useWriteContract } from "wagmi"
-import { waitForTransactionReceipt } from '@wagmi/core'
+import { readContract, waitForTransactionReceipt } from '@wagmi/core'
 import { rateSwitchingABI } from "constants/RateSwitchingABI"
 import ContractConfig from "constants/ContractConfig"
+import { ConstructionOutlined } from "@mui/icons-material"
+import  {wagmiConfig}  from "../wagmi.js"
+
 export default function Borrowing() {
+    const config = wagmiConfig
     const { isConnected } = useAccount()
     const { writeContract, acceptPending, 
         takePending, repayPending} = useWriteContract();
-    
+
     // ✅ Get the contract address and ABI
     const contractConfig = ContractConfig;
 
@@ -30,8 +34,6 @@ export default function Borrowing() {
     const {data: repayByTimestamp} = useReadContract({...contractConfig, functionName: "getRepayByTimestamp"});
     const {data: fixedRate} = useReadContract({...contractConfig, functionName: "getFixedRate"});
     const {data: floatingRate} = useReadContract({...contractConfig, functionName: "getFloatingRate"});
-    const {data: interestToPay} = useReadContract({...contractConfig, functionName: "calculateInterest",});
-    console.log("loan Amount",typeof(loanAmount))
     //console.log("interest",(interestToPay))
     const  repaymentAmount = loanAmount  ; // add interest to this
 
@@ -42,7 +44,7 @@ export default function Borrowing() {
                 functionName: "acceptLoanTerms",
                 value: collateralAmount,
             });
-            alert("Successfully accepted the loan!");
+            alert("Please confirm the transaction in your wallet.");
         } catch (error) {
             console.error("Error accepting loan:", error);
             alert("Error accepting loan. Please try again.");
@@ -56,7 +58,7 @@ export default function Borrowing() {
                 ...contractConfig,
                 functionName: "takeLoan",
             });
-            alert("Successfully took the loan!");
+            alert("Please confirm the transaction in your wallet.");
         } catch (error) {
             console.error("Error taking loan:", error);
             alert("Error taking loan. Please try again.");
@@ -65,12 +67,27 @@ export default function Borrowing() {
 
     const handleRepayLoan = async () => {
         try {
+
+            await readContract(config,{
+                ...contractConfig,
+                functionName: "calculateInterest",
+            });
+
+            const interest = await readContract(config, {
+                address: contractConfig.address,
+                abi: contractConfig.abi,
+                chainId: 11155111,
+                functionName: "getInterest",}
+            ); 
+            console.log("interest", interest.toString())
+            const totalRepayment = loanAmount + interest;
+            console.log("totalRepayment", totalRepayment.toString())
             await writeContract({
                 ...contractConfig,
                 functionName: "repay",
-                value: loanAmount,
+                value: totalRepayment,
             });
-            alert("Successfully repaid the loan!");
+            alert("Please confirm the transaction in your wallet.");
         } catch (error) {
             console.error("Error repaying loan:", error);
             alert("Error repaying loan. Please try again.");

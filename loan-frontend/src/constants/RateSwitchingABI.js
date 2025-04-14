@@ -164,14 +164,8 @@ export const rateSwitchingABI = [
   {
     "inputs": [],
     "name": "calculateInterest",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "stateMutability": "view",
+    "outputs": [],
+    "stateMutability": "nonpayable",
     "type": "function"
   },
   {
@@ -300,6 +294,19 @@ export const rateSwitchingABI = [
   },
   {
     "inputs": [],
+    "name": "getInterest",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
     "name": "getLoanAmount",
     "outputs": [
       {
@@ -327,6 +334,19 @@ export const rateSwitchingABI = [
   {
     "inputs": [],
     "name": "getRepayByTimestamp",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "interest",
     "outputs": [
       {
         "internalType": "uint256",
