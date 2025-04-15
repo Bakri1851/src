@@ -11,7 +11,7 @@ export default function Lending() {
   const { isConnected } = useAccount()
   const { writeContract, fundPending,fundSuccess} = useWriteContract();
 
-  // ✅ Get the contract address and ABI
+  //   Get the contract address and ABI
   const contractConfig = ContractConfig; 
 
 

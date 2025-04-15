@@ -17,7 +17,7 @@ export default function Dashboard() {
 
 
 
-  // ✅ Get the contract address and ABI
+  //   Get the contract address and ABI
   const contractConfig = ContractConfig;
   
 
@@ -53,13 +53,13 @@ export default function Dashboard() {
   }
 
 
-  // ✅ Read the current fixed rate
+  //   Read the current fixed rate
   const { data: fixedRate } = useReadContract({
     ...contractConfig,
     functionName: "getFixedRate",
   })
 
-  // ✅ Read the current floating rate
+  //   Read the current floating rate
   const { data: floatingRate,
     refetch: refetchFloatingRate,
     isLoading: loadingFloatingRate,
@@ -69,7 +69,7 @@ export default function Dashboard() {
   })
   
 
-  // ✅ Read the current rate type
+  //   Read the current rate type
   const {
     data: rateType,
     refetch: refetchRateType,
@@ -84,7 +84,7 @@ export default function Dashboard() {
     1: "Floating",
   }
 
-  // ✅ Handle switch & update UI only after confirmation
+  //   Handle switch & update UI only after confirmation
   const handleSwitchRate = async () => {
     try {
       const hash = await writeContract({

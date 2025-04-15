@@ -16,7 +16,7 @@ export default function Borrowing() {
     const { writeContract, acceptPending, 
         takePending, repayPending} = useWriteContract();
 
-    // ✅ Get the contract address and ABI
+    //   Get the contract address and ABI
     const contractConfig = ContractConfig;
 
     const stateLabel = {

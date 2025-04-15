@@ -12,7 +12,7 @@ export default function Home() {
         refreshPending, refreshSuccess
     } = useWriteContract();
     
-    // ✅ Get the contract address and ABI
+    //   Get the contract address and ABI
     const contractConfig = ContractConfig
     
     
