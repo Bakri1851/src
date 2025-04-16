@@ -6,7 +6,7 @@ contract LoanFactory {
     mapping (address => address[]) public loansByBorrower;
     address[] public allLoans;
 
-    event LoanCreated(address indexed brrower,address indexed lender, address indexed loanContract);
+    event LoanCreated(address indexed borrower,address indexed lender, address indexed loanContract);
 
     function createLoan(
         uint256 loanAmount,
