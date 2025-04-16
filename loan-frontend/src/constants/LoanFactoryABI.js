@@ -5,7 +5,7 @@ export const LoanFactoryABI = [
         {
           "indexed": true,
           "internalType": "address",
-          "name": "brrower",
+          "name": "borrower",
           "type": "address"
         },
         {

@@ -189,8 +189,8 @@
       ]
     },
     "C:\\Users\\Bakri\\IdeaProjects\\Loan Switching Smart Contract\\src\\contracts\\LoanFactory.sol": {
-      "lastModificationDate": 1744762875739,
-      "contentHash": "2887cb52c99c3d41b4424f2fe6eac37d",
+      "lastModificationDate": 1744832135855,
+      "contentHash": "bb8cef57127d394b767cddd5d611684f",
       "sourceName": "contracts/LoanFactory.sol",
       "solcConfig": {
         "version": "0.8.28",
