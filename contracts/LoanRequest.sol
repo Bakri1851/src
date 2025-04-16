@@ -2,7 +2,7 @@
 pragma solidity ^0.8.0;
 import "hardhat/console.sol";
 import {AggregatorV3Interface} from "./AggregatorV3Interface.sol";
-
+import "./LoanFactory.sol";
 
 contract LoanRequest {
     enum LoanState { Created, Funded, Accepted, Taken, Repaid, Liquidated }
@@ -11,7 +11,7 @@ contract LoanRequest {
     LoanState public state;
     uint256 public interest; 
     InterestRateType public currentRateType;
-
+    address public factory;
     AggregatorV3Interface internal oracle;
 
     struct Terms {
@@ -35,6 +35,7 @@ contract LoanRequest {
     uint256 public floatingRate; // in basis points
     uint256 public loanTakenTimestamp;
 
+
     constructor(
         uint256 _loanAmount,
         uint256 _feeAmount,
@@ -42,7 +43,8 @@ contract LoanRequest {
         uint256 _repayByTimestamp,
         uint256 _fixedRate,
         uint256 _floatingRate,
-        address _oracle
+        address _oracle,
+        address _loanFactory
     ) {
         loanAmount = _loanAmount;
         feeAmount = _feeAmount;
@@ -52,6 +54,7 @@ contract LoanRequest {
         floatingRate= _floatingRate;
 
         oracle = AggregatorV3Interface(_oracle);
+        factory = _loanFactory;
         state = LoanState.Created;
         currentRateType = InterestRateType.Fixed; // Default to fixed rate
         lender = payable(msg.sender);
@@ -75,6 +78,7 @@ contract LoanRequest {
         require(msg.sender != lender, "Lender cannot take the loan");
         require(msg.value == ethCollateralAmount, "Incorrect collateral amount");
         borrower = payable(msg.sender);
+        LoanFactory(factory).recordBorrower(borrower, address(this));
         state = LoanState.Accepted;
         emit LoanTermsAccepted(msg.sender, ethCollateralAmount);
     }

@@ -35,6 +35,11 @@ export const rateSwitchingABI = [
         "internalType": "address",
         "name": "_oracle",
         "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "_loanFactory",
+        "type": "address"
       }
     ],
     "stateMutability": "nonpayable",
@@ -189,6 +194,19 @@ export const rateSwitchingABI = [
         "internalType": "uint256",
         "name": "",
         "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "factory",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
       }
     ],
     "stateMutability": "view",

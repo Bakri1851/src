@@ -26,7 +26,7 @@ async function main() {
 
   // Get the contract factory and deploy
   const LoanRequest = await hre.ethers.getContractFactory("LoanRequest");
-
+  const factoryAddress = "0x3F7EBBeaE982452f417068f9d55c9F757aa7BAB7"; // LoanFactory contract address
   // Provide any required constructor arguments to deploy()
   const loanRequest = await LoanRequest.deploy(
     loanAmount,
@@ -35,7 +35,8 @@ async function main() {
     repayByTimestamp,
     fixedRate,
     floatingRate,
-    AA_ORACLE_ADDRESS
+    AA_ORACLE_ADDRESS,
+    factoryAddress
   );
 
   await loanRequest.waitForDeployment();

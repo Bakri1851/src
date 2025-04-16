@@ -4,8 +4,9 @@ import SoftButton from "components/SoftButton"
 import { ConnectButton } from "@rainbow-me/rainbowkit"
 import { useAccount, useReadContracts, useReadContract, useWriteContract } from "wagmi"
 import { waitForTransactionReceipt } from '@wagmi/core'
-import { rateSwitchingABI } from "constants/RateSwitchingABI"
 import ContractConfig from "constants/ContractConfig"
+import FactoryConfig from "constants/FactoryConfig"
+import { FeeCapTooHighError } from "viem"
 
 export default function Lending() {
   const { isConnected } = useAccount()
@@ -22,12 +23,27 @@ export default function Lending() {
 
   const { data: loanState, isLoading: loadingState} = useReadContract({...contractConfig, functionName: "getLoanState"});
   const {data: loanAmount} = useReadContract({...contractConfig, functionName: "getLoanAmount"});
+  const {data: feeAmount} = useReadContract({...contractConfig, functionName: "feeAmount"});
   const {data: collateralAmount} = useReadContract({...contractConfig, functionName: "getEthCollateralAmount"});
   const {data: repayByTimestamp} = useReadContract({...contractConfig, functionName: "getRepayByTimestamp"});
   const {data: fixedRate} = useReadContract({...contractConfig, functionName: "getFixedRate"});
   const {data: floatingRate} = useReadContract({...contractConfig, functionName: "getFloatingRate"});
+  const {data: oracleAddress} = useReadContract({...contractConfig, functionName: "oracle"});
 
-
+    const handleCreateLoan = async () => {
+        try {
+            await writeContract({
+                address: FactoryConfig.address,
+                abi: FactoryConfig.abi,
+                functionName: "createLoan",
+                args: [loanAmount,feeAmount, collateralAmount, repayByTimestamp, fixedRate, floatingRate, oracleAddress, FactoryConfig.address],
+            });
+            alert("Please confirm the transaction in your wallet.");
+        } catch (error) {
+            console.error("Error creating loan:", error);
+            alert("Error creating loan. Please try again.");
+        }
+    };
 
     const handleFundLoan = async () => {
         try {

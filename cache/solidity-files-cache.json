@@ -38,8 +38,8 @@
       ]
     },
     "C:\\Users\\Bakri\\IdeaProjects\\Loan Switching Smart Contract\\src\\contracts\\LoanRequest.sol": {
-      "lastModificationDate": 1744665097528,
-      "contentHash": "b31e55c15eb4227df7104429da5d7302",
+      "lastModificationDate": 1744762093928,
+      "contentHash": "0806c814b5171385914b88d79f366aa3",
       "sourceName": "contracts/LoanRequest.sol",
       "solcConfig": {
         "version": "0.8.28",
@@ -67,7 +67,8 @@
       },
       "imports": [
         "hardhat/console.sol",
-        "./AggregatorV3Interface.sol"
+        "./AggregatorV3Interface.sol",
+        "./LoanFactory.sol"
       ],
       "versionPragmas": [
         "^0.8.0"
@@ -188,8 +189,8 @@
       ]
     },
     "C:\\Users\\Bakri\\IdeaProjects\\Loan Switching Smart Contract\\src\\contracts\\LoanFactory.sol": {
-      "lastModificationDate": 1744759740006,
-      "contentHash": "cd2736a801b76f7161ed7413836dc3b5",
+      "lastModificationDate": 1744762186802,
+      "contentHash": "ca1b069a8c0d2d3bf0b9ce87bc47328c",
       "sourceName": "contracts/LoanFactory.sol",
       "solcConfig": {
         "version": "0.8.28",
