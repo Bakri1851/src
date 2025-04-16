@@ -16,7 +16,7 @@ contract LoanFactory {
         uint256 fixedRate,
         uint256 floatingRate,
         address oracle
-    ) external returns (address) {
+            ) external returns (address) {
         // Create a new LoanRequest contract
         LoanRequest newLoan = new LoanRequest(
             loanAmount,

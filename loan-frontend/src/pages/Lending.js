@@ -36,7 +36,7 @@ export default function Lending() {
                 address: FactoryConfig.address,
                 abi: FactoryConfig.abi,
                 functionName: "createLoan",
-                args: [loanAmount,feeAmount, collateralAmount, repayByTimestamp, fixedRate, floatingRate, oracleAddress, FactoryConfig.address],
+                args: [loanAmount,feeAmount, collateralAmount, repayByTimestamp, fixedRate, floatingRate, oracleAddress],
             });
             alert("Please confirm the transaction in your wallet.");
         } catch (error) {
