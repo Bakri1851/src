@@ -8,6 +8,7 @@ import ContractConfig from "constants/ContractConfig"
 import FactoryConfig from "constants/FactoryConfig"
 import { getFactoryConfig } from "constants/FactoryConfig"
 import { useEffect, useState } from "react"
+import  {wagmiConfig}  from "../wagmi.js"
 
 export default function MyLoans() {
     const { address, isConnected } = useAccount();
@@ -15,6 +16,8 @@ export default function MyLoans() {
     const [loanDetails, setLoanDetails] = useState({});
     const [isLoading, setIsLoading] = useState(false);
 
+    const config = wagmiConfig
+    
     const { data: lenderLoans } = useReadContract({
         address: FactoryConfig.address,
         abi: FactoryConfig.abi,
@@ -35,16 +38,27 @@ export default function MyLoans() {
     const fetchLoanDetails = async (loanAddress) => {
         setIsLoading(true);
         try {
-            const config = {
+            // Make separate calls with complete config objects
+            const lender = await readContract(config,{
                 address: loanAddress,
                 abi: ContractConfig.abi,
-            };
-
-            const [lender, loanAmount, state] = await Promise.all([
-                readContract({ ...config, functionName: "getLender" }),
-                readContract({ ...config, functionName: "getLoanAmount" }),
-                readContract({ ...config, functionName: "getLoanState" }),
-            ]);
+                functionName: "lender",
+                chainId: FactoryConfig.chainId
+            });
+            
+            const loanAmount = await readContract(config,{
+                address: loanAddress,
+                abi: ContractConfig.abi,
+                functionName: "getLoanAmount",
+                chainId: FactoryConfig.chainId
+            });
+            
+            const state = await readContract(config,{
+                address: loanAddress,
+                abi: ContractConfig.abi,
+                functionName: "getLoanState",
+                chainId: FactoryConfig.chainId
+            });
             
             setLoanDetails(prev => ({
                 ...prev,
@@ -79,7 +93,7 @@ export default function MyLoans() {
     };
 
     return (
-        <SoftBox mt={5} mx="auto" p="4" width="fit-content" backgroundColor="white" borderRadius="xl" boxShadow="lg" textAlign="center">
+        <SoftBox mt={5} mx="auto" p="4" width="fit-content" backgroundColor="white" boxShadow="lg" textAlign="center">
             <SoftTypography variant="h4" fontWeight="bold" mb={2} textAlign="center">
                 Loans You Funded
             </SoftTypography>
@@ -97,7 +111,20 @@ export default function MyLoans() {
                     <SoftTypography mt variant="body2" textAlign="center">No loans found.</SoftTypography>
                 ) : (
                     userLoans.map((loanAddress, index) => (
-                        <SoftBox key={index} mb={3} p={2} color="info" variant = "gradient" borderRadius="md" boxShadow="sm" textAlign="center">
+                        <SoftBox 
+                            key={index} 
+                            mb={3} 
+                            p={2} 
+                            color="info" 
+                            variant="gradient" 
+                            boxShadow="sm" 
+                            textAlign="center"
+                            sx={{
+                                border: "2px solid", 
+                                borderColor: "info.main",
+                                transition: "all 0.2s"
+                            }}
+                        >
                             <SoftTypography variant="h6" fontWeight="bold" mb={1}>Loan Address:</SoftTypography>
                             <SoftTypography variant="body2" mb={2} style={{wordBreak: "break-all"}}>{loanAddress}</SoftTypography>
                             
@@ -115,7 +142,6 @@ export default function MyLoans() {
                                 <SoftButton 
                                     variant="outlined" 
                                     color="info" 
-                                    borderRadius="lg"
                                     onClick={() => fetchLoanDetails(loanAddress)}
                                 >
                                     View Details
