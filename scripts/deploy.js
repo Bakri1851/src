@@ -19,7 +19,7 @@ async function main() {
   const fixedRate = floatingRate + spread;
 
   // Get the factory contract
-  const factoryAddress = "0x8eb9D46f76d1273ce3D385Ab99e4123F72BaDfEa";
+  const factoryAddress = "0x9ecf7Efc49ADFfA90D97869a709a7B131B6BF2A3";
   const loanFactory = await hre.ethers.getContractAt("LoanFactory", factoryAddress);
   
   console.log("Creating loan through factory...");

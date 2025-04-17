@@ -44,20 +44,21 @@ contract LoanRequest {
         uint256 _fixedRate,
         uint256 _floatingRate,
         address _oracle,
-        address _loanFactory
+        address _loanFactory,
+        address _lender  // Add this parameter
     ) {
         loanAmount = _loanAmount;
         feeAmount = _feeAmount;
-        ethCollateralAmount= _ethCollateralAmount;
-        repayByTimestamp= _repayByTimestamp;
-        fixedRate= _fixedRate;
-        floatingRate= _floatingRate;
+        ethCollateralAmount = _ethCollateralAmount;
+        repayByTimestamp = _repayByTimestamp;
+        fixedRate = _fixedRate;
+        floatingRate = _floatingRate;
 
         oracle = AggregatorV3Interface(_oracle);
         factory = _loanFactory;
         state = LoanState.Created;
-        currentRateType = InterestRateType.Fixed; // Default to fixed rate
-        lender = payable(msg.sender);
+        currentRateType = InterestRateType.Fixed;
+        lender = payable(_lender);  // Set lender to the provided address
     }
     // Lender funds the loan
     function fundLoan() external payable{

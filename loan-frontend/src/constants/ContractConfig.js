@@ -2,7 +2,7 @@ import { rateSwitchingABI } from "./RateSwitchingABI";
 
 // Central configuration for contract details
 const ContractConfig = {
-  address: "0x66375ACb34F24A760cc9fcfbd929135B694C7c70", // The only place you need to change the address
+  address: "0xfE8995b5B2c94cf02Fc3faf3ac7849EbAe525Bbc", // The only place you need to change the address
   abi: rateSwitchingABI,
   chainId: 11155111, // Sepolia
 };

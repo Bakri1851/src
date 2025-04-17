@@ -9,16 +9,17 @@ import FactoryConfig from "constants/FactoryConfig"
 import { getFactoryConfig } from "constants/FactoryConfig"
 import { useEffect, useState } from "react"
 import { wagmiConfig } from "../wagmi.js"
+import { format } from "prettier"
 
-export default function MyBorrowedLoans() { // Changed from MyLoans to MyBorrowedLoans
+export default function MyBorrowedLoans() {
     const { address, isConnected } = useAccount();
     const [userLoans, setUserLoans] = useState([]);
     const [loanDetails, setLoanDetails] = useState({});
     const [isLoading, setIsLoading] = useState(false);
+    const [expandedLoans, setExpandedLoans] = useState({}); // Track which loans are expanded
 
     const config = wagmiConfig
     
-    // This correctly fetches loans where the user is a borrower
     const { data: borrowerLoans } = useReadContract({
         address: FactoryConfig.address,
         abi: FactoryConfig.abi,
@@ -30,9 +31,6 @@ export default function MyBorrowedLoans() { // Changed from MyLoans to MyBorrowe
     useEffect(() => {
         if (borrowerLoans && borrowerLoans.length > 0) {
             setUserLoans(borrowerLoans);
-            borrowerLoans.forEach(loanAddress => {
-                fetchLoanDetails(loanAddress);
-            });
         }
     }, [borrowerLoans, address]);
 
@@ -73,10 +71,37 @@ export default function MyBorrowedLoans() { // Changed from MyLoans to MyBorrowe
                 ...prev,
                 [loanAddress]: { borrower, loanAmount, state, collateralAmount }
             }));
+            
+            // Mark this loan as expanded
+            setExpandedLoans(prev => ({
+                ...prev,
+                [loanAddress]: true
+            }));
         } catch (error) {
             console.error("Error fetching loan details:", error);
         } finally {
             setIsLoading(false);
+        }
+    };
+
+    // Toggle loan details visibility
+    const toggleLoanDetails = (loanAddress) => {
+        if (expandedLoans[loanAddress]) {
+            // Hide details - leave details data in place for quick re-showing
+            setExpandedLoans(prev => ({
+                ...prev,
+                [loanAddress]: false
+            }));
+        } else {
+            // If we already have the details, just show them, otherwise fetch
+            if (loanDetails[loanAddress]) {
+                setExpandedLoans(prev => ({
+                    ...prev,
+                    [loanAddress]: true
+                }));
+            } else {
+                fetchLoanDetails(loanAddress);
+            }
         }
     };
 
@@ -101,10 +126,16 @@ export default function MyBorrowedLoans() { // Changed from MyLoans to MyBorrowe
         }
     };
 
+    const formatTimestamp = (timestamp) =>
+        timestamp ? new Date(Number(timestamp) * 1000).toLocaleString() : "Loading...";
+
+    const formatRate = (rate) =>
+        rate ? `${(Number(rate) / 100).toFixed(2)}%` : "Loading...";
+
     return (
         <SoftBox mt={5} mx="auto" p="4" width="fit-content" backgroundColor="white" boxShadow="lg" textAlign="center">
             <SoftTypography variant="h4" fontWeight="bold" mb={2} textAlign="center">
-                Loans You Borrowed  {/* Changed from "Loans You Funded" */}
+                Loans You Borrowed
             </SoftTypography>
             {!isConnected && (
                 <SoftTypography mt variant="body2">
@@ -131,13 +162,14 @@ export default function MyBorrowedLoans() { // Changed from MyLoans to MyBorrowe
                             sx={{
                                 border: "2px solid", 
                                 borderColor: "info.main",
-                                transition: "all 0.2s"
+                                transition: "all 0.2s",
+                                borderRadius: "15px",
                             }}
                         >
                             <SoftTypography variant="h6" fontWeight="bold" mb={1}>Loan Address:</SoftTypography>
                             <SoftTypography variant="body2" mb={2} style={{wordBreak: "break-all"}}>{loanAddress}</SoftTypography>
                             
-                            {loanDetails[loanAddress] ? (
+                            {loanDetails[loanAddress] && expandedLoans[loanAddress] ? (
                                 <>
                                     <SoftTypography variant="body2" mt={1}>
                                         Loan Amount: {formatEther(loanDetails[loanAddress].loanAmount)} ETH
@@ -146,16 +178,33 @@ export default function MyBorrowedLoans() { // Changed from MyLoans to MyBorrowe
                                     <SoftTypography variant="body2" mt={1}>
                                         Collateral: {formatEther(loanDetails[loanAddress].collateralAmount)} ETH
                                     </SoftTypography>
+
+                                    <SoftTypography variant="body2" mt={1}>
+                                        Repay by: {formatTimestamp(loanDetails[loanAddress].repayByTimestamp)}
+                                    </SoftTypography>
+
+                                    <SoftTypography variant="body2" mt={1}>
+                                        Rate Type: {formatRate(loanDetails[loanAddress].rateType)}
+                                    </SoftTypography>
                                     
                                     <SoftTypography variant="body2" mt={1}>
                                         Status: {formatState(loanDetails[loanAddress].state)}
                                     </SoftTypography>
+                                    
+                                    <SoftButton 
+                                        variant="outlined" 
+                                        color="info" 
+                                        onClick={() => toggleLoanDetails(loanAddress)}
+                                        style={{ marginTop: "12px" }}
+                                    >
+                                        Hide Details
+                                    </SoftButton>
                                 </>
                             ) : (
                                 <SoftButton 
                                     variant="outlined" 
                                     color="info" 
-                                    onClick={() => fetchLoanDetails(loanAddress)}
+                                    onClick={() => toggleLoanDetails(loanAddress)}
                                 >
                                     View Details
                                 </SoftButton>

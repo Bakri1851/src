@@ -32,13 +32,38 @@ export default function Lending() {
 
     const handleCreateLoan = async () => {
         try {
-            await writeContract({
+            const tx = await writeContract({
                 address: FactoryConfig.address,
                 abi: FactoryConfig.abi,
                 functionName: "createLoan",
-                args: [loanAmount,feeAmount, collateralAmount, repayByTimestamp, fixedRate, floatingRate, oracleAddress.address],
+                args: [loanAmount, feeAmount, collateralAmount, repayByTimestamp, fixedRate, floatingRate, oracleAddress.address],
             });
-            alert("Please confirm the transaction in your wallet.");
+            
+            // Wait for transaction receipt
+            const receipt = await waitForTransactionReceipt(config, { hash: tx.hash });
+            
+            // Extract the loan address from the LoanCreated event
+            const loanCreatedEvent = receipt.logs
+                .map(log => {
+                    try {
+                        return decodeEventLog({
+                            abi: FactoryConfig.abi,
+                            data: log.data,
+                            topics: log.topics,
+                        });
+                    } catch (e) {
+                        return null;
+                    }
+                })
+                .find(event => event && event.eventName === "LoanCreated");
+                
+            if (loanCreatedEvent) {
+                const newLoanAddress = loanCreatedEvent.args.loanContract;
+                // Update the contract address for further operations
+                setContractAddress(newLoanAddress);
+            }
+            
+            alert("Loan created successfully!");
         } catch (error) {
             console.error("Error creating loan:", error);
             alert("Error creating loan. Please try again.");
@@ -138,6 +163,7 @@ export default function Lending() {
                         from: "error",
                         to: "warning",
                         deg: 45,
+                        borderRadius: "15px",
                     }}
                     >
                         Liquidate Loan

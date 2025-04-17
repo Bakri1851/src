@@ -16,7 +16,7 @@ contract LoanFactory {
         uint256 fixedRate,
         uint256 floatingRate,
         address oracle
-    ) external returns (address) {
+            ) external returns (address) {
         // Create a new LoanRequest contract
         LoanRequest newLoan = new LoanRequest(
             loanAmount,
@@ -27,7 +27,8 @@ contract LoanFactory {
             floatingRate,
             oracle,
             address(this),
-            msg.sender  // Pass the actual lender address
+            msg.sender  // Pass the original sender as lender
+        
         );
 
         // Store the loan address in the mapping and array
@@ -37,6 +38,7 @@ contract LoanFactory {
         emit LoanCreated(address(0), msg.sender, address(newLoan));
         return address(newLoan);
     }
+
 
     
     function getAllLoans() external view returns (address[] memory) {
