@@ -58,8 +58,28 @@ export default function MyBorrowedLoans() {
                 functionName: "getLoanState",
                 chainId: FactoryConfig.chainId
             });
+
+            const repayByTimestamp = await readContract(config, {
+                address: loanAddress,
+                abi: ContractConfig.abi,
+                functionName: "getRepayByTimestamp",
+                chainId: FactoryConfig.chainId
+            });
+
+            const fixedRate = await readContract(config, {
+                address: loanAddress,
+                abi: ContractConfig.abi,
+                functionName: "getFixedRate",
+                chainId: FactoryConfig.chainId
+            });
+
+            const floatingRate = await readContract(config, {
+                address: loanAddress,
+                abi: ContractConfig.abi,
+                functionName: "getFloatingRate",
+                chainId: FactoryConfig.chainId
+             });
             
-            // Optional: Also fetch collateral amount for borrowed loans
             const collateralAmount = await readContract(config, {
                 address: loanAddress,
                 abi: ContractConfig.abi,
@@ -67,9 +87,16 @@ export default function MyBorrowedLoans() {
                 chainId: FactoryConfig.chainId
             });
             
+            const rateType = await readContract(config, {
+                address: loanAddress,
+                abi: ContractConfig.abi,
+                functionName: "currentRateType",
+                chainId: FactoryConfig.chainId
+            });
+
             setLoanDetails(prev => ({
                 ...prev,
-                [loanAddress]: { borrower, loanAmount, state, collateralAmount }
+                [loanAddress]: { borrower, loanAmount, state, collateralAmount, repayByTimestamp, fixedRate, floatingRate, rateType }
             }));
             
             // Mark this loan as expanded
@@ -132,6 +159,11 @@ export default function MyBorrowedLoans() {
     const formatRate = (rate) =>
         rate ? `${(Number(rate) / 100).toFixed(2)}%` : "Loading...";
 
+    const rateTypeLabel = {
+        0: "Fixed",
+        1: "Floating",
+      }
+
     return (
         <SoftBox mt={5} mx="auto" p="4" width="fit-content" backgroundColor="white" boxShadow="lg" textAlign="center">
             <SoftTypography variant="h4" fontWeight="bold" mb={2} textAlign="center">
@@ -184,7 +216,7 @@ export default function MyBorrowedLoans() {
                                     </SoftTypography>
 
                                     <SoftTypography variant="body2" mt={1}>
-                                        Rate Type: {formatRate(loanDetails[loanAddress].rateType)}
+                                        Rate Type: {rateTypeLabel[loanDetails[loanAddress].rateType] || "Unknown"}
                                     </SoftTypography>
                                     
                                     <SoftTypography variant="body2" mt={1}>

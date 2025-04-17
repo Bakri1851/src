@@ -36,7 +36,6 @@ export default function MyLoans() {
     const fetchLoanDetails = async (loanAddress) => {
         setIsLoading(true);
         try {
-            // Existing calls
             const lender = await readContract(config,{
                 address: loanAddress,
                 abi: ContractConfig.abi,
