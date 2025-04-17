@@ -50,6 +50,7 @@ import Borrowing from "pages/Borrowing";
 import Lending from "pages/Lending";
 import Home from "pages/Home";
 import MyLoans from "pages/myLoans";
+import MyBorrowedLoans from "pages/myBorrowedLoans";
 import DebugLoans from "pages/DebugLoans";
 
 // Soft UI Dashboard React icons
@@ -118,6 +119,18 @@ const routes = [
     component: (
       <ProtectedRoute>
         <MyLoans />
+      </ProtectedRoute>
+    )
+  },
+  {
+    type: "collapse",
+    name: "My Borrowed Loans",
+    key: "myBorrowedLoans",
+    icon: <SpaceShip size="12px" />,
+    route: "/myBorrowedLoans",
+    component: (
+      <ProtectedRoute>
+        <MyBorrowedLoans />
       </ProtectedRoute>
     )
   },

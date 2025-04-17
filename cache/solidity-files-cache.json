@@ -38,8 +38,8 @@
       ]
     },
     "C:\\Users\\Bakri\\IdeaProjects\\Loan Switching Smart Contract\\src\\contracts\\LoanRequest.sol": {
-      "lastModificationDate": 1744762093928,
-      "contentHash": "0806c814b5171385914b88d79f366aa3",
+      "lastModificationDate": 1744919102087,
+      "contentHash": "c556675129de17bacb12e03d277184ab",
       "sourceName": "contracts/LoanRequest.sol",
       "solcConfig": {
         "version": "0.8.28",
@@ -189,8 +189,8 @@
       ]
     },
     "C:\\Users\\Bakri\\IdeaProjects\\Loan Switching Smart Contract\\src\\contracts\\LoanFactory.sol": {
-      "lastModificationDate": 1744833376188,
-      "contentHash": "afd097402c861cb922b2814fc85b5c65",
+      "lastModificationDate": 1744919063100,
+      "contentHash": "2778782fc5091503a6ba1a3c9906fd3a",
       "sourceName": "contracts/LoanFactory.sol",
       "solcConfig": {
         "version": "0.8.28",
