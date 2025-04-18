@@ -13,7 +13,10 @@ async function main() {
   const loanAmount = hre.ethers.parseEther("0.002");
   const feeAmount = hre.ethers.parseEther("0.0005");
   const collateralEthAmount = hre.ethers.parseEther("0.001");
-  const repayByTimestamp = Math.floor(Date.now() / 1000) + 60 * 60 * 24 * 7;
+  //const repayByTimestamp = Math.floor(Date.now() / 1000) + 60 * 60 * 24 * 7;
+  const repayByTimestamp = Math.floor(Date.now() / 1000) - (60*60);
+
+
   const floatingRate = Math.floor(Number(marketFloatingRate)*100/1e6); 
   const spread = 1;
   const fixedRate = floatingRate + spread;

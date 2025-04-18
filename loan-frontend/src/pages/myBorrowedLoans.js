@@ -285,7 +285,7 @@ export default function MyBorrowedLoans() {
                                     {loanDetails[loanAddress].state < 4 && (
                                         <SoftButton
                                             variant="outlined" 
-                                            color="info" 
+                                            color="error" 
                                             onClick={() => handleSwitchRate(loanAddress)}
                                             style={{ marginTop: "12px" }}
                                         >
@@ -296,7 +296,7 @@ export default function MyBorrowedLoans() {
                                     {loanDetails[loanAddress].state === 3 && (
                                         <SoftButton
                                             variant="outlined" 
-                                            color="info" 
+                                            color="success" 
                                             onClick={() => handleRepayLoan(loanAddress)}
                                             style={{ marginTop: "12px" }}
                                         >

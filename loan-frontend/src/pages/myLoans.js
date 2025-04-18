@@ -2,7 +2,7 @@ import SoftBox from "components/SoftBox"
 import SoftTypography from "components/SoftTypography"
 import SoftButton from "components/SoftButton"
 import { ConnectButton } from "@rainbow-me/rainbowkit"
-import { useAccount, useReadContract } from "wagmi"
+import { useAccount, useReadContract, useWriteContract } from "wagmi"
 import { readContract } from "wagmi/actions"
 import ContractConfig from "constants/ContractConfig"
 import FactoryConfig from "constants/FactoryConfig"
@@ -18,6 +18,7 @@ export default function MyLoans() {
     const [expandedLoans, setExpandedLoans] = useState({}); // Track which loans are expanded
 
     const config = wagmiConfig
+    const {writeContract} = useWriteContract();
     
     const { data: lenderLoans } = useReadContract({
         address: FactoryConfig.address,
@@ -123,6 +124,23 @@ export default function MyLoans() {
         }
     };
 
+    const handleLiquidateLoan = async (loanAddress) => {
+        try {
+            await writeContract({
+                address: loanAddress,
+                abi: ContractConfig.abi,
+                functionName: "liquidate",
+                chainId: FactoryConfig.chainId
+            });
+            alert("Please confirm the transaction in your wallet.");
+        } catch (error) {
+            console.error("Error liquidating loan:", error);
+            alert("Error liquidating loan. Please try again.");
+        }
+    }
+
+
+    // Formatters
     const formatState = (state) => {
         const states = [
             "Created",
@@ -183,6 +201,10 @@ export default function MyLoans() {
                                 borderRadius: "15px",
                                 transition: "all 0.2s"
                             }}
+                            display="flex"
+                            flexDirection="column"
+                            alignItems="center"
+                            
                         >
                             <SoftTypography variant="h6" fontWeight="bold" mb={1}>Loan Address:</SoftTypography>
                             <SoftTypography variant="body2" mb={2} style={{wordBreak: "break-all"}}>{loanAddress}</SoftTypography>
@@ -204,6 +226,19 @@ export default function MyLoans() {
                                     <SoftTypography variant="body2" mt={1}>
                                         Status: {formatState(loanDetails[loanAddress].state)}
                                     </SoftTypography>
+
+                                    {((loanDetails[loanAddress].state == 3) && (loanDetails[loanAddress].repayByTimestamp && Number(loanDetails[loanAddress].repayByTimestamp)<Math.floor(Date.now()/1000))) && (
+                                        <SoftButton
+                                            variant="outlined"
+                                            color="error"
+                                            onClick={() => handleLiquidateLoan(loanAddress)}
+                                            style={{ marginTop: "12px" }}
+                                            
+                                        >
+                                            Liquidate Loan
+                                        </SoftButton>
+                                    )}
+                                        
                                     
                                     <SoftButton 
                                         variant="outlined" 
