@@ -2,14 +2,13 @@ import SoftBox from "components/SoftBox"
 import SoftTypography from "components/SoftTypography"
 import SoftButton from "components/SoftButton"
 import { ConnectButton } from "@rainbow-me/rainbowkit"
-import { useAccount, useReadContract } from "wagmi"
+import { useAccount, useReadContract, useWriteContract } from "wagmi"
 import { readContract } from "wagmi/actions"
 import ContractConfig from "constants/ContractConfig"
 import FactoryConfig from "constants/FactoryConfig"
 import { getFactoryConfig } from "constants/FactoryConfig"
 import { useEffect, useState } from "react"
 import { wagmiConfig } from "../wagmi.js"
-import { format } from "prettier"
 
 export default function MyBorrowedLoans() {
     const { address, isConnected } = useAccount();
@@ -18,6 +17,7 @@ export default function MyBorrowedLoans() {
     const [isLoading, setIsLoading] = useState(false);
     const [expandedLoans, setExpandedLoans] = useState({}); // Track which loans are expanded
 
+    const { writeContract } = useWriteContract()
     const config = wagmiConfig
     
     const { data: borrowerLoans } = useReadContract({
@@ -132,6 +132,62 @@ export default function MyBorrowedLoans() {
         }
     };
 
+    const handleRepayLoan = async (loanAddress) => {
+        try {
+
+            await readContract(config,{
+                address: loanAddress,
+                abi: ContractConfig.abi,
+                chainId: FactoryConfig.chainId,
+                functionName: "calculateInterest",
+            });
+
+            const interest = await readContract(config, {
+                address: loanAddress,
+                abi: ContractConfig.abi,
+                chainId: FactoryConfig.chainId,
+                functionName: "getInterest",}
+            );
+
+            const loanAmount = await readContract(config, {
+                address: loanAddress,
+                abi: ContractConfig.abi,
+                functionName: "getLoanAmount",
+                chainId: FactoryConfig.chainId,
+            });
+
+            console.log("interest", interest.toString())
+            const totalRepayment = loanAmount + interest;
+            console.log("totalRepayment", totalRepayment.toString())
+            await writeContract({
+                address: loanAddress,
+                abi: ContractConfig.abi,
+                functionName: "repay",
+                value: totalRepayment,
+                chainId: FactoryConfig.chainId,
+            });
+            alert("Please confirm the transaction in your wallet.");
+        } catch (error) {
+            console.error("Error repaying loan:", error);
+            alert("Error repaying loan. Please try again.");
+        }
+    }
+
+    const handleSwitchRate = async (loanAddress) => {
+        try {
+            await writeContract({
+                address: loanAddress,
+                abi: ContractConfig.abi,
+                functionName: "switchRateType",
+                chainId: FactoryConfig.chainId,
+            });
+            alert("Please confirm the transaction in your wallet.");
+        } catch (error) {
+            console.error("Error switching rate:", error);
+            alert("Error switching rate. Please try again.")
+        }
+    }
+
     const formatState = (state) => {
         const states = [
             "Created",
@@ -197,6 +253,9 @@ export default function MyBorrowedLoans() {
                                 transition: "all 0.2s",
                                 borderRadius: "15px",
                             }}
+                            display="flex"
+                            flexDirection="column"
+                            alignItems="center"
                         >
                             <SoftTypography variant="h6" fontWeight="bold" mb={1}>Loan Address:</SoftTypography>
                             <SoftTypography variant="body2" mb={2} style={{wordBreak: "break-all"}}>{loanAddress}</SoftTypography>
@@ -222,7 +281,30 @@ export default function MyBorrowedLoans() {
                                     <SoftTypography variant="body2" mt={1}>
                                         Status: {formatState(loanDetails[loanAddress].state)}
                                     </SoftTypography>
-                                    
+
+                                    {loanDetails[loanAddress].state < 4 && (
+                                        <SoftButton
+                                            variant="outlined" 
+                                            color="info" 
+                                            onClick={() => handleSwitchRate(loanAddress)}
+                                            style={{ marginTop: "12px" }}
+                                        >
+                                            Switch Rate
+                                        </SoftButton>
+                                    )}
+
+                                    {loanDetails[loanAddress].state === 3 && (
+                                        <SoftButton
+                                            variant="outlined" 
+                                            color="info" 
+                                            onClick={() => handleRepayLoan(loanAddress)}
+                                            style={{ marginTop: "12px" }}
+                                        >
+                                            Repay Loan
+                                        </SoftButton>
+                                    )}
+
+
                                     <SoftButton 
                                         variant="outlined" 
                                         color="info" 
@@ -231,6 +313,8 @@ export default function MyBorrowedLoans() {
                                     >
                                         Hide Details
                                     </SoftButton>
+
+
                                 </>
                             ) : (
                                 <SoftButton 
