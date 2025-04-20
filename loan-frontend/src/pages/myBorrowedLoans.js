@@ -132,6 +132,44 @@ export default function MyBorrowedLoans() {
         }
     };
 
+    const handleAcceptLoan = async (loanAddress) => {
+        try {
+            const collateralAmount = await readContract(config, {
+                address: loanAddress,
+                abi: ContractConfig.abi,
+                functionName: "getEthCollateralAmount",
+                chainId: FactoryConfig.chainId,
+            });
+
+            console.log("collateralAmount", collateralAmount.toString())
+
+            await writeContract({
+                address: loanAddress,
+                abi: ContractConfig.abi,
+                functionName: "acceptLoanTerms",
+                chainId: FactoryConfig.chainId,
+                value: collateralAmount,
+            });
+            alert("Please confirm the transaction in your wallet.");
+        } catch (error) {
+            console.error("Error accepting loan:", error);
+        }
+    }
+
+    const handleTakeLoan = async (loanAddress) => {
+        try {
+            await writeContract({
+                address: loanAddress,
+                abi: ContractConfig.abi,
+                functionName: "takeLoan",
+                chainId: FactoryConfig.chainId,
+            });
+            alert("Please confirm the transaction in your wallet.");
+        } catch (error) {
+            console.error("Error taking loan:", error);
+        }
+    }
+
     const handleRepayLoan = async (loanAddress) => {
         try {
 
@@ -282,14 +320,25 @@ export default function MyBorrowedLoans() {
                                         Status: {formatState(loanDetails[loanAddress].state)}
                                     </SoftTypography>
 
-                                    {loanDetails[loanAddress].state < 4 && (
+                                    {loanDetails[loanAddress].state === 1 && (
                                         <SoftButton
-                                            variant="outlined" 
-                                            color="error" 
-                                            onClick={() => handleSwitchRate(loanAddress)}
+                                            variant="outlined"
+                                            color="success"
+                                            onClick={() => handleAcceptLoan(loanAddress)}
                                             style={{ marginTop: "12px" }}
                                         >
-                                            Switch Rate
+                                            Accept Loan Terms
+                                        </SoftButton>
+                                    )}
+
+                                    {loanDetails[loanAddress].state === 2 && (
+                                        <SoftButton
+                                            variant="outlined"
+                                            color="primary"
+                                            onClick={() => handleTakeLoan(loanAddress)}
+                                            style={{ marginTop: "12px" }}
+                                        >
+                                            Take Loan
                                         </SoftButton>
                                     )}
 
@@ -303,6 +352,18 @@ export default function MyBorrowedLoans() {
                                             Repay Loan
                                         </SoftButton>
                                     )}
+
+                                    {loanDetails[loanAddress].state < 4 && (
+                                        <SoftButton
+                                            variant="outlined" 
+                                            color="error" 
+                                            onClick={() => handleSwitchRate(loanAddress)}
+                                            style={{ marginTop: "12px" }}
+                                        >
+                                            Switch Rate
+                                        </SoftButton>
+                                    )}
+
 
 
                                     <SoftButton 

@@ -18,6 +18,9 @@ export default function ProposalExplorer() {
     const [isLoading, setIsLoading] = useState(false);
     const [expandedProposals, setExpandedProposals] = useState({});
 
+    const[proposalStatus, setProposalStatus] = useState({});
+    const [acceptedProposal, setAcceptedProposal] = useState([]);
+
     const {writeContract} = useWriteContract();
     const config = wagmiConfig;
 
@@ -48,6 +51,9 @@ export default function ProposalExplorer() {
 
     const handleAcceptProposal = async (proposalId) => {
         setIsLoading(true);
+        setProposalStatus((prev) => ({
+            ...prev,
+            [proposalId]: "accepting"}));
         try {
             await writeContract({
                 address: FactoryConfig.address,
@@ -60,9 +66,15 @@ export default function ProposalExplorer() {
             
             await new Promise((resolve) => setTimeout(resolve, 15000));
 
+            setProposalStatus((prev) => ({
+                ...prev,
+                [proposalId]: "funding"}));
+
             const proposal = openProposal.find((p) => Number(p.id) === Number(proposalId));
 
-
+            setAcceptedProposal((prev) => [
+                ...prev, proposal]);
+            
             const deployedLoan = await readContract(config, {
                 address: FactoryConfig.address,
                 abi: FactoryConfig.abi,
@@ -82,6 +94,10 @@ export default function ProposalExplorer() {
 
             alert("Please confirm the transaction in your wallet.");
 
+            await new Promise((resolve) => setTimeout(resolve, 5000));
+            setProposalStatus((prev) => ({
+                ...prev,
+                [proposalId]: "funded"}));
 
             setTimeout(() => {
                 refetchProposals();
@@ -93,6 +109,8 @@ export default function ProposalExplorer() {
             setIsLoading(false);
         }
     }
+
+    const allDisplayProposals = [...openProposal, ...acceptedProposal.filter(ap => !openProposal.some(op => Number(op.id) === Number(ap.id)))];
 
 
     const formatEther = (value) => {
@@ -143,12 +161,12 @@ export default function ProposalExplorer() {
 
             {isConnected && !isLoading && (
                 <>
-                {!openProposal || openProposal.length === 0 ? (
+                {!allDisplayProposals || allDisplayProposals.length === 0 ? (
                     <SoftTypography  mt = {2} textAlign = "center" variant = "body2">
                         No proposals found.
                     </SoftTypography>
                 ):(
-                    openProposal.map((proposal, index) => (
+                    allDisplayProposals.map((proposal, index) => (
                         <SoftBox
                         key = {Number(proposal.id)}
                         mb = {3}
