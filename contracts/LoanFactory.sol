@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.0;
 import "./LoanRequest.sol";
 
@@ -7,6 +8,109 @@ contract LoanFactory {
     address[] public allLoans;
 
     event LoanCreated(address indexed borrower,address indexed lender, address indexed loanContract);
+    event LoanProposalCreated(uint256 proposalId, address borrower);
+    event LoanProposalAccepted(uint256 proposalId, address lender, address loanAddress);
+
+    struct LoanProposal {
+        uint256 id;
+        address borrower;
+        uint256 loanAmount;
+        uint256 feeAmount;
+        uint256 ethCollateralAmount;
+        uint256 repayByTimestamp;
+        uint256 fixedRate;
+        uint256 floatingRate;
+        address oracle;
+        bool accepted;
+        address acceptedLender;
+
+    }
+
+    uint256 public nextProposalId;
+    mapping(uint256 => LoanProposal) public proposals;
+
+    function createProposal(
+        uint256 _loanAmount,
+        uint256 _feeAmount,
+        uint256 _ethCollateralAmount,
+        uint256 _repayByTimestamp,
+        uint256 _fixedRate,
+        uint256 _floatingRate,
+        address _oracle
+    ) external {
+        proposals[nextProposalId] = LoanProposal({
+            id: nextProposalId,
+            borrower: msg.sender,
+            loanAmount: _loanAmount,
+            feeAmount: _feeAmount,
+            ethCollateralAmount: _ethCollateralAmount,
+            repayByTimestamp: _repayByTimestamp,
+            fixedRate: _fixedRate,
+            floatingRate: _floatingRate,
+            oracle: _oracle,
+            accepted: false,
+            acceptedLender: address(0)
+        });
+        emit LoanProposalCreated(nextProposalId, msg.sender);
+        nextProposalId++;
+    }
+
+
+    function getAllOpenProposals() external view returns (LoanProposal[] memory) {
+        uint256 openProposalsCount = 0;
+        for (uint256 i = 0; i < nextProposalId; i++) {
+            if (!proposals[i].accepted) {
+                openProposalsCount++;
+            }
+        }
+
+        LoanProposal[] memory openProposals = new LoanProposal[](openProposalsCount);
+        uint256 index = 0;
+        for (uint256 i = 0; i < nextProposalId; i++) {
+            if (!proposals[i].accepted) {
+                openProposals[index] = proposals[i];
+                index++;
+            }
+        }
+
+        return openProposals;
+    }
+
+    function acceptProposal(uint256 _proposalId) external returns (address) {
+        //require(_proposalId < nextProposalId, "Invalid proposal ID");
+        LoanProposal storage proposal = proposals[_proposalId];
+        require(!proposal.accepted, "Proposal already accepted");
+
+        proposal.accepted = true;
+        proposal.acceptedLender = msg.sender;
+
+        // Create a new LoanRequest contract
+        LoanRequest newLoan = new LoanRequest(
+            proposal.loanAmount,
+            proposal.feeAmount,
+            proposal.ethCollateralAmount,
+            proposal.repayByTimestamp,
+            proposal.fixedRate,
+            proposal.floatingRate,
+            proposal.oracle,
+            address(this),
+            msg.sender  // Pass the original sender as lender
+        );
+
+        // Store the loan address in the mapping and array
+        loansByLender[msg.sender].push(address(newLoan));
+        loansByBorrower[proposal.borrower].push(address(newLoan));
+        allLoans.push(address(newLoan));
+
+        emit LoanProposalAccepted(_proposalId, msg.sender, address(newLoan));
+        return address(newLoan);
+    }
+
+    function getProposal(uint256 _proposalId) external view returns (LoanProposal memory) {
+        require(_proposalId < nextProposalId, "Invalid proposal ID");
+        return proposals[_proposalId];
+    }
+
 
     function createLoan(
         uint256 loanAmount,

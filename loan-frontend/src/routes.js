@@ -52,6 +52,8 @@ import Home from "pages/Home";
 import MyLoans from "pages/myLoans";
 import MyBorrowedLoans from "pages/myBorrowedLoans";
 import DebugLoans from "pages/DebugLoans";
+import CreateProposal from "pages/CreateProposal";
+import ProposalExplorer from "pages/ProposalExplorer";
 
 // Soft UI Dashboard React icons
 import Shop from "examples/Icons/Shop";
@@ -84,6 +86,33 @@ const routes = [
     component: (
       <Dashboard />
     )
+
+  },
+  {
+      type: "collapse",
+      name: "Create Proposal",
+      key: "createProposal",
+      icon: <Settings size="12px" />,
+      route: "/createProposal",
+      component: (
+        <ProtectedRoute>
+          <CreateProposal />
+        </ProtectedRoute>
+      )
+
+  },
+  {
+    type: "collapse",
+    name: "Proposal Explorer",
+    key: "proposalExplorer",
+    icon: <Cube size="12px" />,
+    route: "/proposalExplorer",
+    component: (
+      <ProtectedRoute>
+        <ProposalExplorer />
+      </ProtectedRoute>
+    )
+
 
   },
   {
