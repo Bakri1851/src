@@ -28,6 +28,7 @@ contract LoanFactory {
 
     uint256 public nextProposalId;
     mapping(uint256 => LoanProposal) public proposals;
+    mapping(uint256 => address) public proposalToAddress;
 
     function createProposal(
         uint256 _loanAmount,
@@ -102,6 +103,7 @@ contract LoanFactory {
         loansByBorrower[proposal.borrower].push(address(newLoan));
         allLoans.push(address(newLoan));
 
+        proposalToAddress[_proposalId] = address(newLoan);
         emit LoanProposalAccepted(_proposalId, msg.sender, address(newLoan));
         return address(newLoan);
     }
@@ -109,6 +111,12 @@ contract LoanFactory {
     function getProposal(uint256 _proposalId) external view returns (LoanProposal memory) {
         require(_proposalId < nextProposalId, "Invalid proposal ID");
         return proposals[_proposalId];
+    }
+
+    function getAddressforProposal(uint256 _proposalId) external view returns (address) {
+        require(_proposalId < nextProposalId, "Invalid proposal ID");
+        require(proposals[_proposalId].accepted, "Proposal not accepted yet");
+        return proposalToAddress[_proposalId];
     }
 
 

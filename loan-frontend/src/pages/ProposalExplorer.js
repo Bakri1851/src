@@ -8,6 +8,9 @@ import SoftTypography from 'components/SoftTypography';
 import SoftBox from 'components/SoftBox';
 import { useAccount } from 'wagmi';
 import { wagmiConfig } from "../wagmi.js"
+import { readContract, waitForTransactionReceipt } from '@wagmi/core';
+import { decodeEventLog } from 'viem';
+import ContractConfig from 'constants/ContractConfig';
 
 export default function ProposalExplorer() {
     const {address, isConnected} = useAccount();
@@ -53,8 +56,33 @@ export default function ProposalExplorer() {
                 args: [proposalId],
                 chainId: FactoryConfig.chainId,
             });
-            alert("Please confirm the transaction in your wallet.");
+            alert("Please confirm the acceptance in your wallet.");
             
+            await new Promise((resolve) => setTimeout(resolve, 15000));
+
+            const proposal = openProposal.find((p) => Number(p.id) === Number(proposalId));
+
+
+            const deployedLoan = await readContract(config, {
+                address: FactoryConfig.address,
+                abi: FactoryConfig.abi,
+                functionName: "getAddressforProposal",
+                args: [proposalId],
+            });
+
+            console.log("Deployed Loan Address:", deployedLoan);
+            
+            await writeContract({
+                address: deployedLoan,
+                abi: ContractConfig.abi,
+                functionName: "fundLoan",
+                value: proposal.loanAmount,
+                chainId: FactoryConfig.chainId,
+            });
+
+            alert("Please confirm the transaction in your wallet.");
+
+
             setTimeout(() => {
                 refetchProposals();
             }, 5000); // Refetch proposals after 5 seconds
