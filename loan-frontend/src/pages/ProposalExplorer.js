@@ -20,8 +20,8 @@ export default function ProposalExplorer() {
 
 
     const {data: proposals, refetch: refetchProposals} = useReadContract({
-        address: FactoryConfig.LoanFactoryAddress,
-        abi: FactoryConfig.LoanFactoryABI,
+        address: FactoryConfig.address,
+        abi: FactoryConfig.abi,
         functionName: "getAllOpenProposals",
         enabled: isConnected,
     });
@@ -47,8 +47,8 @@ export default function ProposalExplorer() {
         setIsLoading(true);
         try {
             await writeContract({
-                address: FactoryConfig.LoanFactoryAddress,
-                abi: FactoryConfig.LoanFactoryABI,
+                address: FactoryConfig.address,
+                abi: FactoryConfig.abi,
                 functionName: "acceptProposal",
                 args: [proposalId],
                 chainId: FactoryConfig.chainId,
@@ -89,7 +89,7 @@ export default function ProposalExplorer() {
 
 
     return(
-        <SoftBox mt = {5} mx = "auto" p ={4} width = "fit-content" bgcolor = "white" borderRadius = "lg" boxShadow = "lg">
+        <SoftBox mt = {5} mx = "auto" p ={4} width = "80%" maxWidth = "600px" bgcolor = "white" borderRadius = "lg" boxShadow = "lg">
             <SoftTypography variant="h4" fontWeight="bold" mb={2} textAlign="center">
                 Proposal Explorer
             </SoftTypography>
@@ -149,7 +149,7 @@ export default function ProposalExplorer() {
                                     Fee Amount: {formatEther(proposal.feeAmount)} ETH
                                 </SoftTypography>
                                 <SoftTypography variant = "body2" mt = {1}>
-                                    Collateral Amount: {formatEther(proposal.collateralAmount)} ETH
+                                    Collateral Amount: {formatEther(proposal.ethCollateralAmount)} ETH
                                 </SoftTypography>
                                 <SoftTypography variant = "body2" mt = {1}>
                                     Repay By: {formatTimestamp(proposal.repayByTimestamp)}
