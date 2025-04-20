@@ -65,18 +65,10 @@ import CustomerSupport from "examples/Icons/CustomerSupport";
 import CreditCard from "examples/Icons/CreditCard";
 import Cube from "examples/Icons/Cube";
 import ProtectedRoute from "protectedRoute";
+import icon from "assets/theme/components/icon";
 
 const routes = [
-  {
-    type: "collapse",
-    name: "Home",
-    key: "home",
-    icon: <Shop size="12px" />,
-    route: "/",
-    component: (
-      <Home />
-    )
-  },
+
   {
     type: "collapse",
     name: "Dashboard",
@@ -112,32 +104,6 @@ const routes = [
         <ProposalExplorer />
       </ProtectedRoute>
     )
-
-
-  },
-  {
-    type: "collapse",
-    name: "Borrowing",
-    key: "borrowing",
-    icon: <Cube size="12px" />,
-    route: "/borrowing",
-    component: (
-      <ProtectedRoute>
-        <Borrowing />
-      </ProtectedRoute>
-    )
-  },
-  {
-    type: "collapse",
-    name: "Lending",
-    key: "lending",
-    icon: <CreditCard size="12px" />,
-    route: "/lending",
-    component: (
-      <ProtectedRoute>
-        <Lending />
-      </ProtectedRoute>
-    )
   },
   {
     type: "collapse",
@@ -163,28 +129,6 @@ const routes = [
       </ProtectedRoute>
     )
   },
-  {
-    type: "collapse",
-    name: "Debug Loans",
-    key: "debugLoans",
-    icon: <CustomerSupport size="12px" />,
-    route: "/debugLoans",
-    component: (
-      <ProtectedRoute>
-        <DebugLoans />
-      </ProtectedRoute>
-    )
-  },
-  {
-    type: "collapse",
-    name: "Sign Up",
-    key: "sign-up",
-    icon: <Document size="12px" />,
-    route: "/authentication/sign-up",
-    component: (
-      <SignUp />
-    )
-  }
 ];
 
 export default routes;

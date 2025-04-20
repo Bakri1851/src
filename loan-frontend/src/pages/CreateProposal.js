@@ -56,7 +56,7 @@ export default function CreateProposal() {
             try {
                 const price = Number(oracleData[1]);
 
-                const marketFloatingRate = Math.floor(Number(price) / 1e6);
+                const marketFloatingRate = Math.floor(Number(price) / 1e4);
                 const spread = 100; 
                 const fixedRate = marketFloatingRate + spread;
                 setForm((prevForm) => ({
@@ -64,6 +64,10 @@ export default function CreateProposal() {
                     fixedRate: fixedRate.toString(),
                     floatingRate: marketFloatingRate.toString(),
                 }));
+
+                console.log("Oracle price:", price);
+                console.log("Market floating rate:", marketFloatingRate);
+                console.log("Fixed rate:", fixedRate);
             } catch (error) {
                 console.error('Error parsing oracle data:', error);
             }
@@ -93,13 +97,30 @@ export default function CreateProposal() {
 
     const handleDateChange = (e) => {
         const dateString = e.target.value;
-        const date = new Date(dateString);
-        const timestamp = Math.floor(date.getTime() / 1000);
-        setForm((prevForm) => ({
-            ...prevForm,
-            repayBy: timestamp.toString(), // For contract
-            repayByDateString: dateString, // For input display
-        }));
+        const selectedDate = new Date(dateString);
+        
+        const minValidTime = new Date();
+        minValidTime.setHours(minValidTime.getHours() + 1);
+        
+        if (selectedDate < minValidTime) {
+            alert("Repayment date must be at least 1 hour in the future");
+            
+            const minValidDateString = minValidTime.toISOString().slice(0, 16);
+            const minValidTimestamp = Math.floor(minValidTime.getTime() / 1000);
+            
+            setForm((prevForm) => ({
+                ...prevForm,
+                repayBy: minValidTimestamp.toString(),
+                repayByDateString: minValidDateString,
+            }));
+        } else {
+            const timestamp = Math.floor(selectedDate.getTime() / 1000);
+            setForm((prevForm) => ({
+                ...prevForm,
+                repayBy: timestamp.toString(),
+                repayByDateString: dateString,
+            }));
+        }
     }
     
     const handleSubmit = async (e) => {
@@ -111,7 +132,7 @@ export default function CreateProposal() {
         const loanAmount = parseEther(form.loanAmount);
         const feeAmount = parseEther(form.feeAmount);
         const collateral = parseEther(form.collateral);
-        const repayBy = parseEther(form.repayBy);
+        const repayBy = form.repayBy;
         const contract = FactoryConfig.contract;
         
         await writeContract({
@@ -123,8 +144,8 @@ export default function CreateProposal() {
                 feeAmount,
                 collateral,
                 repayBy,
-                form.fixedRate,
-                form.floatingRate,
+                BigInt(form.fixedRate),
+                BigInt(form.floatingRate),
                 form.oracle,
             ],
             chainId: FactoryConfig.chainId,
