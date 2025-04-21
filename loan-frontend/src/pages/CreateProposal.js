@@ -35,7 +35,7 @@ export default function CreateProposal() {
         feeAmount: '',
         collateral: '',
         repayBy: '',
-        repayByDateString: '', // Add this for the date picker
+        repayByDateString: '', 
         fixedRate: '',
         floatingRate: '',
         oracle: '0x8e604308BD61d975bc6aE7903747785Db7dE97e2',
@@ -85,15 +85,6 @@ export default function CreateProposal() {
             console.error('Error waiting for transaction receipt:', error);
         },
     });
-
-    const handleChange = (e) => {
-        const { name, value } = e.target;
-        setForm((prevForm) => ({
-            ...prevForm,
-            [name]: value,
-        }));
-
-    }
 
     const handleDateChange = (e) => {
         const dateString = e.target.value;
@@ -164,6 +155,66 @@ export default function CreateProposal() {
         return `${(Number(rate)/100).toFixed(2)}%`;
     };
 
+    const handleEthAmountChange = (e) => {
+        const { name, value } = e.target;
+        
+        const amount = parseFloat(value);
+        
+        // Get current values for ratio calculations
+        const currentLoanAmount = name === "loanAmount" ? amount : parseFloat(form.loanAmount) || 0;
+        const currentCollateral = name === "collateral" ? amount : parseFloat(form.collateral) || 0;
+        const currentFee = name === "feeAmount" ? amount : parseFloat(form.feeAmount) || 0;
+        
+        const MIN_LOAN_AMOUNT = 0.0;  // Minimum loan of 0.05 ETH 0.05
+        const MAX_LOAN_AMOUNT = 100;   // Maximum loan of 100 ETH
+        const MIN_COLLATERAL_RATIO = 1;  // Collateral must be at least 150% of loan 1.5
+        const MAX_FEE_PERCENTAGE = 0.0;  // Fee can't exceed 10% of loan amount 0.1
+        
+        let errorMessage = "";
+        let finalValue = value;
+        
+        // Apply validation based on field name
+        if (name === "loanAmount") {
+            if (amount < MIN_LOAN_AMOUNT) {
+                errorMessage = `Loan amount must be at least ${MIN_LOAN_AMOUNT} ETH`;
+                finalValue = MIN_LOAN_AMOUNT.toString();
+            } else if (amount > MAX_LOAN_AMOUNT) {
+                errorMessage = `Loan amount cannot exceed ${MAX_LOAN_AMOUNT} ETH`;
+                finalValue = MAX_LOAN_AMOUNT.toString();
+            }
+            
+            // Check if fee exceeds the maximum percentage
+            if (currentFee > amount * MAX_FEE_PERCENTAGE) {
+                errorMessage = `Fee amount exceeds ${MAX_FEE_PERCENTAGE * 100}% of loan amount`;
+            }
+        } 
+        else if (name === "collateral") {
+            const minCollateral = currentLoanAmount * MIN_COLLATERAL_RATIO;
+            if (currentLoanAmount > 0 && amount < minCollateral) {
+                errorMessage = `Collateral must be at least ${MIN_COLLATERAL_RATIO * 100}% of loan amount (${minCollateral.toFixed(2)} ETH)`;
+                finalValue = minCollateral.toFixed(2);
+            }
+        } 
+        else if (name === "feeAmount") {
+            const maxFee = currentLoanAmount * MAX_FEE_PERCENTAGE;
+            if (currentLoanAmount > 0 && amount > maxFee) {
+                errorMessage = `Fee cannot exceed ${MAX_FEE_PERCENTAGE * 100}% of loan amount (${maxFee.toFixed(2)} ETH)`;
+                finalValue = maxFee.toFixed(2);
+            }
+        }
+        
+        // Show error message if any
+        if (errorMessage) {
+            alert(errorMessage);
+        }
+        
+        // Update form
+        setForm((prevForm) => ({
+            ...prevForm,
+            [name]: finalValue,
+        }));
+    };
+
     return(
         <SoftBox mt = {5} mx = "auto" p = {4} width = "fit-content" backgroundColor = "white" borderRadius = "xl" boxShadow = "lg" >
             <SoftTypography variant = "h4" fontWeight = "bold" mb = {2} textAlign = "center" >
@@ -186,7 +237,7 @@ export default function CreateProposal() {
                             name="loanAmount"
                             placeholder="1.0"
                             value={form.loanAmount}
-                            onChange={handleChange}
+                            onChange={handleEthAmountChange}
                             required
                             step = "0.01"
                             icon = {{
@@ -202,7 +253,7 @@ export default function CreateProposal() {
                             name="feeAmount"
                             placeholder="0.1"
                             value={form.feeAmount}
-                            onChange={handleChange}
+                            onChange={handleEthAmountChange}
                             required
                             step = "0.01"
                             icon = {{
@@ -216,9 +267,9 @@ export default function CreateProposal() {
                         <SoftInput
                             type="number"
                             name="collateral"
-                            placeholder="0.5"
+                            placeholder="1.5"
                             value={form.collateral}
-                            onChange={handleChange}
+                            onChange={handleEthAmountChange}
                             required
                             step = "0.01"
                             icon = {{

@@ -15,12 +15,13 @@ export default function MyBorrowedLoans() {
     const [userLoans, setUserLoans] = useState([]);
     const [loanDetails, setLoanDetails] = useState({});
     const [isLoading, setIsLoading] = useState(false);
-    const [expandedLoans, setExpandedLoans] = useState({}); // Track which loans are expanded
+    const [expandedLoans, setExpandedLoans] = useState({}); 
+    const [refreshCounter, setRefreshCounter] = useState(0); 
 
     const { writeContract } = useWriteContract()
     const config = wagmiConfig
     
-    const { data: borrowerLoans } = useReadContract({
+    const { data: borrowerLoans, refetch } = useReadContract({
         address: FactoryConfig.address,
         abi: FactoryConfig.abi,
         functionName: "getLoansByBorrower",
@@ -28,11 +29,89 @@ export default function MyBorrowedLoans() {
         enabled: !!address,
     });
 
-    useEffect(() => {
-        if (borrowerLoans && borrowerLoans.length > 0) {
-            setUserLoans(borrowerLoans);
+    const getFilteredLoans = async (loanAddresses) => {
+        if (!loanAddresses || loanAddresses.length === 0) return [];
+        
+        const uniqueAddresses = [...new Set(loanAddresses)];
+        const loanStates = {};
+        
+        for (const address of uniqueAddresses) {
+            try {
+                const state = await readContract(config, {
+                    address: address,
+                    abi: ContractConfig.abi,
+                    functionName: "getLoanState",
+                    chainId: FactoryConfig.chainId
+                });
+                loanStates[address] = Number(state);
+            } catch (error) {
+                console.error(`Error fetching state for loan ${address}:`, error);
+                loanStates[address] = -1; 
+            }
         }
-    }, [borrowerLoans, address]);
+        
+        console.log("Loan states before filtering:", loanStates);
+        
+        // Sort loans by state (higher state = more advanced in lifecycle)
+        return uniqueAddresses.sort((a, b) => {
+            // Prioritize loans that are in active states (1-3) over others
+            const stateA = loanStates[a];
+            const stateB = loanStates[b];
+            
+            // Active loans (1-3) come first, sorted by state
+            if (stateA >= 1 && stateA <= 3 && stateB >= 1 && stateB <= 3) {
+                return stateA - stateB; // Show lower states first (e.g., Funded before Taken)
+            }
+            // Active loans before completed loans
+            else if (stateA >= 1 && stateA <= 3) return -1;
+            else if (stateB >= 1 && stateB <= 3) return 1;
+            // For non-active loans, show higher states first (e.g., Repaid before Created)
+            else return stateB - stateA;
+        });
+    };
+
+    // Handle manual refresh
+    const handleRefresh = async () => {
+        setIsLoading(true);
+        setLoanDetails({});
+        setExpandedLoans({});
+        
+        try {
+            await refetch();
+            setRefreshCounter(prev => prev + 1); // Trigger re-filtering
+        } catch (error) {
+            console.error("Error refreshing loans:", error);
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    useEffect(() => {
+        const loadAndFilterLoans = async () => {
+            if (borrowerLoans && borrowerLoans.length > 0) {
+                setIsLoading(true);
+                
+                try {
+                    console.log("Raw loans from contract:", borrowerLoans);
+                    const filteredLoans = await getFilteredLoans(borrowerLoans);
+                    console.log("Filtered loans:", filteredLoans);
+                    setUserLoans(filteredLoans);
+                } catch (error) {
+                    console.error("Error filtering loans:", error);
+                    // Fall back to unfiltered list in case of error
+                    setUserLoans(borrowerLoans);
+                } finally {
+                    setIsLoading(false);
+                }
+            } else {
+                setUserLoans([]);
+            }
+        };
+        
+        if (borrowerLoans) {
+            loadAndFilterLoans();
+        }
+    }, [borrowerLoans, address, refreshCounter]); // Added refreshCounter to trigger re-filtering
 
     const fetchLoanDetails = async (loanAddress) => {
         setIsLoading(true);
@@ -151,6 +230,24 @@ export default function MyBorrowedLoans() {
                 value: collateralAmount,
             });
             alert("Please confirm the transaction in your wallet.");
+            
+            setTimeout(async () => {
+                setLoanDetails({});
+                setExpandedLoans({});
+                
+                const updatedLoans = await readContract(config, {
+                    address: FactoryConfig.address,
+                    abi: FactoryConfig.abi,
+                    functionName: "getLoansByBorrower",
+                    args: [address],
+                    chainId: FactoryConfig.chainId,
+                });
+                
+                if (updatedLoans) {
+                    setUserLoans(updatedLoans);
+                }
+            }, 3000); 
+            
         } catch (error) {
             console.error("Error accepting loan:", error);
         }
@@ -263,6 +360,21 @@ export default function MyBorrowedLoans() {
             <SoftTypography variant="h4" fontWeight="bold" mb={2} textAlign="center">
                 Loans You Borrowed
             </SoftTypography>
+            
+            {isConnected && (
+                <SoftBox display="flex" justifyContent="center" mb={2}>
+                    <SoftButton 
+                        variant="gradient"
+                        color="info"
+                        size="small"
+                        onClick={handleRefresh}
+                        disabled={isLoading}
+                    >
+                        {isLoading ? "Loading..." : "Refresh Loans"}
+                    </SoftButton>
+                </SoftBox>
+            )}
+            
             {!isConnected && (
                 <SoftTypography mt variant="body2">
                     Please connect your wallet to view your loans.
@@ -327,7 +439,7 @@ export default function MyBorrowedLoans() {
                                             onClick={() => handleAcceptLoan(loanAddress)}
                                             style={{ marginTop: "12px" }}
                                         >
-                                            Accept Loan Terms
+                                            Give Collateral
                                         </SoftButton>
                                     )}
 

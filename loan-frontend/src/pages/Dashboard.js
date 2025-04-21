@@ -335,8 +335,13 @@ export default function Dashboard() {
   }]
 
   return (
-    <Grid container spacing={3} justifyContent="center" alignItems="center" minHeight="100vh">
-      <Grid item xs={12} lg={5} xl={4} sx={{ display: 'flex', justifyContent: 'center' }}>
+    <Grid container spacing={3} justifyContent="space-between" alignItems="flex-start" minHeight="100vh">
+      {/* Left sidebar space compensation */}
+      <Grid item xs={0} sm={1} md={1} lg={1} xl={1} sx={{ display: { xs: 'none', sm: 'block' } }}>
+      </Grid>
+      
+      {/* Main content area */}
+      <Grid item xs={12} sm={10} md={7} lg={6} xl={7} sx={{ display: 'flex', justifyContent: 'center' }}>
         <SoftBox
           p={3}
           mt={5}
@@ -344,12 +349,10 @@ export default function Dashboard() {
           boxShadow="lg"
           backgroundColor="white"
           width="100%"
-          maxWidth="500px"
+          maxWidth="900px"
           display="flex"
           flexDirection="column"
           alignItems="center"
-          justifyContent="center"
-
         >
           <SoftTypography variant="h4">Loan Dashboard</SoftTypography>
 
@@ -363,8 +366,8 @@ export default function Dashboard() {
             <ConnectButton />
           </SoftBox>
         
-          <Card sx={{ overflow: 'hidden', mb: 4, width: '100%', maxWidth: '700px' }}>
-            <SoftBox p={3}>
+          <Card sx={{ overflow: 'hidden', mb: 4, width: '70%', maxWidth: '100%' }}>
+            <SoftBox p={2}> {/* Reduced padding from p={3} to p={2} */}
               <SoftBox mb={2}>
                 <SoftTypography variant="h5" fontWeight="medium" mb={1}>Ethereum Price</SoftTypography>
                 {ethPrice ? (
@@ -379,7 +382,7 @@ export default function Dashboard() {
                 )}
               </SoftBox>
               
-              <SoftBox width="100%">
+              <SoftBox width="100%" pl={1}> {/* Added left padding to move chart away from sidebar */}
                 {isChartLoading ? (
                   <SoftBox display="flex" justifyContent="center" alignItems="center" height="250px">
                     <SoftTypography variant="body2">Loading chart...</SoftTypography>
@@ -428,23 +431,39 @@ export default function Dashboard() {
             </SoftBox>
           </Card>
 
-          <SoftBox component="form" onSubmit={handleAiSubmit} mt={3}>
-            <SoftInput
-              placeholder="Ask me anything..."
-              value={aiMessage}
-              onChange={(e) => setAiMessage(e.target.value)}
-              fullWidth
-              endAdornment={
-                <SoftButton type="submit" color="primary" variant="contained">
-                  Send
-                </SoftButton>
-              }
-              icon ={<Icon fontSize="small">send</Icon>}
+          {/* Add other dashboard components here */}
+        </SoftBox>
+      </Grid>
 
-            />
-          </SoftBox>
-
-          <SoftBox mt={3}>
+      {/* Right column with AI assistant */}
+      <Grid item xs={12} sm={12} md={5} lg={5} xl={4} sx={{ display: 'flex', justifyContent: 'center' }}>
+        <SoftBox
+          p={3}
+          mt={5}
+          borderRadius="xl"
+          boxShadow="lg"
+          backgroundColor="white"
+          width="100%"
+          maxWidth="400px"
+          display="flex"
+          flexDirection="column"
+          sx={{ 
+            height: 'calc(100vh - 120px)',
+            position: 'sticky',
+            top: '80px'
+          }}
+        >
+          <SoftTypography variant="h5" mb={2}>Loan Assistant</SoftTypography>
+          
+          {/* Chat messages container with scrolling */}
+          <SoftBox 
+            sx={{ 
+              flexGrow: 1, 
+              overflowY: 'auto',
+              mb: 2,
+              pr: 1
+            }}
+          >
             {aiChat.map((chat, index) => (
               <SoftBox key={index} mb={2}>
                 <SoftBadge
@@ -457,6 +476,22 @@ export default function Dashboard() {
                 </SoftTypography>
               </SoftBox>
             ))}
+          </SoftBox>
+
+          {/* Chat input at bottom */}
+          <SoftBox component="form" onSubmit={handleAiSubmit}>
+            <SoftInput
+              placeholder="Ask me anything..."
+              value={aiMessage}
+              onChange={(e) => setAiMessage(e.target.value)}
+              fullWidth
+              endAdornment={
+                <SoftButton type="submit" color="primary" variant="contained">
+                  Send
+                </SoftButton>
+              }
+              icon={<Icon fontSize="small">send</Icon>}
+            />
           </SoftBox>
         </SoftBox>
       </Grid>
