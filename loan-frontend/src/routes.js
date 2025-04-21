@@ -78,7 +78,6 @@ const routes = [
     component: (
       <Dashboard />
     )
-
   },
   {
       type: "collapse",
@@ -91,7 +90,6 @@ const routes = [
           <CreateProposal />
         </ProtectedRoute>
       )
-
   },
   {
     type: "collapse",
@@ -109,7 +107,7 @@ const routes = [
     type: "collapse",
     name: "My Loans",
     key: "myLoans",
-    icon: <SpaceShip size="12px" />,
+    icon: <Document size="12px" />,
     route: "/myLoans",
     component: (
       <ProtectedRoute>
@@ -121,7 +119,7 @@ const routes = [
     type: "collapse",
     name: "My Borrowed Loans",
     key: "myBorrowedLoans",
-    icon: <SpaceShip size="12px" />,
+    icon: <CreditCard size="12px" />,
     route: "/myBorrowedLoans",
     component: (
       <ProtectedRoute>
