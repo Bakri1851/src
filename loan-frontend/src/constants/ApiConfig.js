@@ -6,6 +6,7 @@ const ApiConfig = {
     defaultModel: "gpt-4o",
     defaultMaxTokens: 1000,
     defaultTemperature: 0.7,
+    
 
 
     analysisTypes: {

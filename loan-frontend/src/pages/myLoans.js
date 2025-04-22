@@ -357,6 +357,40 @@ export default function MyLoans() {
                                     >
                                         {aiLoading[loanAddress] ? "Loading..." : "Get AI Analysis"}
                                     </SoftButton>
+
+{aiAnalysis[loanAddress] && (
+                                        <SoftBox
+                                            mt={2}
+                                            p={2}
+                                            border="1px dashed"
+                                            borderColor="success.main"
+                                            borderRadius="10px"
+                                            backgroundColor="rgba(76, 175, 80, 0.1)"
+                                            width="100%"
+                                            maxWidth="800px"
+                                            textAlign="left"
+                                            maxHeight="200px" 
+                                            overflow="auto" 
+                                            sx={{
+                                                '&::-webkit-scrollbar': {
+                                                    width: '8px',
+                                                    backgroundColor: 'rgba(0,0,0,0.05)',
+                                                },
+                                                '&::-webkit-scrollbar-thumb': {
+                                                    borderRadius: '4px',
+                                                    backgroundColor: 'rgba(76, 175, 80, 0.3)',
+                                                },
+                                            }}
+                                        >
+                                            <SoftTypography variant="h6" fontWeight="bold" color="success.main" mb={1}>
+                                                AI Analysis:
+                                            </SoftTypography>
+                                            <SoftTypography variant="body2" style={{whiteSpace: "pre-line"}}>
+                                                {aiAnalysis[loanAddress]}
+                                            </SoftTypography>
+                                        </SoftBox>
+                                    )}
+
                                     
                                     <SoftButton 
                                         variant="outlined" 
