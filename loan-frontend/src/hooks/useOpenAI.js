@@ -19,6 +19,21 @@ export default function useOpenAI() {
             throw error; 
         }
     }
+
+    const analyseProposal = async (proposalDetails) => {
+        setIsLoading(true);
+        setError(null);
+        try {
+            const result = await openAiApi.analyseProposal(proposalDetails);
+            setIsLoading(false);
+            return result;
+        } catch (error) { 
+            setError(error.message);
+            console.error("Error analysing proposal:", error);
+            setIsLoading(false);
+            throw error; 
+        }
+    }
     
     const askLoanQuestion = async (question) => {
         setIsLoading(true);
@@ -45,5 +60,6 @@ export default function useOpenAI() {
         analyseLoanTerms,
         askLoanQuestion,
         resetError,
+        analyseProposal,
     };
 };

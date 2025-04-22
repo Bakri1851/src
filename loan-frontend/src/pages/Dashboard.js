@@ -5,8 +5,7 @@ import SoftButton from "components/SoftButton"
 import SoftInput from "components/SoftInput"
 import SoftBadge from "components/SoftBadge"
 import { ConnectButton } from "@rainbow-me/rainbowkit"
-import { useAccount, useReadContracts, useReadContract, useWriteContract } from "wagmi"
-import { waitForTransactionReceipt } from '@wagmi/core'
+import { useAccount} from "wagmi"
 import ContractConfig from "constants/ContractConfig"
 import Grid from "@mui/material/Grid"
 import Card from "@mui/material/Card"
@@ -14,11 +13,11 @@ import Icon from "@mui/material/Icon"
 import Chart from "react-apexcharts"
 import ButtonGroup from "@mui/material/ButtonGroup" 
 import useOpenAI from "hooks/useOpenAI"
+import ReactMarkdown from "react-markdown"
 
 
 export default function Dashboard() {
   const { isConnected } = useAccount()
-  const { writeContract } = useWriteContract()
   
   const [aiChat, setAiChat] = useState([])
   const [aiMessage, setAiMessage] = useState("")
@@ -28,68 +27,7 @@ export default function Dashboard() {
 
   const {askLoanQuestion, isLoading:aiIsLoading} = useOpenAI()
 
-  const contractConfig = ContractConfig;
 
-  const { data: loanState, refetch: refetchState, isLoading:loadingState,} = useReadContract({
-    ...contractConfig,
-    functionName: "getLoanState",
-  })
-  
-  const {data : rawLoanAmount} = useReadContract({
-    ...contractConfig,
-    functionName: "getLoanAmount",
-  })
-  const {data: rawCollateralAmount} = useReadContract({
-    ...contractConfig,
-    functionName: "getEthCollateralAmount",
-  })
-
-  const {data: repayByTimestamp} = useReadContract({
-    ...contractConfig,
-    functionName: "getRepayByTimestamp",})
-
-  const loanAmount = rawLoanAmount ? Number(rawLoanAmount) / 1e18 : "Loading..."
-  const collateralAmount = rawCollateralAmount ? Number(rawCollateralAmount) / 1e18 : "Loading..."
-  const stateLabel = {
-    0:"Created",
-    1:"Funded",
-    2:"Accepted",
-    3:"Taken",
-    4:"Repaid",
-    5:"Liquidated",
-  }
-
-  const { data: fixedRate } = useReadContract({
-    ...contractConfig,
-    functionName: "getFixedRate",
-  })
-
-  const { data: floatingRate,
-    refetch: refetchFloatingRate,
-    isLoading: loadingFloatingRate,
-   } = useReadContract({
-    ...contractConfig,
-    functionName: "getFloatingRate",
-  })
-
-  const {
-    data: rateType,
-    refetch: refetchRateType,
-    isLoading: loadingRate,
-  } = useReadContract({
-    ...contractConfig,
-    functionName: "currentRateType",
-  })
-
-  const rateTypeLabel = {
-    0: "Fixed",
-    1: "Floating",
-  }
-
-
-
-  const formatRate = (rate) =>
-    rate ? `${(Number(rate) / 100).toFixed(2)}%` : "Loading..."
 
   const [timeframe, setTimeframe] = useState("7d")
   const [isChartLoading, setIsChartLoading] = useState(false)
@@ -434,16 +372,52 @@ export default function Dashboard() {
                   color={chat.role === "assistant" ? "info" : "primary"}
                   variant="contained"
                 />
-                <SoftTypography 
-                  variant="body2" 
-                  mt={1}
-                  sx={{
+                
+                {chat.role === "assistant" ? (
+                  <SoftBox 
+                    mt={1}
+                    sx={{
                       opacity: chat.isLoading ? 0.7 : 1,
-                      fontStyle: chat.isLoading ? 'italic' : 'normal'
-                  }}
-                >
-                  {chat.content}
-                </SoftTypography>
+                      fontStyle: chat.isLoading ? 'italic' : 'normal',
+                      '& h1, & h2, & h3, & h4, & h5, & h6': {
+                        color: 'info.main',
+                        fontSize: '1rem',
+                        fontWeight: 'bold',
+                        mt: 1,
+                        mb: 0.5
+                      },
+                      '& ul, & ol': {
+                        pl: 2
+                      },
+                      '& p': {
+                        mb: 1
+                      },
+                      '& code': {
+                        backgroundColor: 'rgba(0,0,0,0.04)',
+                        padding: '0.2em 0.4em',
+                        borderRadius: '3px',
+                        fontFamily: 'monospace'
+                      }
+                    }}
+                  >
+                    {chat.isLoading ? (
+                      <SoftTypography variant="body2">
+                        {chat.content}
+                      </SoftTypography>
+                    ) : (
+                      <ReactMarkdown>
+                        {chat.content}
+                      </ReactMarkdown>
+                    )}
+                  </SoftBox>
+                ) : (
+                  <SoftTypography 
+                    variant="body2" 
+                    mt={1}
+                  >
+                    {chat.content}
+                  </SoftTypography>
+                )}
               </SoftBox>
             ))}
           </SoftBox>

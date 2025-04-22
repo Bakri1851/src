@@ -58,6 +58,32 @@ export const analyseLoanTerms = async (loanDetails) => {
     return generateCompletion(prompt, config);
 }
 
+export const analyseProposal = async (proposalDetails) => {
+    const config = ApiConfig.analysisTypes.marketConditions;
+
+    const prompt = `Analyse the following blockchain proposal and provide insights:
+    - Loan Amount: ${proposalDetails.loanAmount} ETH
+    - Fee Amount: ${proposalDetails.feeAmount} ETH
+    - Collateral Amount: ${proposalDetails.ethCollateralAmount} ETH
+    - Repay By: ${proposalDetails.repayByTimestamp}
+    - Fixed Rate: ${proposalDetails.fixedRate}
+    - Floating Rate: ${proposalDetails.floatingRate}
+
+    Provide:
+    1. An evaluation of these terms and fairness of the proposal
+    2. Analysis of the collateral loan ratio and its sufficiency
+    3. Assessment of interest rates compared to market conditions
+    4. Potential risks for lenders accepting this proposal
+    5. Recommendations for potential lenders considering this proposal
+    6. Any red flags or particularly favorable terms to note
+
+    Format the response in a clear and structured way, using bullet points or numbered lists where appropriate.
+    `;
+
+    return generateCompletion(prompt, config);  
+}
+
+
 export const askLoanQuestion = async (question) => {
     const config = ApiConfig.analysisTypes.loanTerms;
 

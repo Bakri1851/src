@@ -1,16 +1,14 @@
 import SoftBox from "components/SoftBox"
 import SoftTypography from "components/SoftTypography"
 import SoftButton from "components/SoftButton"
-import { ConnectButton } from "@rainbow-me/rainbowkit"
 import { useAccount, useReadContract, useWriteContract } from "wagmi"
 import { readContract } from "wagmi/actions"
 import ContractConfig from "constants/ContractConfig"
 import FactoryConfig from "constants/FactoryConfig"
-import { getFactoryConfig } from "constants/FactoryConfig"
 import { useEffect, useState } from "react"
 import { wagmiConfig } from "../wagmi.js"
 import useOpenAI from "hooks/useOpenAI.js"
-
+import ReactMarkdown from "react-markdown"
 
 export default function MyBorrowedLoans() {
     const { address, isConnected } = useAccount();
@@ -516,7 +514,7 @@ export default function MyBorrowedLoans() {
                                         onClick={() => getAIAnalysis(loanAddress)}
                                         style={{ marginTop: "12px" }}
                                     >
-                                        {aiLoading[loanAddress] ? "Loading..." : "Get AI Analysis"}
+                                        {aiLoading[loanAddress] ? "Thinking..." : "Get AI Analysis"}
                                     </SoftButton>
 
                                     {aiAnalysis[loanAddress] && (
@@ -546,9 +544,24 @@ export default function MyBorrowedLoans() {
                                             <SoftTypography variant="h6" fontWeight="bold" color="success.main" mb={1}>
                                                 AI Analysis:
                                             </SoftTypography>
-                                            <SoftTypography variant="body2" style={{whiteSpace: "pre-line"}}>
-                                                {aiAnalysis[loanAddress]}
-                                            </SoftTypography>
+                                            <SoftBox sx={{                                                 '& h1, & h2, & h3, & h4, & h5, & h6': {
+                                                    color: 'success.main',
+                                                    fontSize: '1rem',
+                                                    fontWeight: 'bold',
+                                                    mt: 1,
+                                                    mb: 0.5
+                                                },
+                                                '& ul, & ol': {
+                                                    pl: 2
+                                                },
+                                                '& p': {
+                                                    mb: 1
+                                                }
+                                            }}>
+                                                <ReactMarkdown>
+                                                    {aiAnalysis[loanAddress]}
+                                                </ReactMarkdown>
+                                            </SoftBox>
                                         </SoftBox>
                                     )}
 

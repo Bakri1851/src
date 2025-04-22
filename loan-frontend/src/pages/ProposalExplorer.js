@@ -1,22 +1,25 @@
 import FactoryConfig from 'constants/FactoryConfig';
 import { useEffect, useState } from 'react';
-import { useWriteContract, useWaitForTransactionReceipt, useReadContract } from 'wagmi';
-import { useSoftUIController } from 'context';
-import SoftInput from 'components/SoftInput';
+import { useWriteContract, useReadContract } from 'wagmi';
 import SoftButton from 'components/SoftButton';
 import SoftTypography from 'components/SoftTypography';
 import SoftBox from 'components/SoftBox';
 import { useAccount } from 'wagmi';
 import { wagmiConfig } from "../wagmi.js"
 import { readContract, waitForTransactionReceipt } from '@wagmi/core';
-import { decodeEventLog } from 'viem';
 import ContractConfig from 'constants/ContractConfig';
+import useOpenAI from 'hooks/useOpenAI.js';
+import ReactMarkdown from 'react-markdown';
+
 
 export default function ProposalExplorer() {
     const {address, isConnected} = useAccount();
     const [openProposal, setOpenProposal] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
     const [expandedProposals, setExpandedProposals] = useState({});
+
+    const [aiAnalysis, setAiAnalysis] = useState({});
+    const [aiLoading, setAiLoading] = useState({});
 
     const[proposalStatus, setProposalStatus] = useState({});
     const [acceptedProposal, setAcceptedProposal] = useState([]);
@@ -31,6 +34,32 @@ export default function ProposalExplorer() {
         functionName: "getAllOpenProposals",
         enabled: isConnected,
     });
+
+    const {analyseProposal} = useOpenAI();
+
+    const getAIAnalysis = async (proposalId) => {
+        const proposal = allDisplayProposals.find((p) => Number(p.id) === Number(proposalId));
+        if (!proposal) return;
+
+        setAiLoading((prev) => ({...prev,[proposalId]: true }));
+        
+        try {
+            const analysis = await analyseProposal({
+                loanAmount: formatEther(proposal.loanAmount),
+                feeAmount: formatEther(proposal.feeAmount),
+                ethCollateralAmount: formatEther(proposal.ethCollateralAmount),
+                repayByTimestamp: formatTimestamp(proposal.repayByTimestamp),
+                fixedRate: formatRate(proposal.fixedRate),
+                floatingRate: formatRate(proposal.floatingRate),
+            });
+            setAiAnalysis((prev) => ({...prev, [proposalId]: analysis,}));
+        } catch (error) {
+            console.error("Error fetching AI analysis:", error);
+        } finally {
+            setAiLoading((prev) => ({...prev,[proposalId]: false }));
+        }
+    };
+
 
     useEffect(() => {
         if (proposals && proposals.length > 0) {
@@ -110,7 +139,13 @@ export default function ProposalExplorer() {
         }
     }
 
-    const allDisplayProposals = [...openProposal, ...acceptedProposal.filter(ap => !openProposal.some(op => Number(op.id) === Number(ap.id)))];
+    const allDisplayProposals = [
+        ...openProposal.filter(proposal => proposal.borrower.toLowerCase() !== address?.toLowerCase()), 
+        ...acceptedProposal.filter(ap => 
+            !openProposal.some(op => Number(op.id) === Number(ap.id)) && 
+            ap.borrower.toLowerCase() !== address?.toLowerCase()
+        )
+    ];
 
 
     const formatEther = (value) => {
@@ -206,6 +241,65 @@ export default function ProposalExplorer() {
                                 <SoftTypography variant = "body2" mt = {1}>
                                     Floating Rate: {formatRate(proposal.floatingRate)}
                                 </SoftTypography>
+
+                                    <SoftButton
+                                        variant="outlined" 
+                                        color="primary" 
+                                        onClick={() => getAIAnalysis(Number(proposal.id))}
+                                        style={{ marginTop: "12px" }}
+                                    >
+                                        {aiLoading[Number(proposal.id)] ? "Thinking..." : "Get AI Analysis"}
+                                    </SoftButton>
+
+                                    {aiAnalysis[Number(proposal.id)] && (
+                                        <SoftBox
+                                            mt={2}
+                                            p={2}
+                                            border="1px dashed"
+                                            borderColor="success.main"
+                                            borderRadius="10px"
+                                            backgroundColor="rgba(76, 175, 80, 0.1)"
+                                            width="100%"
+                                            maxWidth="800px"
+                                            textAlign="left"
+                                            maxHeight="200px" 
+                                            overflow="auto" 
+                                            sx={{
+                                                '&::-webkit-scrollbar': {
+                                                    width: '8px',
+                                                    backgroundColor: 'rgba(0,0,0,0.05)',
+                                                },
+                                                '&::-webkit-scrollbar-thumb': {
+                                                    borderRadius: '4px',
+                                                    backgroundColor: 'rgba(76, 175, 80, 0.3)',
+                                                },
+
+                                                wordsBreak: "break-word",
+                                            }}
+                                        >
+                                            <SoftTypography variant="h6" fontWeight="bold" color="success.main" mb={1}>
+                                                AI Analysis:
+                                            </SoftTypography>
+                                            <SoftBox sx={{                                                 '& h1, & h2, & h3, & h4, & h5, & h6': {
+                                                    color: 'success.main',
+                                                    fontSize: '1rem',
+                                                    fontWeight: 'bold',
+                                                    mt: 1,
+                                                    mb: 0.5
+                                                },
+                                                '& ul, & ol': {
+                                                    pl: 2
+                                                },
+                                                '& p': {
+                                                    mb: 1
+                                                }
+                                            }}>
+                                                <ReactMarkdown>
+                                                    {aiAnalysis[Number(proposal.id)]}
+                                                </ReactMarkdown>
+                                            </SoftBox>
+                                        </SoftBox>
+                                    )}
 
                                 <SoftButton variant = "gradient" color = "success" onClick = {() => handleAcceptProposal(Number(proposal.id))} style = {{marginTop: "12px"}} disabled = {isLoading}>
                                     Accept Proposal

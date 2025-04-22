@@ -20,11 +20,11 @@ const ApiConfig = {
             maxTokens: 1000,
             temperature: 0.7,
         },
-        riskAssessment:{
+    /*    riskAssessment:{
             model: "gpt-4o",
             maxTokens: 1200,
             temperature: 0.3,
-        },
+        }, */
     }
 }
 
