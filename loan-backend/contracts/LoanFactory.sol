@@ -29,7 +29,7 @@ contract LoanFactory {
     uint256 public nextProposalId;
     mapping(uint256 => LoanProposal) public proposals;
     mapping(uint256 => address) public proposalToAddress;
-
+    
     function createProposal(
         uint256 _loanAmount,
         uint256 _feeAmount,

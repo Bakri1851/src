@@ -2,30 +2,31 @@ import { useEffect, useRef, useState } from "react"
 import SoftBox from "components/SoftBox"
 import SoftTypography from "components/SoftTypography"
 import SoftButton from "components/SoftButton"
-import SoftAlert from "components/SoftAlert"
 import SoftInput from "components/SoftInput"
 import SoftBadge from "components/SoftBadge"
 import { ConnectButton } from "@rainbow-me/rainbowkit"
 import { useAccount, useReadContracts, useReadContract, useWriteContract } from "wagmi"
 import { waitForTransactionReceipt } from '@wagmi/core'
-import { rateSwitchingABI } from "constants/RateSwitchingABI"
 import ContractConfig from "constants/ContractConfig"
 import Grid from "@mui/material/Grid"
 import Card from "@mui/material/Card"
 import Icon from "@mui/material/Icon"
 import Chart from "react-apexcharts"
 import ButtonGroup from "@mui/material/ButtonGroup" 
+import useOpenAI from "hooks/useOpenAI"
+
 
 export default function Dashboard() {
   const { isConnected } = useAccount()
   const { writeContract } = useWriteContract()
-
+  
+  const [aiChat, setAiChat] = useState([])
+  const [aiMessage, setAiMessage] = useState("")
+  
   const [ethPrice, setEthPrice] = useState(null)
   const [priceHistory, setPriceHistory] = useState([])
-  const [aiMessage, setAiMessage] = useState("")
-  const [aiChat, setAiChat] = useState([
-    { role: "assistant", content: "Hello! I'm your loan assistant. How can I help you today?" }
-  ])
+
+  const {askLoanQuestion, isLoading:aiIsLoading} = useOpenAI()
 
   const contractConfig = ContractConfig;
 
@@ -85,44 +86,7 @@ export default function Dashboard() {
     1: "Floating",
   }
 
-  const handleSwitchRate = async () => {
-    try {
-      const hash = await writeContract({
-        address: contractConfig.address,
-        abi: contractConfig.abi,
-        functionName: 'switchRateType',
-        chainId: contractConfig.chainId,
-      });
-      console.log("Transaction submitted with hash:", hash.hash);
 
-      await waitForTransactionReceipt({
-        hash: hash.hash,
-        chainId: contractConfig.chainId 
-      });
-
-      await refetchRateType();
-    } catch (error) {
-      console.error('Switch rate failed:', error);
-    }
-  }
-
-  const handleRefreshRate = async () => {
-    try {
-      const hash = await writeContract({
-        address: contractConfig.address,
-        abi: contractConfig.abi,
-        functionName: "updateRates",
-        chainId: contractConfig.chainId,
-      });
-      
-      console.log("Transaction submitted with hash:", hash);
-    } catch (err) {
-      console.error("Failed to refresh floating rate:", err);
-      alert(`Failed to update rate: ${err.message || "Unknown error"}`);
-    } finally {
-      await refetchFloatingRate();
-    }
-  };
 
   const formatRate = (rate) =>
     rate ? `${(Number(rate) / 100).toFixed(2)}%` : "Loading..."
@@ -184,40 +148,39 @@ export default function Dashboard() {
     }
   }
 
-  const handleAiSubmit = (e) => {
+  const handleAiSubmit = async (e) => {
     e.preventDefault()
     if (!aiMessage.trim()) return
     
-    setAiChat(prev => [...prev, { role: "user", content: aiMessage }])
-    
-    const processQuery = async () => {
-      await new Promise(resolve => setTimeout(resolve, 700))
-      
-      const query = aiMessage.toLowerCase()
-      let response = ""
-      
-      if (query.includes("interest rate") || query.includes("rate")) {
-        response = "Interest rates are calculated based on market conditions. Fixed rates provide stability, while floating rates may offer lower costs when markets are favorable."
-      } else if (query.includes("collateral")) {
-        response = "Collateral is required to secure your loan. The minimum collateral requirement is typically 150% of the loan value to protect against market volatility."
-      } else if (query.includes("switch") || query.includes("switching")) {
-        response = "You can switch between fixed and floating rates at any time using the 'Switch Rate' button on your active loan. This allows you to optimize your interest payments based on market conditions."
-      } else if (query.includes("liquidation") || query.includes("liquidated")) {
-        response = "Liquidation occurs if your collateral value falls below the required threshold. To avoid liquidation, you can add more collateral to your position."
-      } else if (query.includes("repay") || query.includes("repayment")) {
-        response = "You can repay your loan at any time before the due date. Early repayments don't incur any additional fees."
-      } else if (query.includes("eth") || query.includes("ethereum") || query.includes("price")) {
-        response = ethPrice ? `The current Ethereum price is $${ethPrice.usd.toFixed(2)} with a 24-hour change of ${ethPrice.usd_24h_change.toFixed(2)}%.` : "I'm unable to fetch the Ethereum price at the moment."
-      } else {
-        response = "I can answer questions about loan rates, collateral requirements, rate switching, liquidations, repayments, and Ethereum prices. How else can I assist you?"
-      }
-      
-      setAiChat(prev => [...prev, { role: "assistant", content: response }])
-    }
-    
-    processQuery()
+    const userMessage = aiMessage
+    setAiChat(prev => [...prev, { role: "user", content: userMessage }])
     setAiMessage("")
-  }
+    
+    try {
+        setAiChat(prev => [...prev, { 
+            role: "assistant", 
+            content: "Thinking...",
+            isLoading: true 
+        }])
+        
+        const response = await askLoanQuestion(userMessage)
+        
+        setAiChat(prev => [
+            ...prev.filter(msg => !msg.isLoading),
+            { role: "assistant", content: response }
+        ])
+    } catch (error) {
+        console.error("Error getting AI response:", error)
+        
+        setAiChat(prev => [
+            ...prev.filter(msg => !msg.isLoading),
+            { 
+                role: "assistant", 
+                content: "Sorry, I encountered an error processing your request. Please try again."
+            }
+        ])
+    }
+}
 
   const chartOptions = {
     chart: {
@@ -471,7 +434,14 @@ export default function Dashboard() {
                   color={chat.role === "assistant" ? "info" : "primary"}
                   variant="contained"
                 />
-                <SoftTypography variant="body2" mt={1}>
+                <SoftTypography 
+                  variant="body2" 
+                  mt={1}
+                  sx={{
+                      opacity: chat.isLoading ? 0.7 : 1,
+                      fontStyle: chat.isLoading ? 'italic' : 'normal'
+                  }}
+                >
                   {chat.content}
                 </SoftTypography>
               </SoftBox>
@@ -486,8 +456,13 @@ export default function Dashboard() {
               onChange={(e) => setAiMessage(e.target.value)}
               fullWidth
               endAdornment={
-                <SoftButton type="submit" color="primary" variant="contained">
-                  Send
+                <SoftButton 
+                  type="submit" 
+                  color="primary" 
+                  variant="contained" 
+                  disabled={aiIsLoading}
+                >
+                  {aiIsLoading ? "..." : "Send"}
                 </SoftButton>
               }
               icon={<Icon fontSize="small">send</Icon>}

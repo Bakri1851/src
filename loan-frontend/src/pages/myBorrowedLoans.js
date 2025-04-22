@@ -9,6 +9,8 @@ import FactoryConfig from "constants/FactoryConfig"
 import { getFactoryConfig } from "constants/FactoryConfig"
 import { useEffect, useState } from "react"
 import { wagmiConfig } from "../wagmi.js"
+import useOpenAI from "hooks/useOpenAI.js"
+
 
 export default function MyBorrowedLoans() {
     const { address, isConnected } = useAccount();
@@ -17,6 +19,11 @@ export default function MyBorrowedLoans() {
     const [isLoading, setIsLoading] = useState(false);
     const [expandedLoans, setExpandedLoans] = useState({}); 
     const [refreshCounter, setRefreshCounter] = useState(0); 
+
+    const [aiAnalysis, setAiAnalysis] = useState({});
+    const [aiLoading, setAiLoading] = useState(false);
+
+    const {analyseLoanTerms} = useOpenAI()
 
     const { writeContract } = useWriteContract()
     const config = wagmiConfig
@@ -28,6 +35,32 @@ export default function MyBorrowedLoans() {
         args: [address],
         enabled: !!address,
     });
+
+
+    const getAIAnalysis = async (loanAddress) => {
+        if (aiAnalysis[loanAddress]) return;
+
+        setAiLoading(prev => ({...prev,[loanAddress]: true}));
+
+        try{
+            const analysis = await analyseLoanTerms({
+                loanAmount: formatEther(loanDetails[loanAddress].loanAmount),
+                collateral: formatEther(loanDetails[loanAddress].collateralAmount),
+                fixedRate: formatRate(loanDetails[loanAddress].fixedRate),
+                floatingRate: formatRate(loanDetails[loanAddress].floatingRate),
+                repayByTimestamp: formatTimestamp(loanDetails[loanAddress].repayByTimestamp),
+                state: formatState(loanDetails[loanAddress].state),
+                rateType: rateTypeLabel[loanDetails[loanAddress].rateType],
+            })
+            setAiAnalysis(prev => ({...prev,[loanAddress]: analysis}));
+
+        } catch (error) {
+            console.error("Error fetching AI analysis:", error);
+        } finally {
+            setAiLoading(prev => ({...prev,[loanAddress]: false}));
+        }
+
+    }
 
     const getFilteredLoans = async (loanAddresses) => {
         if (!loanAddresses || loanAddresses.length === 0) return [];
@@ -446,7 +479,7 @@ export default function MyBorrowedLoans() {
                                     {loanDetails[loanAddress].state === 2 && (
                                         <SoftButton
                                             variant="outlined"
-                                            color="primary"
+                                            color="secondary"
                                             onClick={() => handleTakeLoan(loanAddress)}
                                             style={{ marginTop: "12px" }}
                                         >
@@ -476,6 +509,14 @@ export default function MyBorrowedLoans() {
                                         </SoftButton>
                                     )}
 
+                                    <SoftButton
+                                        variant="outlined" 
+                                        color="primary" 
+                                        onClick={() => getAIAnalysis(loanAddress)}
+                                        style={{ marginTop: "12px" }}
+                                    >
+                                        {aiLoading[loanAddress] ? "Loading..." : "Get AI Analysis"}
+                                    </SoftButton>
 
 
                                     <SoftButton 

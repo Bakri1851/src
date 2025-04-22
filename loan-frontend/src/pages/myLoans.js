@@ -9,6 +9,8 @@ import FactoryConfig from "constants/FactoryConfig"
 import { getFactoryConfig } from "constants/FactoryConfig"
 import { useEffect, useState } from "react"
 import { wagmiConfig } from "../wagmi.js"
+import useOpenAI from "../hooks/useOpenAI.js"
+
 
 export default function MyLoans() {
     const { address, isConnected } = useAccount();
@@ -18,8 +20,13 @@ export default function MyLoans() {
     const [expandedLoans, setExpandedLoans] = useState({});
     const [refreshCounter, setRefreshCounter] = useState(0); 
 
+    const [aiAnalysis, setAiAnalysis] = useState({});
+    const [aiLoading, setAiLoading] = useState({});
+
     const config = wagmiConfig
     const {writeContract} = useWriteContract();
+
+    const { analyseLoanTerms} = useOpenAI();
     
     const { data: lenderLoans, refetch } = useReadContract({
         address: FactoryConfig.address,
@@ -28,6 +35,26 @@ export default function MyLoans() {
         args: [address],
         enabled: !!address,
     });
+
+    const getAIAnalysis = async (loanAddress) => {
+        if (aiAnalysis[loanAddress]) return;
+        setAiLoading(prev => ({ ...prev, [loanAddress]: true }));
+        try {
+            const analysis  = await analyseLoanTerms({
+                loanAmount: formatEther(loanDetails[loanAddress].loanAmount),
+                fixedRate: formatRate(loanDetails[loanAddress].fixedRate),
+                floatingRate: formatRate(loanDetails[loanAddress].floatingRate),
+                repayByTimestamp: formatTimestamp(loanDetails[loanAddress].repayByTimestamp),
+                state: formatState(loanDetails[loanAddress].state),
+            })
+            setAiAnalysis(prev => ({ ...prev, [loanAddress]: analysis }));
+        } catch (error) {
+            console.error("Error fetching AI analysis:", error);
+        } finally {
+            setAiLoading(prev => ({ ...prev, [loanAddress]: false }));
+        }
+    }
+
 
     const getFilteredLoans = async (loanAddresses) => {
         if (!loanAddresses || loanAddresses.length === 0) return [];
@@ -321,7 +348,15 @@ export default function MyLoans() {
                                             Liquidate Loan
                                         </SoftButton>
                                     )}
-                                        
+                                    
+                                    <SoftButton
+                                        variant="outlined" 
+                                        color="primary" 
+                                        onClick={() => getAIAnalysis(loanAddress)}
+                                        style={{ marginTop: "12px" }}
+                                    >
+                                        {aiLoading[loanAddress] ? "Loading..." : "Get AI Analysis"}
+                                    </SoftButton>
                                     
                                     <SoftButton 
                                         variant="outlined" 

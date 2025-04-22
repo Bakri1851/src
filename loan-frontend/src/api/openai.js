@@ -1,0 +1,71 @@
+import ApiConfig from "../constants/ApiConfig";
+
+export const generateCompletion = async (prompt, options = {}) => {
+    try {
+        console.log("Sending request to OpenAI API...");
+        console.log("API Key exists:", !!ApiConfig.openaiApiKey);
+        
+        const response = await fetch(`${ApiConfig.openaiApiUrl}/chat/completions`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${ApiConfig.openaiApiKey}`,
+            },
+            body: JSON.stringify({
+                model: options.model || ApiConfig.defaultModel,
+                messages: [{ role: "user", content: prompt }],
+                max_tokens: options.maxTokens || ApiConfig.defaultMaxTokens,
+                temperature: options.temperature || ApiConfig.defaultTemperature,
+            }),
+        });
+
+        if (!response.ok) {
+            const errorData = await response.text();
+            console.error("API Response:", response.status, errorData);
+            throw new Error(`API request failed with status ${response.status}: ${errorData}`);
+        }
+
+        const data = await response.json();
+        return data.choices[0].message.content;
+    } catch (error) {
+        console.error("OpenAI API error:", error);
+        throw error;
+    }
+}
+
+export const analyseLoanTerms = async (loanDetails) => {
+    const config = ApiConfig.analysisTypes.loanTerms;
+
+    const prompt = `Analyse these smart contract loan terms provide insights:
+    - Loan Amount: ${loanDetails.loanAmount}
+    - Fixed Rate: ${loanDetails.fixedRate}
+    - Floating Rate : ${loanDetails.floatingRate || "N/A"}
+    - Repayment deadline : ${loanDetails.repayByTimestamp}
+    - Current Loan Status: ${loanDetails.state}
+
+    Provide:
+    1. An evaluation of these terms
+    2. Recommendation on whether a fixed or floating rate is more beneficial
+    3. Any potential risks or benefits associated with these terms
+    4. Should the loan be paid off early or not?
+    5. Recommend actions for borrower or lender based on the analysis.
+    6. Any other relevant information or insights that could be useful for the borrower or lender.
+    7. Should the lender liquidate the loan or not if possible
+
+    Format the response in a clear and structured manner, using bullet points or numbered lists where appropriate.    
+    `;
+
+    return generateCompletion(prompt, config);
+}
+
+export const askLoanQuestion = async (question) => {
+    const config = ApiConfig.analysisTypes.loanTerms;
+
+    const prompt = `As a blockchain loan expert, answer the following question :
+    ${question}
+    
+    Provide a clear, concise answer based on best practices in DeFi and blockchain lending.
+    `;
+
+    return generateCompletion(prompt, config);
+}
