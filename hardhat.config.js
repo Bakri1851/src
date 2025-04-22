@@ -25,5 +25,10 @@ module.exports = {
   },  
   mocha: {
     timeout: 20000
-  }
+  },
+
+  paths: {
+    sources: "./loan-backend/contracts",
+    artfacts: "./artifacts",
+  },
 };

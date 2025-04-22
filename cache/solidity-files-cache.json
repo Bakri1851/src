@@ -1,82 +1,6 @@
 {
   "_format": "hh-sol-cache-2",
   "files": {
-    "C:\\Users\\Bakri\\IdeaProjects\\Loan Switching Smart Contract\\src\\contracts\\AggregatorV3Interface.sol": {
-      "lastModificationDate": 1740267793636,
-      "contentHash": "fcda3ff0e1bb776a8dbe175885c9dd35",
-      "sourceName": "contracts/AggregatorV3Interface.sol",
-      "solcConfig": {
-        "version": "0.8.28",
-        "settings": {
-          "evmVersion": "paris",
-          "optimizer": {
-            "enabled": false,
-            "runs": 200
-          },
-          "outputSelection": {
-            "*": {
-              "*": [
-                "abi",
-                "evm.bytecode",
-                "evm.deployedBytecode",
-                "evm.methodIdentifiers",
-                "metadata"
-              ],
-              "": [
-                "ast"
-              ]
-            }
-          }
-        }
-      },
-      "imports": [],
-      "versionPragmas": [
-        "^0.8.0"
-      ],
-      "artifacts": [
-        "AggregatorV3Interface"
-      ]
-    },
-    "C:\\Users\\Bakri\\IdeaProjects\\Loan Switching Smart Contract\\src\\contracts\\LoanRequest.sol": {
-      "lastModificationDate": 1744921387005,
-      "contentHash": "429097cb5d16ee2d8dfc2177ec7f96cf",
-      "sourceName": "contracts/LoanRequest.sol",
-      "solcConfig": {
-        "version": "0.8.28",
-        "settings": {
-          "evmVersion": "paris",
-          "optimizer": {
-            "enabled": false,
-            "runs": 200
-          },
-          "outputSelection": {
-            "*": {
-              "*": [
-                "abi",
-                "evm.bytecode",
-                "evm.deployedBytecode",
-                "evm.methodIdentifiers",
-                "metadata"
-              ],
-              "": [
-                "ast"
-              ]
-            }
-          }
-        }
-      },
-      "imports": [
-        "hardhat/console.sol",
-        "./AggregatorV3Interface.sol",
-        "./LoanFactory.sol"
-      ],
-      "versionPragmas": [
-        "^0.8.0"
-      ],
-      "artifacts": [
-        "LoanRequest"
-      ]
-    },
     "C:\\Users\\Bakri\\IdeaProjects\\Loan Switching Smart Contract\\src\\node_modules\\hardhat\\console.sol": {
       "lastModificationDate": 1740614400605,
       "contentHash": "681c532e816169606d13a5fe8b475074",
@@ -113,49 +37,10 @@
         "console"
       ]
     },
-    "C:\\Users\\Bakri\\IdeaProjects\\Loan Switching Smart Contract\\src\\contracts\\IERC20.sol": {
-      "lastModificationDate": 1740616815950,
-      "contentHash": "c13d04aa96befe20173e00de3a15d728",
-      "sourceName": "contracts/IERC20.sol",
-      "solcConfig": {
-        "version": "0.8.28",
-        "settings": {
-          "evmVersion": "paris",
-          "optimizer": {
-            "enabled": false,
-            "runs": 200
-          },
-          "outputSelection": {
-            "*": {
-              "*": [
-                "abi",
-                "evm.bytecode",
-                "evm.deployedBytecode",
-                "evm.methodIdentifiers",
-                "metadata"
-              ],
-              "": [
-                "ast"
-              ]
-            }
-          }
-        }
-      },
-      "imports": [
-        "hardhat/console.sol"
-      ],
-      "versionPragmas": [
-        "^0.8.0"
-      ],
-      "artifacts": [
-        "IERC20",
-        "MockDAI"
-      ]
-    },
-    "C:\\Users\\Bakri\\IdeaProjects\\Loan Switching Smart Contract\\src\\contracts\\Lock.sol": {
-      "lastModificationDate": 1740593081778,
-      "contentHash": "7eee587c347fe6b1de50c96688cb9477",
-      "sourceName": "contracts/Lock.sol",
+    "C:\\Users\\Bakri\\IdeaProjects\\Loan Switching Smart Contract\\src\\loan-backend\\contracts\\AggregatorV3Interface.sol": {
+      "lastModificationDate": 1740267793636,
+      "contentHash": "fcda3ff0e1bb776a8dbe175885c9dd35",
+      "sourceName": "loan-backend/contracts/AggregatorV3Interface.sol",
       "solcConfig": {
         "version": "0.8.28",
         "settings": {
@@ -182,16 +67,56 @@
       },
       "imports": [],
       "versionPragmas": [
-        "^0.8.28"
+        "^0.8.0"
       ],
       "artifacts": [
-        "Lock"
+        "AggregatorV3Interface"
       ]
     },
-    "C:\\Users\\Bakri\\IdeaProjects\\Loan Switching Smart Contract\\src\\contracts\\LoanFactory.sol": {
-      "lastModificationDate": 1745178880248,
-      "contentHash": "416ee912d77738910ef6d7887ceffc4c",
-      "sourceName": "contracts/LoanFactory.sol",
+    "C:\\Users\\Bakri\\IdeaProjects\\Loan Switching Smart Contract\\src\\loan-backend\\contracts\\LoanRequest.sol": {
+      "lastModificationDate": 1745273518324,
+      "contentHash": "429097cb5d16ee2d8dfc2177ec7f96cf",
+      "sourceName": "loan-backend/contracts/LoanRequest.sol",
+      "solcConfig": {
+        "version": "0.8.28",
+        "settings": {
+          "evmVersion": "paris",
+          "optimizer": {
+            "enabled": false,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [
+        "hardhat/console.sol",
+        "./AggregatorV3Interface.sol",
+        "./LoanFactory.sol"
+      ],
+      "versionPragmas": [
+        "^0.8.0"
+      ],
+      "artifacts": [
+        "LoanRequest"
+      ]
+    },
+    "C:\\Users\\Bakri\\IdeaProjects\\Loan Switching Smart Contract\\src\\loan-backend\\contracts\\LoanFactory.sol": {
+      "lastModificationDate": 1745273520268,
+      "contentHash": "14c3918389220988f909f8d6cd10e10f",
+      "sourceName": "loan-backend/contracts/LoanFactory.sol",
       "solcConfig": {
         "version": "0.8.28",
         "settings": {
