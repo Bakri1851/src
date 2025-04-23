@@ -6,7 +6,7 @@ import SoftTypography from 'components/SoftTypography';
 import SoftBox from 'components/SoftBox';
 import { useAccount } from 'wagmi';
 import { wagmiConfig } from "../wagmi.js"
-import { readContract, waitForTransactionReceipt } from '@wagmi/core';
+import { readContract} from '@wagmi/core';
 import ContractConfig from 'constants/ContractConfig';
 import useOpenAI from 'hooks/useOpenAI.js';
 import ReactMarkdown from 'react-markdown';

@@ -119,7 +119,7 @@ contract LoanFactory {
         return proposalToAddress[_proposalId];
     }
 
-
+    //remove
     function createLoan(
         uint256 loanAmount,
         uint256 feeAmount,

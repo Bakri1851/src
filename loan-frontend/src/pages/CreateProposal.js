@@ -7,7 +7,8 @@ import SoftButton from 'components/SoftButton';
 import SoftTypography from 'components/SoftTypography';
 import SoftBox from 'components/SoftBox';
 import { useAccount } from 'wagmi';
-
+import { helpMakeProposal } from 'api/openai';
+import ReactMarkdown from 'react-markdown';
 import { parseEther } from 'viem';
 
 const ORACLE_ABI = [
@@ -29,6 +30,9 @@ const ORACLE_ABI = [
 export default function CreateProposal() {
     const [controller] = useSoftUIController(); 
     const direction = controller?.direction || 'ltr';
+
+    const [aiSuggestions, setAiSuggestions] = useState("");
+    const [aiLoading, setAiLoading] = useState(false);
 
     const [form, setForm] = useState({
         loanAmount: '',
@@ -85,6 +89,25 @@ export default function CreateProposal() {
             console.error('Error waiting for transaction receipt:', error);
         },
     });
+
+    const getAiHelp = async () => {
+        setAiLoading(true);
+        try {
+            const suggestions = await helpMakeProposal({
+                loanAmount: form.loanAmount,
+                feeAmount: form.feeAmount,
+                collateral: form.collateral,
+                repayByDateString: form.repayByDateString,
+                fixedRate: formatRate(form.fixedRate),
+                floatingRate: formatRate(form.floatingRate),
+            });
+            setAiSuggestions(suggestions);
+        } catch (error) {
+            console.error("Error getting AI help:", error);
+        } finally {
+            setAiLoading(false);
+        }
+    };
 
     const handleDateChange = (e) => {
         const dateString = e.target.value;
@@ -308,6 +331,74 @@ export default function CreateProposal() {
                             {formatRate(form.floatingRate)}
                         </SoftTypography>
                     </SoftBox>
+                    <SoftBox mb = {2}>
+                        <SoftButton
+                            variant = "gradient"
+                            color = "info"
+                            fullWidth
+                            disabled = {aiLoading}
+                            onClick = {getAiHelp}
+                            gradient = {{
+                                from: "info",
+                                to: "success",
+                                deg: 45,
+                            }}
+                            
+                        >
+                            {aiLoading ? "Thinking..." : "Get AI Suggestions"}
+                        </SoftButton>
+                    </SoftBox>
+                    {aiSuggestions && (
+                        <SoftBox 
+                            mt={2}
+                            p={2}
+                            border="1px dashed"
+                            borderColor="info.main"
+                            borderRadius="10px"
+                            backgroundColor="rgba(0, 142, 255, 0.1)"
+                            width="100%"
+                            textAlign="left"
+                            maxHeight="300px"
+                            maxWidth="800px"
+                            overflow="auto"
+                            mb={3}
+                            sx={{
+                                '&::-webkit-scrollbar': {
+                                    width: '8px',
+                                    backgroundColor: 'rgba(0,0,0,0.05)',
+                                },
+                                '&::-webkit-scrollbar-thumb': {
+                                    borderRadius: '4px',
+                                    backgroundColor: 'rgba(0, 142, 255, 0.3)',
+                                },
+                                wordBreak: "break-word",
+                            }}
+                        >
+                            <SoftTypography variant="h6" fontWeight="bold" color="info.main" mb={1}>
+                                AI Suggestions:
+                            </SoftTypography>
+                            <SoftBox sx={{
+                                '& h1, & h2, & h3, & h4, & h5, & h6': {
+                                    color: 'info.main',
+                                    fontSize: '1rem',
+                                    fontWeight: 'bold',
+                                    mt: 1,
+                                    mb: 0.5
+                                },
+                                '& ul, & ol': {
+                                    pl: 2
+                                },
+                                '& p': {
+                                    mb: 1
+                                }
+                            }}>
+                                <ReactMarkdown>
+                                    {aiSuggestions}
+                                </ReactMarkdown>
+                            </SoftBox>
+                        </SoftBox>
+                    )}
+
                     <SoftBox mb = {2}>
                         <SoftButton
                             type = "submit"

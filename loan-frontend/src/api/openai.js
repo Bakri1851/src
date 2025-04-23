@@ -83,6 +83,33 @@ export const analyseProposal = async (proposalDetails) => {
     return generateCompletion(prompt, config);  
 }
 
+export const helpMakeProposal = async (proposalDetails) => {
+    const config = ApiConfig.analysisTypes.loanTerms;
+
+    const prompt = `As a blockchain loan expert, help optimize this loan proposal:
+    - Loan Amount: ${proposalDetails.loanAmount || "Not specified"} ETH
+    - Fee Amount: ${proposalDetails.feeAmount || "Not specified"} ETH
+    - Collateral Amount: ${proposalDetails.collateral || "Not specified"} ETH
+    - Repay By: ${proposalDetails.repayByDateString || "Not specified"}
+    - Fixed Rate: ${proposalDetails.fixedRate || "Not specified"}
+    - Floating Rate: ${proposalDetails.floatingRate || "Not specified"}
+
+    Provide:
+    1. Suggestions for improving these loan terms to be fair and attractive
+    2. Recommended collateral-to-loan ratio based on current market conditions
+    3. Advice on appropriate fee structure
+    4. Optimal repayment timeframe
+    5. Explanation of fixed vs floating rate choice for this particular proposal
+    6. Any other recommendations to make this proposal more likely to be accepted
+
+    If any values are missing, provide general advice for that parameter.
+    Format the response in a clear and structured way, using bullet points or numbered lists where appropriate.
+    The rates cannot be adjusted and are deteremined by the market so keep that in minde.
+    `;
+
+    return generateCompletion(prompt, config);
+}
+
 
 export const askLoanQuestion = async (question) => {
     const config = ApiConfig.analysisTypes.loanTerms;
