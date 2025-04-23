@@ -466,8 +466,8 @@ export default function MyBorrowedLoans() {
 
                                     {loanDetails[loanAddress].state === 1 && (
                                         <SoftButton
-                                            variant="outlined"
-                                            color="success"
+                                            variant="gradient"
+                                            color="info"
                                             onClick={() => handleAcceptLoan(loanAddress)}
                                             style={{ marginTop: "12px" }}
                                         >
@@ -477,8 +477,8 @@ export default function MyBorrowedLoans() {
 
                                     {loanDetails[loanAddress].state === 2 && (
                                         <SoftButton
-                                            variant="outlined"
-                                            color="secondary"
+                                            variant="gradient"
+                                            color="info"
                                             onClick={() => handleTakeLoan(loanAddress)}
                                             style={{ marginTop: "12px" }}
                                         >
@@ -488,8 +488,8 @@ export default function MyBorrowedLoans() {
 
                                     {loanDetails[loanAddress].state === 3 && (
                                         <SoftButton
-                                            variant="outlined" 
-                                            color="success" 
+                                            variant="gradient" 
+                                            color="info" 
                                             onClick={() => handleRepayLoan(loanAddress)}
                                             style={{ marginTop: "12px" }}
                                         >
@@ -499,8 +499,8 @@ export default function MyBorrowedLoans() {
 
                                     {loanDetails[loanAddress].state < 4 && (
                                         <SoftButton
-                                            variant="outlined" 
-                                            color="error" 
+                                            variant="gradient" 
+                                            color="info" 
                                             onClick={() => handleSwitchRate(loanAddress)}
                                             style={{ marginTop: "12px" }}
                                         >
@@ -509,8 +509,8 @@ export default function MyBorrowedLoans() {
                                     )}
 
                                     <SoftButton
-                                        variant="outlined" 
-                                        color="primary" 
+                                        variant="gradient" 
+                                        color="info" 
                                         onClick={() => getAIAnalysis(loanAddress)}
                                         style={{ marginTop: "12px" }}
                                     >
@@ -541,11 +541,11 @@ export default function MyBorrowedLoans() {
                                                 },
                                             }}
                                         >
-                                            <SoftTypography variant="h6" fontWeight="bold" color="success.main" mb={1}>
+                                            <SoftTypography variant="h6" fontWeight="bold" color="info" mb={1}>
                                                 AI Analysis:
                                             </SoftTypography>
                                             <SoftBox sx={{                                                 '& h1, & h2, & h3, & h4, & h5, & h6': {
-                                                    color: 'success.main',
+                                                    color: 'info.main',
                                                     fontSize: '1rem',
                                                     fontWeight: 'bold',
                                                     mt: 1,
@@ -567,7 +567,7 @@ export default function MyBorrowedLoans() {
 
 
                                     <SoftButton 
-                                        variant="outlined" 
+                                        variant="gradient" 
                                         color="info" 
                                         onClick={() => toggleLoanDetails(loanAddress)}
                                         style={{ marginTop: "12px" }}
@@ -579,7 +579,7 @@ export default function MyBorrowedLoans() {
                                 </>
                             ) : (
                                 <SoftButton 
-                                    variant="outlined" 
+                                    variant="gradient" 
                                     color="info" 
                                     onClick={() => toggleLoanDetails(loanAddress)}
                                 >

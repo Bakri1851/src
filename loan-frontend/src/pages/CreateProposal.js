@@ -338,11 +338,7 @@ export default function CreateProposal() {
                             fullWidth
                             disabled = {aiLoading}
                             onClick = {getAiHelp}
-                            gradient = {{
-                                from: "info",
-                                to: "success",
-                                deg: 45,
-                            }}
+                            
                             
                         >
                             {aiLoading ? "Thinking..." : "Get AI Suggestions"}

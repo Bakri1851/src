@@ -337,8 +337,8 @@ export default function MyLoans() {
 
                                     {((loanDetails[loanAddress].state == 3) && (loanDetails[loanAddress].repayByTimestamp && Number(loanDetails[loanAddress].repayByTimestamp)<Math.floor(Date.now()/1000))) && (
                                         <SoftButton
-                                            variant="outlined"
-                                            color="error"
+                                            variant="gradient"
+                                            color="info"
                                             onClick={() => handleLiquidateLoan(loanAddress)}
                                             style={{ marginTop: "12px" }}
                                             
@@ -348,8 +348,8 @@ export default function MyLoans() {
                                     )}
                                     
                                     <SoftButton
-                                        variant="outlined" 
-                                        color="primary" 
+                                        variant="gradient" 
+                                        color="info" 
                                         onClick={() => getAIAnalysis(loanAddress)}
                                         style={{ marginTop: "12px" }}
                                     >
@@ -408,7 +408,7 @@ export default function MyLoans() {
 
                                     
                                     <SoftButton 
-                                        variant="outlined" 
+                                        variant="gradient" 
                                         color="info" 
                                         onClick={() => toggleLoanDetails(loanAddress)}
                                         style={{ marginTop: "12px" }}
@@ -418,7 +418,7 @@ export default function MyLoans() {
                                 </>
                             ) : (
                                 <SoftButton 
-                                    variant="outlined" 
+                                    variant="gradient" 
                                     color="info" 
                                     onClick={() => toggleLoanDetails(loanAddress)}
                                 >

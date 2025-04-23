@@ -243,8 +243,8 @@ export default function ProposalExplorer() {
                                 </SoftTypography>
 
                                     <SoftButton
-                                        variant="outlined" 
-                                        color="primary" 
+                                        variant="gradient" 
+                                        color="info" 
                                         onClick={() => getAIAnalysis(Number(proposal.id))}
                                         style={{ marginTop: "12px" }}
                                     >
@@ -301,16 +301,16 @@ export default function ProposalExplorer() {
                                         </SoftBox>
                                     )}
 
-                                <SoftButton variant = "gradient" color = "success" onClick = {() => handleAcceptProposal(Number(proposal.id))} style = {{marginTop: "12px"}} disabled = {isLoading}>
+                                <SoftButton variant = "gradient" color = "info" onClick = {() => handleAcceptProposal(Number(proposal.id))} style = {{marginTop: "12px"}} disabled = {isLoading}>
                                     Accept Proposal
                                 </SoftButton>
-                                <SoftButton  variant = "outlined" color = "info" onClick = {() => toggleProposalDetails(Number(proposal.id))} style = {{marginTop: "12px"}}>
+                                <SoftButton  variant = "gradient" color = "info" onClick = {() => toggleProposalDetails(Number(proposal.id))} style = {{marginTop: "12px"}}>
                                     Hide Details
                                 </SoftButton>
 
                             </>
                     ):(
-                        <SoftButton variant = "outlined" color = "info" onClick = {() => toggleProposalDetails(Number(proposal.id))} style = {{marginTop: "12px"}}>
+                        <SoftButton variant = "gradient" color = "info" onClick = {() => toggleProposalDetails(Number(proposal.id))} style = {{marginTop: "12px"}}>
                             Show Details
                         </SoftButton>
                     )}

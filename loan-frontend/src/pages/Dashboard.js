@@ -297,7 +297,7 @@ export default function Dashboard() {
                 <ButtonGroup size="small" aria-label="timeframe selection">
                   <SoftButton 
                     variant={timeframe === "1d" ? "contained" : "outlined"} 
-                    color="primary" 
+                    color="info" 
                     size="small"
                     onClick={() => handleTimeframeChange("1d")}
                   >
@@ -305,7 +305,7 @@ export default function Dashboard() {
                   </SoftButton>
                   <SoftButton 
                     variant={timeframe === "7d" ? "contained" : "outlined"} 
-                    color="primary" 
+                    color="info" 
                     size="small"
                     onClick={() => handleTimeframeChange("7d")}
                   >
@@ -313,7 +313,7 @@ export default function Dashboard() {
                   </SoftButton>
                   <SoftButton 
                     variant={timeframe === "30d" ? "contained" : "outlined"} 
-                    color="primary" 
+                    color="info" 
                     size="small"
                     onClick={() => handleTimeframeChange("30d")}
                   >
@@ -321,7 +321,7 @@ export default function Dashboard() {
                   </SoftButton>
                   <SoftButton 
                     variant={timeframe === "90d" ? "contained" : "outlined"} 
-                    color="primary" 
+                    color="info" 
                     size="small"
                     onClick={() => handleTimeframeChange("90d")}
                   >
@@ -432,8 +432,8 @@ export default function Dashboard() {
               endAdornment={
                 <SoftButton 
                   type="submit" 
-                  color="primary" 
-                  variant="contained" 
+                  color="info" 
+                  variant="gradient" 
                   disabled={aiIsLoading}
                 >
                   {aiIsLoading ? "..." : "Send"}
