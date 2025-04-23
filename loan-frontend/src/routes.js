@@ -35,37 +35,20 @@ Coded by www.creative-tim.com
   10. The `component` key is used to store the component of its route.
 */
 
-// Soft UI Dashboard React layouts
-//import Dashboard from "layouts/dashboard";
-//import Tables from "layouts/tables";
-//import Billing from "layouts/billing";
-//import VirtualReality from "layouts/virtual-reality";
-//import RTL from "layouts/rtl";
-//import Profile from "layouts/profile";
-//import SignIn from "layouts/authentication/sign-in";
-import SignUp from "layouts/authentication/sign-up";
-
+// Soft UI Dashboard React base styles
 import Dashboard from "pages/Dashboard";
-import Borrowing from "pages/Borrowing";
-import Lending from "pages/Lending";
-import Home from "pages/Home";
 import MyLoans from "pages/myLoans";
 import MyBorrowedLoans from "pages/myBorrowedLoans";
-import DebugLoans from "pages/DebugLoans";
 import CreateProposal from "pages/CreateProposal";
 import ProposalExplorer from "pages/ProposalExplorer";
 
 // Soft UI Dashboard React icons
-import Shop from "examples/Icons/Shop";
 import Office from "examples/Icons/Office";
 import Settings from "examples/Icons/Settings";
 import Document from "examples/Icons/Document";
-import SpaceShip from "examples/Icons/SpaceShip";
-import CustomerSupport from "examples/Icons/CustomerSupport";
 import CreditCard from "examples/Icons/CreditCard";
 import Cube from "examples/Icons/Cube";
 import ProtectedRoute from "protectedRoute";
-import icon from "assets/theme/components/icon";
 
 const routes = [
 

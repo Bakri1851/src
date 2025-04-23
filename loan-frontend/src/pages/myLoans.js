@@ -218,6 +218,35 @@ export default function MyLoans() {
         }
     };
 
+    const handleFundLoan = async (loanAddress) => {
+        try {
+
+            const balance = BigInt(await window.ethereum.request({ method: 'eth_getBalance', params: [address, 'latest'] }));
+
+            const loanAmount = await readContract(config, {
+                address: loanAddress,
+                abi: ContractConfig.abi,
+                functionName: "getLoanAmount",
+                chainId: FactoryConfig.chainId,
+            });
+            if (balance < loanAmount) {
+                alert("Insufficient balance to fund the loan.");
+                return;
+            }
+            
+            await writeContract({
+                address: loanAddress,
+                abi: ContractConfig.abi,
+                functionName: "fundLoan",
+                chainId: FactoryConfig.chainId,
+                value: loanAmount
+            });
+            alert("Please confirm the transaction in your wallet.");
+        } catch (error) {
+            console.error("Error funding loan:", error);
+            alert("Error funding loan. Please try again.");
+        }
+    }
     const handleLiquidateLoan = async (loanAddress) => {
         try {
             await writeContract({
@@ -231,7 +260,7 @@ export default function MyLoans() {
             console.error("Error liquidating loan:", error);
             alert("Error liquidating loan. Please try again.");
         }
-    }
+    };
    
 
     return (
@@ -308,6 +337,19 @@ export default function MyLoans() {
                                     <SoftTypography variant="body2" mt={1}>
                                         Status: {formatState(loanDetails[loanAddress].state)}
                                     </SoftTypography>
+
+                                    {loanDetails[loanAddress].state == 0 && (
+                                        <SoftButton
+                                            variant="gradient"
+                                            color="info"
+                                            onClick={() => handleFundLoan(loanAddress)}
+                                            style={{ marginTop: "12px" }}
+                                            >
+                                                Fund Loan
+                                            </SoftButton>
+                                    )}
+
+
 
                                     {((loanDetails[loanAddress].state == 3) && (loanDetails[loanAddress].repayByTimestamp && Number(loanDetails[loanAddress].repayByTimestamp)<Math.floor(Date.now()/1000))) && (
                                         <SoftButton

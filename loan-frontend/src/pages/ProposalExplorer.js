@@ -84,6 +84,14 @@ export default function ProposalExplorer() {
             ...prev,
             [proposalId]: "accepting"}));
         try {
+            const proposal = openProposal.find((p) => Number(p.id) === Number(proposalId));
+            const balance = BigInt(await window.ethereum.request({ method: 'eth_getBalance', params: [address, 'latest'] }));
+            
+            if (balance < proposal.loanAmount) {
+                alert("Insufficient balance to accept this proposal.");
+                return;
+            }
+
             await writeContract({
                 address: FactoryConfig.address,
                 abi: FactoryConfig.abi,
@@ -99,7 +107,6 @@ export default function ProposalExplorer() {
                 ...prev,
                 [proposalId]: "funding"}));
 
-            const proposal = openProposal.find((p) => Number(p.id) === Number(proposalId));
 
             setAcceptedProposal((prev) => [
                 ...prev, proposal]);

@@ -10,6 +10,7 @@ import { wagmiConfig } from "../wagmi.js"
 import useOpenAI from "hooks/useOpenAI.js"
 import ReactMarkdown from "react-markdown"
 import { formatEther, formatTimestamp, formatState, formatRate, rateTypeLabel} from "utils/formatters.js"
+import { WifiTetheringOffTwoTone } from "@mui/icons-material"
 
 
 export default function MyBorrowedLoans() {
@@ -246,6 +247,8 @@ export default function MyBorrowedLoans() {
 
     const handleAcceptLoan = async (loanAddress) => {
         try {
+            const balance = BigInt(await window.ethereum.request({ method: 'eth_getBalance', params: [address, 'latest'] }));
+
             const collateralAmount = await readContract(config, {
                 address: loanAddress,
                 abi: ContractConfig.abi,
@@ -253,7 +256,10 @@ export default function MyBorrowedLoans() {
                 chainId: FactoryConfig.chainId,
             });
 
-            console.log("collateralAmount", collateralAmount.toString())
+            if (balance < collateralAmount) {
+                alert("Insufficient balance to accept loan terms. Please fund your wallet and try again.")
+                return;
+            }
 
             await writeContract({
                 address: loanAddress,
@@ -302,6 +308,7 @@ export default function MyBorrowedLoans() {
 
     const handleRepayLoan = async (loanAddress) => {
         try {
+            const balance = BigInt(await window.ethereum.request({ method: 'eth_getBalance', params: [address, 'latest'] }));
 
             await readContract(config,{
                 address: loanAddress,
@@ -324,9 +331,13 @@ export default function MyBorrowedLoans() {
                 chainId: FactoryConfig.chainId,
             });
 
-            console.log("interest", interest.toString())
+
             const totalRepayment = loanAmount + interest;
-            console.log("totalRepayment", totalRepayment.toString())
+            if (balance < totalRepayment) {
+                alert("Insufficient balance to repay loan. Please fund your wallet and try again.")
+                return;
+            }
+
             await writeContract({
                 address: loanAddress,
                 abi: ContractConfig.abi,

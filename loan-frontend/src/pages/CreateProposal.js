@@ -260,7 +260,7 @@ export default function CreateProposal() {
                             required
                             step = "0.01"
                             icon = {{
-                                component: <SoftTypography variant = "button" fontWeight = "regular">ETH</SoftTypography>,
+                                component: <SoftTypography variant = "button" fontWeight = "regular"></SoftTypography>,
                                 direction: direction === "rtl" ? "right" : "right",
                             }}
                         />
@@ -276,7 +276,7 @@ export default function CreateProposal() {
                             required
                             step = "0.01"
                             icon = {{
-                                component: <SoftTypography variant = "button" fontWeight = "regular">ETH</SoftTypography>,
+                                component: <SoftTypography variant = "button" fontWeight = "regular"></SoftTypography>,
                                 direction: direction === "rtl" ? "right" : "right",
                             }}
                         />
@@ -292,7 +292,7 @@ export default function CreateProposal() {
                             required
                             step = "0.01"
                             icon = {{
-                                component: <SoftTypography variant = "button" fontWeight = "regular">ETH</SoftTypography>,
+                                component: <SoftTypography variant = "button" fontWeight = "regular"></SoftTypography>,
                                 direction: direction === "rtl" ? "right" : "right",
                             }}
                     />

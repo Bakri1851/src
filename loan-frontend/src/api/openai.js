@@ -52,7 +52,8 @@ export const analyseLoanTerms = async (loanDetails) => {
     6. Any other relevant information or insights that could be useful for the borrower or lender.
     7. Should the lender liquidate the loan or not if possible
 
-    Format the response in a clear and structured manner, using bullet points or numbered lists where appropriate.    
+    Format the response in a clear and structured manner, using bullet points or numbered lists where appropriate.  
+    Fixed rate stays same throughout the loan period, while floating rate can change based on market conditions.  
     `;
 
     return generateCompletion(prompt, config);
@@ -78,6 +79,8 @@ export const analyseProposal = async (proposalDetails) => {
     6. Any red flags or particularly favorable terms to note
 
     Format the response in a clear and structured way, using bullet points or numbered lists where appropriate.
+    Fixed rate stays same throughout the loan period, while floating rate can change based on market conditions.  
+
     `;
 
     return generateCompletion(prompt, config);  
@@ -104,7 +107,10 @@ export const helpMakeProposal = async (proposalDetails) => {
 
     If any values are missing, provide general advice for that parameter.
     Format the response in a clear and structured way, using bullet points or numbered lists where appropriate.
-    The rates cannot be adjusted and are deteremined by the market so keep that in minde.
+    The rates cannot be adjusted and are deteremined by the market so keep that in mind.
+    Fixed rate stays same throughout the loan period, while floating rate can change based on market conditions. 
+    You are talking to the borrower and not the lender so try to make the proposal as attractive as possible for the lender but also beneficial to the borrower. 
+
     `;
 
     return generateCompletion(prompt, config);

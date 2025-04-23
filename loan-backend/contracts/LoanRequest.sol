@@ -142,6 +142,7 @@ contract LoanRequest {
     }
 
     function switchRateType() public {
+        require(msg.sender == borrower, "Only borrower can switch rate type");
         if (currentRateType == InterestRateType.Fixed) {
             currentRateType = InterestRateType.Floating;
         } else {
