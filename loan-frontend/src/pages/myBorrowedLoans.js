@@ -9,6 +9,8 @@ import { useEffect, useState } from "react"
 import { wagmiConfig } from "../wagmi.js"
 import useOpenAI from "hooks/useOpenAI.js"
 import ReactMarkdown from "react-markdown"
+import { formatEther, formatTimestamp, formatState, formatRate, rateTypeLabel} from "utils/formatters.js"
+
 
 export default function MyBorrowedLoans() {
     const { address, isConnected } = useAccount();
@@ -354,38 +356,6 @@ export default function MyBorrowedLoans() {
         }
     }
     
-
-    const formatState = (state) => {
-        const states = [
-            "Created",
-            "Funded",
-            "Accepted",
-            "Taken",
-            "Repaid",
-            "Liquidated",
-        ];
-        return states[state] || "Unknown";
-    };
-
-    const formatEther = (value) => {
-        if (!value) return "0";
-        try {
-            return (Number(value) / 1e18).toFixed(6);
-        } catch (e) {
-            return "Error";
-        }
-    };
-
-    const formatTimestamp = (timestamp) =>
-        timestamp ? new Date(Number(timestamp) * 1000).toLocaleString() : "Loading...";
-
-    const formatRate = (rate) =>
-        rate ? `${(Number(rate) / 100).toFixed(2)}%` : "Loading...";
-
-    const rateTypeLabel = {
-        0: "Fixed",
-        1: "Floating",
-      }
 
     return (
         <SoftBox mt={5} mx="auto" p="4" width="fit-content" backgroundColor="white" boxShadow="lg" textAlign="center">

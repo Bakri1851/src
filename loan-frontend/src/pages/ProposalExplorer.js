@@ -10,7 +10,7 @@ import { readContract} from '@wagmi/core';
 import ContractConfig from 'constants/ContractConfig';
 import useOpenAI from 'hooks/useOpenAI.js';
 import ReactMarkdown from 'react-markdown';
-
+import { formatEther, formatTimestamp, formatRate, shortenAddress } from 'utils/formatters.js';
 
 export default function ProposalExplorer() {
     const {address, isConnected} = useAccount();
@@ -148,25 +148,6 @@ export default function ProposalExplorer() {
     ];
 
 
-    const formatEther = (value) => {
-        if (!value) return "0.00";
-        try{
-            return (Number(value) / 1e18).toFixed(6);
-        } catch (error) {
-            console.error("Error formatting ether:", error);
-            return "Error";
-        }}
-        
-    const formatTimestamp = (timestamp) =>
-        timestamp ? new Date(Number(timestamp) * 1000).toLocaleString() : "Loading...";
-        
-    const formatRate = (rate) =>
-        rate ? `${(Number(rate) / 100).toFixed(2)}%` : "Loading...";
-        
-    const shortenAddress = (address) => {
-        if (!address) return "Unknown";
-        return `${address.slice(0, 6)}...${address.slice(-4)}`;
-    };
 
 
     return(

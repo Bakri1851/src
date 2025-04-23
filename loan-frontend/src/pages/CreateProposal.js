@@ -10,6 +10,7 @@ import { useAccount } from 'wagmi';
 import { helpMakeProposal } from 'api/openai';
 import ReactMarkdown from 'react-markdown';
 import { parseEther } from 'viem';
+import { formatRate } from 'utils/formatters';
 
 const ORACLE_ABI = [
     {
@@ -172,11 +173,6 @@ export default function CreateProposal() {
     
     }
 
-    const formatRate = (rate) => {
-        if (!rate) return "Loading...";
-        // Convert from basis points to percentage with 2 decimal places
-        return `${(Number(rate)/100).toFixed(2)}%`;
-    };
 
     const handleEthAmountChange = (e) => {
         const { name, value } = e.target;
