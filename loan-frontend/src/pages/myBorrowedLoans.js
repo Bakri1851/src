@@ -518,18 +518,19 @@ export default function MyBorrowedLoans() {
                                     </SoftButton>
 
                                     {aiAnalysis[loanAddress] && (
-                                        <SoftBox
+                                        <SoftBox 
                                             mt={2}
                                             p={2}
                                             border="1px dashed"
-                                            borderColor="success.main"
+                                            borderColor="info.main"
                                             borderRadius="10px"
-                                            backgroundColor="rgba(76, 175, 80, 0.1)"
+                                            backgroundColor="rgba(0, 142, 255, 0.1)"
                                             width="100%"
-                                            maxWidth="800px"
                                             textAlign="left"
-                                            maxHeight="200px" 
-                                            overflow="auto" 
+                                            maxHeight="300px"
+                                            maxWidth="800px"
+                                            overflow="auto"
+                                            mb={3}
                                             sx={{
                                                 '&::-webkit-scrollbar': {
                                                     width: '8px',
@@ -537,14 +538,16 @@ export default function MyBorrowedLoans() {
                                                 },
                                                 '&::-webkit-scrollbar-thumb': {
                                                     borderRadius: '4px',
-                                                    backgroundColor: 'rgba(76, 175, 80, 0.3)',
+                                                    backgroundColor: 'rgba(0, 142, 255, 0.3)',
                                                 },
+                                                wordBreak: "break-word",
                                             }}
                                         >
-                                            <SoftTypography variant="h6" fontWeight="bold" color="info" mb={1}>
-                                                AI Analysis:
+                                            <SoftTypography variant="h6" fontWeight="bold" color="info.main" mb={1}>
+                                                AI Suggestions:
                                             </SoftTypography>
-                                            <SoftBox sx={{                                                 '& h1, & h2, & h3, & h4, & h5, & h6': {
+                                            <SoftBox sx={{
+                                                '& h1, & h2, & h3, & h4, & h5, & h6': {
                                                     color: 'info.main',
                                                     fontSize: '1rem',
                                                     fontWeight: 'bold',
