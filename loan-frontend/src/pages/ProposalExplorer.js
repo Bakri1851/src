@@ -308,17 +308,10 @@ export default function ProposalExplorer() {
                 )
                     )
                 )}
-
-                
-
-                
+               
                 </>
             )}
-
-                
-                
-            
-
+    
 
         </SoftBox>
     

@@ -207,9 +207,23 @@ export default function MyBorrowedLoans() {
                 chainId: FactoryConfig.chainId
             });
 
+            const feeAmount = await readContract(config, {
+                address: loanAddress,
+                abi: ContractConfig.abi,
+                functionName: "getFeeAmount",
+                chainId: FactoryConfig.chainId
+            });
+
+            const interest = await readContract(config, {
+                address: loanAddress,
+                abi: ContractConfig.abi,
+                functionName: "getInterest",
+                chainId: FactoryConfig.chainId
+            });
+
             setLoanDetails(prev => ({
                 ...prev,
-                [loanAddress]: { borrower, loanAmount, state, collateralAmount, repayByTimestamp, fixedRate, floatingRate, rateType }
+                [loanAddress]: { borrower, loanAmount, state, collateralAmount, repayByTimestamp, fixedRate, floatingRate, rateType, interest, feeAmount }
             }));
             
             // Mark this loan as expanded
@@ -331,8 +345,15 @@ export default function MyBorrowedLoans() {
                 chainId: FactoryConfig.chainId,
             });
 
+            const fee = await readContract(config, {
+                address: loanAddress,
+                abi: ContractConfig.abi,
+                functionName: "getFeeAmount",
+                chainId: FactoryConfig.chainId,
+            });
 
-            const totalRepayment = loanAmount + interest;
+
+            const totalRepayment = loanAmount + interest + fee;
             if (balance < totalRepayment) {
                 alert("Insufficient balance to repay loan. Please fund your wallet and try again.")
                 return;
@@ -424,7 +445,11 @@ export default function MyBorrowedLoans() {
                             <SoftTypography variant="body2" mb={2} style={{wordBreak: "break-all"}}>{loanAddress}</SoftTypography>
                             
                             {loanDetails[loanAddress] && expandedLoans[loanAddress] ? (
-                                <>
+                                <>  
+                                    <SoftTypography variant="body2" mt={1}>
+                                        Repayment Amount: {formatEther(loanDetails[loanAddress].loanAmount + loanDetails[loanAddress].interest + loanDetails[loanAddress].feeAmount)} ETH
+                                    </SoftTypography>
+
                                     <SoftTypography variant="body2" mt={1}>
                                         Loan Amount: {formatEther(loanDetails[loanAddress].loanAmount)} ETH
                                     </SoftTypography>
@@ -439,6 +464,14 @@ export default function MyBorrowedLoans() {
 
                                     <SoftTypography variant="body2" mt={1}>
                                         Rate Type: {rateTypeLabel[loanDetails[loanAddress].rateType] || "Unknown"}
+                                    </SoftTypography>
+                                    
+                                    <SoftTypography variant="body2" mt={1}>
+                                        Fixed Rate: {formatRate(loanDetails[loanAddress].fixedRate)}
+                                    </SoftTypography>
+
+                                    <SoftTypography variant="body2" mt={1}>
+                                        Floating Rate: {formatRate(loanDetails[loanAddress].floatingRate)}
                                     </SoftTypography>
                                     
                                     <SoftTypography variant="body2" mt={1}>

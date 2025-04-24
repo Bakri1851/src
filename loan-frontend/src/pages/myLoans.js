@@ -333,6 +333,10 @@ export default function MyLoans() {
                                     <SoftTypography variant="body2" mt={1}>
                                         Fixed Rate: {formatRate(loanDetails[loanAddress].fixedRate)}
                                     </SoftTypography>
+
+                                    <SoftTypography variant="body2" mt={1}>
+                                        Floating Rate: {formatRate(loanDetails[loanAddress].floatingRate)}
+                                    </SoftTypography>
                                     
                                     <SoftTypography variant="body2" mt={1}>
                                         Status: {formatState(loanDetails[loanAddress].state)}
