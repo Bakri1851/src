@@ -37,6 +37,7 @@ export const analyseLoanTerms = async (loanDetails) => {
     const config = ApiConfig.analysisTypes.loanTerms;
 
     const prompt = `Analyse these smart contract loan terms provide insights:
+    - Repayment Amount: ${loanDetails.repaymentAmount || "N/A"}
     - Loan Amount: ${loanDetails.loanAmount}
     - Fixed Rate: ${loanDetails.fixedRate}
     - Floating Rate : ${loanDetails.floatingRate || "N/A"}
@@ -54,6 +55,8 @@ export const analyseLoanTerms = async (loanDetails) => {
 
     Format the response in a clear and structured manner, using bullet points or numbered lists where appropriate.  
     Fixed rate stays same throughout the loan period, while floating rate can change based on market conditions.  
+    If the repayment amount is not specified, the lender is the one calling the function so no need to talk about the repayment amount.
+
     `;
 
     return generateCompletion(prompt, config);
@@ -89,7 +92,7 @@ export const analyseProposal = async (proposalDetails) => {
 export const helpMakeProposal = async (proposalDetails) => {
     const config = ApiConfig.analysisTypes.loanTerms;
 
-    const prompt = `As a blockchain loan expert, help optimize this loan proposal:
+    const prompt = `As a blockchain loan expert, help optimise this loan proposal:
     - Loan Amount: ${proposalDetails.loanAmount || "Not specified"} ETH
     - Fee Amount: ${proposalDetails.feeAmount || "Not specified"} ETH
     - Collateral Amount: ${proposalDetails.collateral || "Not specified"} ETH

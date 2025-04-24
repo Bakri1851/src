@@ -186,8 +186,8 @@ export default function CreateProposal() {
         
         const MIN_LOAN_AMOUNT = 0.0;  // Minimum loan of 0.05 ETH 0.05
         const MAX_LOAN_AMOUNT = 100;   // Maximum loan of 100 ETH
-        const MIN_COLLATERAL_RATIO = 1;  // Collateral must be at least 150% of loan 1.5
-        const MAX_FEE_PERCENTAGE = 0.0;  // Fee can't exceed 10% of loan amount 0.1
+        const MIN_COLLATERAL_RATIO = 1.5;  // Collateral must be at least 150% of loan 1.5
+        const MAX_FEE_PERCENTAGE = 0.1;  // Fee can't exceed 10% of loan amount 0.1
         
         let errorMessage = "";
         let finalValue = value;

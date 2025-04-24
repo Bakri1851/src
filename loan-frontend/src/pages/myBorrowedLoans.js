@@ -45,6 +45,7 @@ export default function MyBorrowedLoans() {
 
         try{
             const analysis = await analyseLoanTerms({
+                repaymentAmount: formatEther(loanDetails[loanAddress].loanAmount + loanDetails[loanAddress].interest + loanDetails[loanAddress].feeAmount),
                 loanAmount: formatEther(loanDetails[loanAddress].loanAmount),
                 collateral: formatEther(loanDetails[loanAddress].collateralAmount),
                 fixedRate: formatRate(loanDetails[loanAddress].fixedRate),
@@ -324,7 +325,7 @@ export default function MyBorrowedLoans() {
         try {
             const balance = BigInt(await window.ethereum.request({ method: 'eth_getBalance', params: [address, 'latest'] }));
 
-            await readContract(config,{
+            await writeContract(config,{
                 address: loanAddress,
                 abi: ContractConfig.abi,
                 chainId: FactoryConfig.chainId,
@@ -353,7 +354,7 @@ export default function MyBorrowedLoans() {
             });
 
 
-            const totalRepayment = loanAmount + interest + fee;
+            const totalRepayment = BigInt(loanAmount) + BigInt(interest) + BigInt(fee);
             if (balance < totalRepayment) {
                 alert("Insufficient balance to repay loan. Please fund your wallet and try again.")
                 return;
