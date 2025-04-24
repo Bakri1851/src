@@ -10,8 +10,7 @@ import { wagmiConfig } from "../wagmi.js"
 import useOpenAI from "hooks/useOpenAI.js"
 import ReactMarkdown from "react-markdown"
 import { formatEther, formatTimestamp, formatState, formatRate, rateTypeLabel} from "utils/formatters.js"
-import { WifiTetheringOffTwoTone } from "@mui/icons-material"
-
+import RepaymentCountdown from "components/RepaymentCountdown"
 
 export default function MyBorrowedLoans() {
     const { address, isConnected } = useAccount();
@@ -459,9 +458,13 @@ export default function MyBorrowedLoans() {
                                         Collateral: {formatEther(loanDetails[loanAddress].collateralAmount)} ETH
                                     </SoftTypography>
 
-                                    <SoftTypography variant="body2" mt={1}>
-                                        Repay by: {formatTimestamp(loanDetails[loanAddress].repayByTimestamp)}
-                                    </SoftTypography>
+                                    <SoftBox mt={1} width="100%">
+                                        <RepaymentCountdown 
+                                            timestamp={loanDetails[loanAddress].repayByTimestamp} 
+                                            creationTimestamp = {loanDetails[loanAddress].creationTimestamp}
+                                            label="Time remaining to repay:" 
+                                        />
+                                    </SoftBox>
 
                                     <SoftTypography variant="body2" mt={1}>
                                         Rate Type: {rateTypeLabel[loanDetails[loanAddress].rateType] || "Unknown"}

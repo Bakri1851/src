@@ -23,6 +23,7 @@ contract LoanFactory {
         address oracle;
         bool accepted;
         address acceptedLender;
+        uint256 creationTimestamp;
 
     }
 
@@ -50,7 +51,8 @@ contract LoanFactory {
             floatingRate: _floatingRate,
             oracle: _oracle,
             accepted: false,
-            acceptedLender: address(0)
+            acceptedLender: address(0),
+            creationTimestamp: block.timestamp
         });
         emit LoanProposalCreated(nextProposalId, msg.sender);
         nextProposalId++;
@@ -95,7 +97,8 @@ contract LoanFactory {
             proposal.floatingRate,
             proposal.oracle,
             address(this),
-            msg.sender  // Pass the original sender as lender
+            msg.sender,  // Pass the original sender as lender
+            proposal.creationTimestamp // Pass the creation timestamp to the LoanRequest contract
         );
 
         // Store the loan address in the mapping and array
@@ -118,40 +121,6 @@ contract LoanFactory {
         require(proposals[_proposalId].accepted, "Proposal not accepted yet");
         return proposalToAddress[_proposalId];
     }
-
-    //remove
-    function createLoan(
-        uint256 loanAmount,
-        uint256 feeAmount,
-        uint256 ethCollateralAmount,
-        uint256 repayByTimestamp,
-        uint256 fixedRate,
-        uint256 floatingRate,
-        address oracle
-            ) external returns (address) {
-        // Create a new LoanRequest contract
-        LoanRequest newLoan = new LoanRequest(
-            loanAmount,
-            feeAmount,
-            ethCollateralAmount,
-            repayByTimestamp,
-            fixedRate,
-            floatingRate,
-            oracle,
-            address(this),
-            msg.sender  // Pass the original sender as lender
-        
-        );
-
-        // Store the loan address in the mapping and array
-        loansByLender[msg.sender].push(address(newLoan));
-        allLoans.push(address(newLoan));
-
-        emit LoanCreated(address(0), msg.sender, address(newLoan));
-        return address(newLoan);
-    }
-
-
     
     function getAllLoans() external view returns (address[] memory) {
         return allLoans;

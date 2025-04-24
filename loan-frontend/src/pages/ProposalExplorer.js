@@ -11,6 +11,7 @@ import ContractConfig from 'constants/ContractConfig';
 import useOpenAI from 'hooks/useOpenAI.js';
 import ReactMarkdown from 'react-markdown';
 import { formatEther, formatTimestamp, formatRate, shortenAddress } from 'utils/formatters.js';
+import RepaymentCountdown from 'components/RepaymentCountdown';
 
 export default function ProposalExplorer() {
     const {address, isConnected} = useAccount();
@@ -220,9 +221,14 @@ export default function ProposalExplorer() {
                                 <SoftTypography variant = "body2" mt = {1}>
                                     Collateral Amount: {formatEther(proposal.ethCollateralAmount)} ETH
                                 </SoftTypography>
-                                <SoftTypography variant = "body2" mt = {1}>
-                                    Repay By: {formatTimestamp(proposal.repayByTimestamp)}
-                                </SoftTypography>
+                                <SoftBox mt={1} width="100%">
+                                    <RepaymentCountdown 
+                                        timestamp={proposal.repayByTimestamp}
+                                        creationTimestamp = {proposal.creationTimestamp}
+                                        label="Proposed repayment deadline:" 
+                                    />
+                                </SoftBox>
+
                                 <SoftTypography variant = "body2" mt = {1}>
                                     Fixed Rate: {formatRate(proposal.fixedRate)}
                                 </SoftTypography>

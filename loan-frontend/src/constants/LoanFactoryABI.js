@@ -110,55 +110,6 @@ export const LoanFactoryABI = [
     "inputs": [
       {
         "internalType": "uint256",
-        "name": "loanAmount",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "feeAmount",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "ethCollateralAmount",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "repayByTimestamp",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "fixedRate",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "floatingRate",
-        "type": "uint256"
-      },
-      {
-        "internalType": "address",
-        "name": "oracle",
-        "type": "address"
-      }
-    ],
-    "name": "createLoan",
-    "outputs": [
-      {
-        "internalType": "address",
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint256",
         "name": "_loanAmount",
         "type": "uint256"
       },
@@ -290,6 +241,11 @@ export const LoanFactoryABI = [
             "internalType": "address",
             "name": "acceptedLender",
             "type": "address"
+          },
+          {
+            "internalType": "uint256",
+            "name": "creationTimestamp",
+            "type": "uint256"
           }
         ],
         "internalType": "struct LoanFactory.LoanProposal[]",
@@ -404,6 +360,11 @@ export const LoanFactoryABI = [
             "internalType": "address",
             "name": "acceptedLender",
             "type": "address"
+          },
+          {
+            "internalType": "uint256",
+            "name": "creationTimestamp",
+            "type": "uint256"
           }
         ],
         "internalType": "struct LoanFactory.LoanProposal",
@@ -577,6 +538,11 @@ export const LoanFactoryABI = [
         "internalType": "address",
         "name": "acceptedLender",
         "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "creationTimestamp",
+        "type": "uint256"
       }
     ],
     "stateMutability": "view",

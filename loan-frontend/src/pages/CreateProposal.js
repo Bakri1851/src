@@ -115,7 +115,8 @@ export default function CreateProposal() {
         const selectedDate = new Date(dateString);
         
         const minValidTime = new Date();
-        minValidTime.setHours(minValidTime.getHours() + 1);
+        minValidTime.setHours(minValidTime.getHours() + 0); //change the 0 to 1
+    
         
         if (selectedDate < minValidTime) {
             alert("Repayment date must be at least 1 hour in the future");
@@ -141,6 +142,11 @@ export default function CreateProposal() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         console.log('Form submitted:', form);
+
+        if (!form.loanAmount || !form.feeAmount || !form.collateral || !form.repayBy) {
+            alert("Please fill in all fields.");
+            return;
+        }
 
     try {
 
@@ -184,7 +190,7 @@ export default function CreateProposal() {
         const currentCollateral = name === "collateral" ? amount : parseFloat(form.collateral) || 0;
         const currentFee = name === "feeAmount" ? amount : parseFloat(form.feeAmount) || 0;
         
-        const MIN_LOAN_AMOUNT = 0.0;  // Minimum loan of 0.05 ETH 0.05
+        const MIN_LOAN_AMOUNT = 0.00001;  // Minimum loan of 0.05 ETH 0.05
         const MAX_LOAN_AMOUNT = 100;   // Maximum loan of 100 ETH
         const MIN_COLLATERAL_RATIO = 1.5;  // Collateral must be at least 150% of loan 1.5
         const MAX_FEE_PERCENTAGE = 0.1;  // Fee can't exceed 10% of loan amount 0.1

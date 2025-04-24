@@ -40,6 +40,16 @@ export const rateSwitchingABI = [
         "internalType": "address",
         "name": "_loanFactory",
         "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "_lender",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_creationTimestamp",
+        "type": "uint256"
       }
     ],
     "stateMutability": "nonpayable",
@@ -171,6 +181,19 @@ export const rateSwitchingABI = [
     "name": "calculateInterest",
     "outputs": [],
     "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "creationTimestamp",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
     "type": "function"
   },
   {

@@ -10,6 +10,7 @@ import { wagmiConfig } from "../wagmi.js"
 import useOpenAI from "../hooks/useOpenAI.js"
 import ReactMarkdown from "react-markdown"
 import { formatRate, formatState, formatTimestamp, formatEther } from "../utils/formatters.js"
+import RepaymentCountdown from "components/RepaymentCountdown"
 
 export default function MyLoans() {
     const { address, isConnected } = useAccount();
@@ -326,9 +327,13 @@ export default function MyLoans() {
                                         Loan Amount: {formatEther(loanDetails[loanAddress].loanAmount)} ETH
                                     </SoftTypography>
 
-                                    <SoftTypography variant="body2" mt={1}>
-                                        Repay By : {formatTimestamp(loanDetails[loanAddress].repayByTimestamp)}
-                                    </SoftTypography>
+                                    <SoftBox mt={1} width="100%">
+                                        <RepaymentCountdown 
+                                            timestamp={loanDetails[loanAddress].repayByTimestamp}
+                                            creationTimestamp = {loanDetails[loanAddress].creationTimestamp}
+                                            label="Borrower must repay within:" 
+                                        />
+                                    </SoftBox>
 
                                     <SoftTypography variant="body2" mt={1}>
                                         Fixed Rate: {formatRate(loanDetails[loanAddress].fixedRate)}

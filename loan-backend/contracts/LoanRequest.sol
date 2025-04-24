@@ -34,6 +34,7 @@ contract LoanRequest {
     uint256 public fixedRate; // in basis points
     uint256 public floatingRate; // in basis points
     uint256 public loanTakenTimestamp;
+    uint256 public creationTimestamp;
 
 
     constructor(
@@ -45,7 +46,9 @@ contract LoanRequest {
         uint256 _floatingRate,
         address _oracle,
         address _loanFactory,
-        address _lender  // Add this parameter
+        address _lender,
+        uint256 _creationTimestamp
+
     ) {
         loanAmount = _loanAmount;
         feeAmount = _feeAmount;
@@ -53,6 +56,7 @@ contract LoanRequest {
         repayByTimestamp = _repayByTimestamp;
         fixedRate = _fixedRate;
         floatingRate = _floatingRate;
+        creationTimestamp = _creationTimestamp;
 
         oracle = AggregatorV3Interface(_oracle);
         factory = _loanFactory;
