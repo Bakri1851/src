@@ -204,6 +204,7 @@ export default function ProposalExplorer() {
                             borderColor: "info.main",
                             transition: "all 0.2s",
                             borderRadius: "15px",
+                            variant: "gradient",
                         }}
                         display = "flex"
                         flexDirection = "column"
@@ -274,7 +275,7 @@ export default function ProposalExplorer() {
                                             <SoftTypography variant="h6" fontWeight="bold" color="success.main" mb={1}>
                                                 AI Analysis:
                                             </SoftTypography>
-                                            <SoftBox sx={{                                                 '& h1, & h2, & h3, & h4, & h5, & h6': {
+                                            <SoftBox sx={{'& h1, & h2, & h3, & h4, & h5, & h6': {
                                                     color: 'success.main',
                                                     fontSize: '1rem',
                                                     fontWeight: 'bold',

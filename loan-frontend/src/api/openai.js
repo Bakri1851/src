@@ -1,42 +1,42 @@
 import ApiConfig from "../constants/ApiConfig";
 
 export const generateCompletion = async (prompt, options = {}) => {
-    try {
-        console.log("Sending request to OpenAI API...");
-        console.log("API Key exists:", !!ApiConfig.openaiApiKey);
-        
-        const response = await fetch(`${ApiConfig.openaiApiUrl}/chat/completions`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "Authorization": `Bearer ${ApiConfig.openaiApiKey}`,
-            },
-            body: JSON.stringify({
-                model: options.model || ApiConfig.defaultModel,
-                messages: [{ role: "user", content: prompt }],
-                max_tokens: options.maxTokens || ApiConfig.defaultMaxTokens,
-                temperature: options.temperature || ApiConfig.defaultTemperature,
-            }),
-        });
+  try {
+    console.log("Sending request to OpenAI API...");
+    console.log("API Key exists:", !!ApiConfig.openaiApiKey);
 
-        if (!response.ok) {
-            const errorData = await response.text();
-            console.error("API Response:", response.status, errorData);
-            throw new Error(`API request failed with status ${response.status}: ${errorData}`);
-        }
+    const response = await fetch(`${ApiConfig.openaiApiUrl}/chat/completions`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${ApiConfig.openaiApiKey}`,
+      },
+      body: JSON.stringify({
+        model: options.model || ApiConfig.defaultModel,
+        messages: [{ role: "user", content: prompt }],
+        max_tokens: options.maxTokens || ApiConfig.defaultMaxTokens,
+        temperature: options.temperature || ApiConfig.defaultTemperature,
+      }),
+    });
 
-        const data = await response.json();
-        return data.choices[0].message.content;
-    } catch (error) {
-        console.error("OpenAI API error:", error);
-        throw error;
+    if (!response.ok) {
+      const errorData = await response.text();
+      console.error("API Response:", response.status, errorData);
+      throw new Error(`API request failed with status ${response.status}: ${errorData}`);
     }
-}
+
+    const data = await response.json();
+    return data.choices[0].message.content;
+  } catch (error) {
+    console.error("OpenAI API error:", error);
+    throw error;
+  }
+};
 
 export const analyseLoanTerms = async (loanDetails) => {
-    const config = ApiConfig.analysisTypes.loanTerms;
+  const config = ApiConfig.analysisTypes.loanTerms;
 
-    const prompt = `Analyse these smart contract loan terms provide insights:
+  const prompt = `Analyse these smart contract loan terms provide insights:
     - Repayment Amount: ${loanDetails.repaymentAmount || "N/A"}
     - Loan Amount: ${loanDetails.loanAmount}
     - Fixed Rate: ${loanDetails.fixedRate}
@@ -59,13 +59,13 @@ export const analyseLoanTerms = async (loanDetails) => {
 
     `;
 
-    return generateCompletion(prompt, config);
-}
+  return generateCompletion(prompt, config);
+};
 
 export const analyseProposal = async (proposalDetails) => {
-    const config = ApiConfig.analysisTypes.marketConditions;
+  const config = ApiConfig.analysisTypes.marketConditions;
 
-    const prompt = `Analyse the following blockchain proposal and provide insights:
+  const prompt = `Analyse the following blockchain proposal and provide insights:
     - Loan Amount: ${proposalDetails.loanAmount} ETH
     - Fee Amount: ${proposalDetails.feeAmount} ETH
     - Collateral Amount: ${proposalDetails.ethCollateralAmount} ETH
@@ -86,13 +86,13 @@ export const analyseProposal = async (proposalDetails) => {
 
     `;
 
-    return generateCompletion(prompt, config);  
-}
+  return generateCompletion(prompt, config);
+};
 
 export const helpMakeProposal = async (proposalDetails) => {
-    const config = ApiConfig.analysisTypes.loanTerms;
+  const config = ApiConfig.analysisTypes.loanTerms;
 
-    const prompt = `As a blockchain loan expert, help optimise this loan proposal:
+  const prompt = `As a blockchain loan expert, help optimise this loan proposal:
     - Loan Amount: ${proposalDetails.loanAmount || "Not specified"} ETH
     - Fee Amount: ${proposalDetails.feeAmount || "Not specified"} ETH
     - Collateral Amount: ${proposalDetails.collateral || "Not specified"} ETH
@@ -116,18 +116,17 @@ export const helpMakeProposal = async (proposalDetails) => {
 
     `;
 
-    return generateCompletion(prompt, config);
-}
-
+  return generateCompletion(prompt, config);
+};
 
 export const askLoanQuestion = async (question) => {
-    const config = ApiConfig.analysisTypes.loanTerms;
+  const config = ApiConfig.analysisTypes.loanTerms;
 
-    const prompt = `As a blockchain loan expert, answer the following question :
+  const prompt = `As a blockchain loan expert, answer the following question :
     ${question}
     
     Provide a clear, concise answer based on best practices in DeFi and blockchain lending.
     `;
 
-    return generateCompletion(prompt, config);
-}
+  return generateCompletion(prompt, config);
+};

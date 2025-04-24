@@ -78,7 +78,13 @@ const authorsTableData = {
       author: <Author image={team3} name="Alexa Liras" email="alexa@creative-tim.com" />,
       function: <Function job="Programator" org="Developer" />,
       status: (
-        <SoftBadge variant="gradient" badgeContent="offline" color="secondary" size="xs" container />
+        <SoftBadge
+          variant="gradient"
+          badgeContent="offline"
+          color="secondary"
+          size="xs"
+          container
+        />
       ),
       employed: (
         <SoftTypography variant="caption" color="secondary" fontWeight="medium">
@@ -147,7 +153,13 @@ const authorsTableData = {
       author: <Author image={team2} name="Richard Gran" email="richard@creative-tim.com" />,
       function: <Function job="Manager" org="Executive" />,
       status: (
-        <SoftBadge variant="gradient" badgeContent="offline" color="secondary" size="xs" container />
+        <SoftBadge
+          variant="gradient"
+          badgeContent="offline"
+          color="secondary"
+          size="xs"
+          container
+        />
       ),
       employed: (
         <SoftTypography variant="caption" color="secondary" fontWeight="medium">
@@ -170,7 +182,13 @@ const authorsTableData = {
       author: <Author image={team4} name="Miriam Eric" email="miriam@creative-tim.com" />,
       function: <Function job="Programtor" org="Developer" />,
       status: (
-        <SoftBadge variant="gradient" badgeContent="offline" color="secondary" size="xs" container />
+        <SoftBadge
+          variant="gradient"
+          badgeContent="offline"
+          color="secondary"
+          size="xs"
+          container
+        />
       ),
       employed: (
         <SoftTypography variant="caption" color="secondary" fontWeight="medium">

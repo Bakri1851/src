@@ -51,28 +51,25 @@ import Cube from "examples/Icons/Cube";
 import ProtectedRoute from "protectedRoute";
 
 const routes = [
-
   {
     type: "collapse",
     name: "Dashboard",
     key: "dashboard",
     icon: <Office size="12px" />,
     route: "/dashboard",
-    component: (
-      <Dashboard />
-    )
+    component: <Dashboard />,
   },
   {
-      type: "collapse",
-      name: "Create Proposal",
-      key: "createProposal",
-      icon: <Settings size="12px" />,
-      route: "/createProposal",
-      component: (
-        <ProtectedRoute>
-          <CreateProposal />
-        </ProtectedRoute>
-      )
+    type: "collapse",
+    name: "Create Proposal",
+    key: "createProposal",
+    icon: <Settings size="12px" />,
+    route: "/createProposal",
+    component: (
+      <ProtectedRoute>
+        <CreateProposal />
+      </ProtectedRoute>
+    ),
   },
   {
     type: "collapse",
@@ -84,7 +81,7 @@ const routes = [
       <ProtectedRoute>
         <ProposalExplorer />
       </ProtectedRoute>
-    )
+    ),
   },
   {
     type: "collapse",
@@ -96,7 +93,7 @@ const routes = [
       <ProtectedRoute>
         <MyLoans />
       </ProtectedRoute>
-    )
+    ),
   },
   {
     type: "collapse",
@@ -108,7 +105,7 @@ const routes = [
       <ProtectedRoute>
         <MyBorrowedLoans />
       </ProtectedRoute>
-    )
+    ),
   },
 ];
 
