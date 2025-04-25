@@ -52,12 +52,25 @@ import ProtectedRoute from "protectedRoute";
 
 const routes = [
   {
+    type: "title",
+    title: "Home",
+    key: "home",
+  },
+  {
     type: "collapse",
     name: "Dashboard",
     key: "dashboard",
     icon: <Office size="12px" />,
     route: "/dashboard",
     component: <Dashboard />,
+  },
+  {
+    type: "divider",
+  },
+  {
+    type: "title",
+    title: "Proposals",
+    key: "proposals",
   },
   {
     type: "collapse",
@@ -83,6 +96,16 @@ const routes = [
       </ProtectedRoute>
     ),
   },
+
+  {
+    type: "divider",
+  },
+  {
+    type: "title",
+    title: "Loans",
+    key: "loans",
+  },
+
   {
     type: "collapse",
     name: "My Loans",

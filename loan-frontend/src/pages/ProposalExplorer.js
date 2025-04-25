@@ -13,6 +13,8 @@ import ReactMarkdown from "react-markdown";
 import { formatEther, formatTimestamp, formatRate, shortenAddress } from "utils/formatters.js";
 import RepaymentCountdown from "components/RepaymentCountdown";
 import { Grid } from "@mui/material";
+import { getProposalTags } from "utils/taggers.js";
+import { Stack, Chip } from "@mui/material";
 
 export default function ProposalExplorer() {
   const { address, isConnected } = useAccount();
@@ -22,8 +24,8 @@ export default function ProposalExplorer() {
 
   const [aiAnalysis, setAiAnalysis] = useState({});
   const [aiLoading, setAiLoading] = useState({});
-  
-  const [selectedProposalId, setSelectedProposalId] = useState(null)
+
+  const [selectedProposalId, setSelectedProposalId] = useState(null);
   const [proposalStatus, setProposalStatus] = useState({});
   const [acceptedProposal, setAcceptedProposal] = useState([]);
 
@@ -64,25 +66,27 @@ export default function ProposalExplorer() {
 
   const selectProposalForAnalysis = (proposalId) => {
     setSelectedProposalId(proposalId);
-    getAIAnalysis(proposalId)
+    getAIAnalysis(proposalId);
   };
 
-  useEffect(() => {
+  useEffect(
+    () => {
+      setSelectedProposalId(null);
+      setAiAnalysis({});
+      setAiLoading({});
+      setExpandedProposals({});
 
-    setSelectedProposalId(null);
-    setAiAnalysis({});
-    setAiLoading({});
-    setExpandedProposals({});
-
-
-    if (proposals && proposals.length > 0) {
-      setOpenProposal(proposals);
-      setIsLoading(false);
-    } else if (proposals && proposals.length === 0) {
-      setOpenProposal([]);
-      setIsLoading(false);
-    }
-  }, [proposals], [address]);
+      if (proposals && proposals.length > 0) {
+        setOpenProposal(proposals);
+        setIsLoading(false);
+      } else if (proposals && proposals.length === 0) {
+        setOpenProposal([]);
+        setIsLoading(false);
+      }
+    },
+    [proposals],
+    [address]
+  );
 
   const toggleProposalDetails = (proposalId) => {
     setExpandedProposals((prev) => ({
@@ -166,7 +170,7 @@ export default function ProposalExplorer() {
     setIsLoading(true);
     setExpandedProposals({});
     setSelectedProposalId(null);
-    aiAnalysis[loanAddress]
+    aiAnalysis[loanAddress];
 
     try {
       await refetch();
@@ -220,175 +224,189 @@ export default function ProposalExplorer() {
         xl={6}
         sx={{ display: "flex", justifyContent: "center" }}
       >
-
-      <SoftBox
-        mt={5}
-        mx="auto"
-        p={4}
-        width="80%"
-        maxWidth="600px"
-        bgcolor="rgba(255,255,255,1)"
-        borderRadius="lg"
-        boxShadow="lg"
-        display="flex"
-        flexDirection="column"
-        sx={{
-          height: "calc(100vh - 120px)",
-          position: "sticky",
-          top: "80px",
-          boxShadow: "0 20px 27px 0 rgba(0, 0, 0, 0.05)",
-          border: "1px solid rgba(226, 232, 240, 0.6)"
-        }}
-      >
-        <SoftTypography variant="h4" fontWeight="bold" mb={2} textAlign="center">
-          Proposal Explorer
-        </SoftTypography>
-        
-
-        {!isConnected && (
-          <SoftBox textAlign="center" mt={2}>
-            <SoftTypography variant="body2" color="text" mb={1}>
-              Please connect your wallet to view proposals.
-            </SoftTypography>
-            <SoftButton variant="gradient" color="info" onClick={() => config.connect()}>
-              Connect Wallet
-            </SoftButton>
-          </SoftBox>
-        )}
-
-      {isConnected && (
-        <SoftBox display="flex" justifyContent="center" mb={2}>
-          <SoftButton
-            variant="gradient"
-            color="info"
-            size="small"
-            onClick={handleRefresh}
-            disabled={isLoading}
-          >
-            {isLoading ? "Loading..." : "Refresh Proposals"}
-          </SoftButton>
-        </SoftBox>
-      )}
-
-        {isConnected && isLoading && (
-          <SoftBox textAlign="center" mt={2}>
-            <SoftTypography variant="body2" color="text" mb={1}>
-              Loading proposals...
-            </SoftTypography>
-          </SoftBox>
-        )}
-
-        {isConnected && !isLoading && (
-          <SoftBox
+        <SoftBox
+          mt={5}
+          mx="auto"
+          p={4}
+          width="80%"
+          maxWidth="600px"
+          bgcolor="rgba(255,255,255,1)"
+          borderRadius="lg"
+          boxShadow="lg"
+          display="flex"
+          flexDirection="column"
           sx={{
-            flexGrow: 1,
-            overflowY: "auto",
-            width: "100%",
-            pr: 1,          
+            height: "calc(100vh - 120px)",
+            position: "sticky",
+            top: "80px",
+            boxShadow: "0 20px 27px 0 rgba(0, 0, 0, 0.05)",
+            border: "1px solid rgba(226, 232, 240, 0.6)",
           }}
-          >
-            {!allDisplayProposals || allDisplayProposals.length === 0 ? (
-              <SoftTypography mt={2} textAlign="center" variant="body2">
-                No proposals found.
+        >
+          <SoftTypography variant="h4" fontWeight="bold" mb={2} textAlign="center">
+            Proposal Explorer
+          </SoftTypography>
+
+          {!isConnected && (
+            <SoftBox textAlign="center" mt={2}>
+              <SoftTypography variant="body2" color="text" mb={1}>
+                Please connect your wallet to view proposals.
               </SoftTypography>
-            ) : (
-              allDisplayProposals.map((proposal, index) => (
-                <SoftBox
-                  key={Number(proposal.id)}
-                  mb={3}
-                  p={2}
-                  variant="gradient"
-                  boxShadow="sm"
-                  textAlign="centre"
-                  sx={{
-                    border: "2px solid",
-                    borderRadius: "15px",
-                    variant: "gradient",
-                    border: "1px solid rgba(0, 0, 0, 0.6)"
-                  }}
-                  display="flex"
-                  flexDirection="column"
-                  alignItems="center"
-                >
-                  <SoftTypography variant="h6" fontWeight="bold" mb={1}>
-                    Proposal ID: {Number(proposal.id)}
-                  </SoftTypography>
-                  <SoftTypography variant="body2" color="text" mb={1}>
-                    Borrower: {shortenAddress(proposal.borrower)}
-                  </SoftTypography>
-                  <SoftTypography variant="body2" color="text" mb={1}>
-                    Loan Amount: {formatEther(proposal.loanAmount)} ETH
-                  </SoftTypography>
+              <SoftButton variant="gradient" color="info" onClick={() => config.connect()}>
+                Connect Wallet
+              </SoftButton>
+            </SoftBox>
+          )}
 
-                  {expandedProposals[Number(proposal.id)] ? (
-                    <>
-                      <SoftTypography variant="body2" mt={1}>
-                        Fee Amount: {formatEther(proposal.feeAmount)} ETH
-                      </SoftTypography>
-                      <SoftTypography variant="body2" mt={1}>
-                        Collateral Amount: {formatEther(proposal.ethCollateralAmount)} ETH
-                      </SoftTypography>
-                      <SoftBox mt={1} width="100%">
-                        <RepaymentCountdown
-                          timestamp={proposal.repayByTimestamp}
-                          creationTimestamp={proposal.creationTimestamp}
-                          label="Proposed repayment deadline:"
-                        />
-                      </SoftBox>
+          {isConnected && (
+            <SoftBox display="flex" justifyContent="center" mb={2}>
+              <SoftButton
+                variant="gradient"
+                color="info"
+                size="small"
+                onClick={handleRefresh}
+                disabled={isLoading}
+              >
+                {isLoading ? "Loading..." : "Refresh Proposals"}
+              </SoftButton>
+            </SoftBox>
+          )}
 
-                      <SoftTypography variant="body2" mt={1}>
-                        Fixed Rate: {formatRate(proposal.fixedRate)}
-                      </SoftTypography>
-                      <SoftTypography variant="body2" mt={1}>
-                        Floating Rate: {formatRate(proposal.floatingRate)}
-                      </SoftTypography>
+          {isConnected && isLoading && (
+            <SoftBox textAlign="center" mt={2}>
+              <SoftTypography variant="body2" color="text" mb={1}>
+                Loading proposals...
+              </SoftTypography>
+            </SoftBox>
+          )}
 
-                      <SoftButton
-                        variant="gradient"
-                        color="info"
-                        onClick={() => selectProposalForAnalysis(Number(proposal.id))}
-                        style={{ marginTop: "12px" }}
-                      >
-                        {aiLoading[Number(proposal.id)] ? "Thinking..." : "Get AI Analysis"}
-                      </SoftButton>
+          {isConnected && !isLoading && (
+            <SoftBox
+              sx={{
+                flexGrow: 1,
+                overflowY: "auto",
+                width: "100%",
+                pr: 1,
+              }}
+            >
+              {!allDisplayProposals || allDisplayProposals.length === 0 ? (
+                <SoftTypography mt={2} textAlign="center" variant="body2">
+                  No proposals found.
+                </SoftTypography>
+              ) : (
+                allDisplayProposals.map((proposal, index) => (
+                  <SoftBox
+                    key={Number(proposal.id)}
+                    mb={3}
+                    p={2}
+                    variant="gradient"
+                    boxShadow="sm"
+                    textAlign="centre"
+                    sx={{
+                      border: "2px solid",
+                      borderRadius: "15px",
+                      variant: "gradient",
+                      border: "1px solid rgba(0, 0, 0, 0.6)",
+                    }}
+                    display="flex"
+                    flexDirection="column"
+                    alignItems="center"
+                  >
+                    <SoftTypography variant="h6" fontWeight="bold" mb={1}>
+                      Proposal ID: {Number(proposal.id)}
+                    </SoftTypography>
+                    <SoftTypography variant="body2" color="text" mb={1}>
+                      Borrower: {shortenAddress(proposal.borrower)}
+                    </SoftTypography>
+                    <SoftTypography variant="body2" color="text" mb={1}>
+                      Loan Amount: {formatEther(proposal.loanAmount)} ETH
+                    </SoftTypography>
 
+                    <Stack direction="row" spacing={1} justifyContent="center" mb={1} mt={1}>
+                      {getProposalTags(proposal).map((tag, index) => (
+                        <SoftBox
+                          key={index}
+                          px={1.5}
+                          py={0.5}
+                          borderRadius="md"
+                          bgColor={`${tag.color}.main`}
+                          color={tag.color}
+                          fontSize="0.9rem"
+                          fontWeight="bold"
+                          sx={{ display: "inline-flex", textTransform: "uppercase" }}
+                        >
+                          {tag.label}
+                        </SoftBox>
+                      ))}
+                    </Stack>
+                    {expandedProposals[Number(proposal.id)] ? (
+                      <>
+                        <SoftTypography variant="body2" mt={1}>
+                          Fee Amount: {formatEther(proposal.feeAmount)} ETH
+                        </SoftTypography>
+                        <SoftTypography variant="body2" mt={1}>
+                          Collateral Amount: {formatEther(proposal.ethCollateralAmount)} ETH
+                        </SoftTypography>
+                        <SoftBox mt={1} width="100%">
+                          <RepaymentCountdown
+                            timestamp={proposal.repayByTimestamp}
+                            creationTimestamp={proposal.creationTimestamp}
+                            label="Proposed repayment deadline:"
+                          />
+                        </SoftBox>
 
-                      <SoftButton
-                        variant="gradient"
-                        color="info"
-                        onClick={() => handleAcceptProposal(Number(proposal.id))}
-                        style={{ marginTop: "12px" }}
-                        disabled={isLoading}
-                      >
-                        Accept Proposal
-                      </SoftButton>
+                        <SoftTypography variant="body2" mt={1}>
+                          Fixed Rate: {formatRate(proposal.fixedRate)}
+                        </SoftTypography>
+                        <SoftTypography variant="body2" mt={1}>
+                          Floating Rate: {formatRate(proposal.floatingRate)}
+                        </SoftTypography>
+
+                        <SoftButton
+                          variant="gradient"
+                          color="info"
+                          onClick={() => selectProposalForAnalysis(Number(proposal.id))}
+                          style={{ marginTop: "12px" }}
+                        >
+                          {aiLoading[Number(proposal.id)] ? "Thinking..." : "Get AI Analysis"}
+                        </SoftButton>
+
+                        <SoftButton
+                          variant="gradient"
+                          color="info"
+                          onClick={() => handleAcceptProposal(Number(proposal.id))}
+                          style={{ marginTop: "12px" }}
+                          disabled={isLoading}
+                        >
+                          Accept Proposal
+                        </SoftButton>
+                        <SoftButton
+                          variant="gradient"
+                          color="info"
+                          onClick={() => toggleProposalDetails(Number(proposal.id))}
+                          style={{ marginTop: "12px" }}
+                        >
+                          Hide Details
+                        </SoftButton>
+                      </>
+                    ) : (
                       <SoftButton
                         variant="gradient"
                         color="info"
                         onClick={() => toggleProposalDetails(Number(proposal.id))}
                         style={{ marginTop: "12px" }}
                       >
-                        Hide Details
+                        Show Details
                       </SoftButton>
-                    </>
-                  ) : (
-                    <SoftButton
-                      variant="gradient"
-                      color="info"
-                      onClick={() => toggleProposalDetails(Number(proposal.id))}
-                      style={{ marginTop: "12px" }}
-                    >
-                      Show Details
-                    </SoftButton>
-                  )}
-                </SoftBox>
-              ))
-            )}
-          </SoftBox>
-        )}
-      </SoftBox>
+                    )}
+                  </SoftBox>
+                ))
+              )}
+            </SoftBox>
+          )}
+        </SoftBox>
       </Grid>
-      
+
       {/* AI Help Section */}
       <Grid
         item
@@ -399,80 +417,79 @@ export default function ProposalExplorer() {
         xl={4}
         sx={{ display: "flex", justifyContent: "center" }}
       >
+        <SoftBox
+          p={3}
+          mt={5}
+          borderRadius="xl"
+          boxShadow="lg"
+          backgroundColor="rgba(255,255,255,1)"
+          borderColor="error.main"
+          width="100%"
+          maxWidth="800px"
+          display="flex"
+          flexDirection="column"
+          sx={{
+            height: "calc(100vh - 120px)",
+            position: "sticky",
+            top: "80px",
+            boxShadow: "0 20px 27px 0 rgba(0, 0, 0, 0.05)",
+            border: "1px solid rgba(226, 232, 240, 0.6)",
+          }}
+        >
+          <SoftTypography variant="h5" mb={2}>
+            Loan Assistant
+          </SoftTypography>
+
+          {/* AI content area with scrolling */}
+          <SoftBox
+            sx={{
+              flexGrow: 1,
+              overflowY: "auto",
+              mb: 2,
+              pr: 1,
+              width: "100%",
+              maxWidth: "800px",
+            }}
+          >
+            {selectedProposalId && aiAnalysis[selectedProposalId] ? (
               <SoftBox
-                p={3}
-                mt={5}
-                borderRadius="xl"
-                boxShadow="lg"
-                backgroundColor="rgba(255,255,255,1)"
-                borderColor="error.main"
-                width="100%"
-                maxWidth="800px"
-                display="flex"
-                flexDirection="column"
                 sx={{
-                  height: "calc(100vh - 120px)",
-                  position: "sticky",
-                  top: "80px",
-                  boxShadow: "0 20px 27px 0 rgba(0, 0, 0, 0.05)",
-                  border: "1px solid rgba(226, 232, 240, 0.6)"
+                  wordBreak: "break-word",
+                  "& h1, & h2, & h3, & h4, & h5, & h6": {
+                    color: "info.main",
+                    fontSize: "1rem",
+                    fontWeight: "bold",
+                    mt: 1,
+                    mb: 0.5,
+                  },
+                  "& ul, & ol": {
+                    pl: 4,
+                  },
+                  "& li": {
+                    display: "list-item",
+                    marginLeft: 1,
+                  },
+                  "& p": {
+                    mb: 1,
+                  },
+                  "& code": {
+                    backgroundColor: "rgba(0,0,0,0.04)",
+                    padding: "0.2em 0.4em",
+                    borderRadius: "3px",
+                    fontFamily: "monospace",
+                  },
                 }}
               >
-                <SoftTypography variant="h5" mb={2}>
-                  Loan Assistant
-                </SoftTypography>
-      
-                {/* AI content area with scrolling */}
-                <SoftBox
-                  sx={{
-                    flexGrow: 1,
-                    overflowY: "auto",
-                    mb: 2,
-                    pr: 1,
-                    width: "100%",
-                    maxWidth: "800px",
-                  }}
-                >
-                  {selectedProposalId && aiAnalysis[selectedProposalId] ? (
-                    <SoftBox
-                      sx={{
-                        wordBreak: "break-word",
-                        "& h1, & h2, & h3, & h4, & h5, & h6": {
-                          color: "info.main",
-                          fontSize: "1rem",
-                          fontWeight: "bold",
-                          mt: 1,
-                          mb: 0.5,
-                        },
-                        "& ul, & ol": {
-                          pl: 4,
-                        },
-                        "& li": {
-                          display: "list-item",
-                          marginLeft: 1,
-                        },
-                        "& p": {
-                          mb: 1,
-                        },
-                        "& code": {
-                          backgroundColor: "rgba(0,0,0,0.04)",
-                          padding: "0.2em 0.4em",
-                          borderRadius: "3px",
-                          fontFamily: "monospace",
-                        },
-                      }}
-                    >
-                      <ReactMarkdown>{aiAnalysis[selectedProposalId]}</ReactMarkdown>
-                    </SoftBox>
-                  ) : (
-                    <SoftTypography variant="body2" color="text.secondary" fontStyle="italic">
-                      Select a proposal and click `Get AI Analysis` to get AI insights on loan terms.
-                    </SoftTypography>
-                  )}
-                </SoftBox>
+                <ReactMarkdown>{aiAnalysis[selectedProposalId]}</ReactMarkdown>
               </SoftBox>
-      
-        </Grid>
+            ) : (
+              <SoftTypography variant="body2" color="text.secondary" fontStyle="italic">
+                Select a proposal and click `Get AI Analysis` to get AI insights on loan terms.
+              </SoftTypography>
+            )}
+          </SoftBox>
+        </SoftBox>
       </Grid>
+    </Grid>
   );
 }
