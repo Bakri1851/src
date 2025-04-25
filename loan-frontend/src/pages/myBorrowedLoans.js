@@ -17,6 +17,7 @@ import {
   rateTypeLabel,
 } from "utils/formatters.js";
 import RepaymentCountdown from "components/RepaymentCountdown";
+import Grid from "@mui/material/Grid";
 
 export default function MyBorrowedLoans() {
   const { address, isConnected } = useAccount();
@@ -26,6 +27,7 @@ export default function MyBorrowedLoans() {
   const [expandedLoans, setExpandedLoans] = useState({});
   const [refreshCounter, setRefreshCounter] = useState(0);
 
+  const [selectedLoanId, setSelectedLoanId] = useState(null);
   const [aiAnalysis, setAiAnalysis] = useState({});
   const [aiLoading, setAiLoading] = useState(false);
 
@@ -93,25 +95,18 @@ export default function MyBorrowedLoans() {
 
     console.log("Loan states before filtering:", loanStates);
 
-    // Sort loans by state (higher state = more advanced in lifecycle)
     return uniqueAddresses.sort((a, b) => {
-      // Prioritize loans that are in active states (1-3) over others
       const stateA = loanStates[a];
       const stateB = loanStates[b];
 
-      // Active loans (1-3) come first, sorted by state
       if (stateA >= 1 && stateA <= 3 && stateB >= 1 && stateB <= 3) {
-        return stateA - stateB; // Show lower states first (e.g., Funded before Taken)
-      }
-      // Active loans before completed loans
-      else if (stateA >= 1 && stateA <= 3) return -1;
+        return stateA - stateB;
+      } else if (stateA >= 1 && stateA <= 3) return -1;
       else if (stateB >= 1 && stateB <= 3) return 1;
-      // For non-active loans, show higher states first (e.g., Repaid before Created)
       else return stateB - stateA;
     });
   };
 
-  // Handle manual refresh
   const handleRefresh = async () => {
     setIsLoading(true);
     setLoanDetails({});
@@ -119,7 +114,7 @@ export default function MyBorrowedLoans() {
 
     try {
       await refetch();
-      setRefreshCounter((prev) => prev + 1); // Trigger re-filtering
+      setRefreshCounter((prev) => prev + 1);
     } catch (error) {
       console.error("Error refreshing loans:", error);
     } finally {
@@ -139,7 +134,6 @@ export default function MyBorrowedLoans() {
           setUserLoans(filteredLoans);
         } catch (error) {
           console.error("Error filtering loans:", error);
-          // Fall back to unfiltered list in case of error
           setUserLoans(borrowerLoans);
         } finally {
           setIsLoading(false);
@@ -152,12 +146,11 @@ export default function MyBorrowedLoans() {
     if (borrowerLoans) {
       loadAndFilterLoans();
     }
-  }, [borrowerLoans, address, refreshCounter]); // Added refreshCounter to trigger re-filtering
+  }, [borrowerLoans, address, refreshCounter]);
 
   const fetchLoanDetails = async (loanAddress) => {
     setIsLoading(true);
     try {
-      // Make separate calls with complete config objects
       const borrower = await readContract(config, {
         address: loanAddress,
         abi: ContractConfig.abi,
@@ -244,7 +237,6 @@ export default function MyBorrowedLoans() {
         },
       }));
 
-      // Mark this loan as expanded
       setExpandedLoans((prev) => ({
         ...prev,
         [loanAddress]: true,
@@ -256,16 +248,13 @@ export default function MyBorrowedLoans() {
     }
   };
 
-  // Toggle loan details visibility
   const toggleLoanDetails = (loanAddress) => {
     if (expandedLoans[loanAddress]) {
-      // Hide details - leave details data in place for quick re-showing
       setExpandedLoans((prev) => ({
         ...prev,
         [loanAddress]: false,
       }));
     } else {
-      // If we already have the details, just show them, otherwise fetch
       if (loanDetails[loanAddress]) {
         setExpandedLoans((prev) => ({
           ...prev,
@@ -408,246 +397,353 @@ export default function MyBorrowedLoans() {
     }
   };
 
+  const selectLoanForAnalysis = (loanAddress) => {
+    setSelectedLoanId(loanAddress);
+    getAIAnalysis(loanAddress);
+  };
+
+  useEffect(() => {
+    setSelectedLoanId(null);
+    setAiAnalysis({});
+    setAiLoading({});
+    setExpandedLoans({});
+  }, [address]);
+
   return (
-    <SoftBox
-      mt={5}
-      mx="auto"
-      p="4"
-      width="fit-content"
-      backgroundColor="white"
-      boxShadow="lg"
-      textAlign="center"
+    <Grid
+      container
+      spacing={3}
+      justifyContent="space-between"
+      alignItems="flex-start"
+      minHeight="100vh"
     >
-      <SoftTypography variant="h4" fontWeight="bold" mb={2} textAlign="center">
-        Loans You Borrowed
-      </SoftTypography>
+      {/* Sidebar compensation*/}
+      <Grid
+        item
+        xs={0}
+        sm={1}
+        md={1}
+        lg={1}
+        xl={2}
+        sx={{ display: { xs: "none", sm: "block" } }}
+      ></Grid>
 
-      {isConnected && (
-        <SoftBox display="flex" justifyContent="center" mb={2}>
-          <SoftButton
-            variant="gradient"
-            color="info"
-            size="small"
-            onClick={handleRefresh}
-            disabled={isLoading}
-          >
-            {isLoading ? "Loading..." : "Refresh Loans"}
-          </SoftButton>
-        </SoftBox>
-      )}
+      {/* Loans listing column*/}
+      <Grid
+        item
+        xs={12}
+        sm={10}
+        md={7}
+        lg={6}
+        xl={6}
+        sx={{ display: "flex", justifyContent: "center" }}
+      >
+        <SoftBox
+          mt={5}
+          mx="auto"
+          p={4}
+          width="80%"
+          maxWidth="600px"
+          bgcolor="rgba(255,255,255,1)"
+          borderRadius="lg"
+          boxShadow="lg"
+          display="flex"
+          flexDirection="column"
+          sx={{
+            height: "calc(100vh - 120px)",
+            position: "sticky",
+            top: "80px",
+            boxShadow: "0 20px 27px 0 rgba(0, 0, 0, 0.05)",
+            border: "1px solid rgba(226, 232, 240, 0.6)",
+          }}
+        >
+          <SoftTypography variant="h4" fontWeight="bold" mb={2} textAlign="center">
+            Loans You Borrowed
+          </SoftTypography>
 
-      {!isConnected && (
-        <SoftTypography mt variant="body2">
-          Please connect your wallet to view your loans.
-        </SoftTypography>
-      )}
-      {isConnected && isLoading && (
-        <SoftTypography variant="body2">Loading loans...</SoftTypography>
-      )}
-      {isConnected && !isLoading && (
-        <>
-          {!userLoans || userLoans.length === 0 ? (
-            <SoftTypography mt variant="body2" textAlign="center">
-              No loans found.
-            </SoftTypography>
-          ) : (
-            userLoans.map((loanAddress, index) => (
-              <SoftBox
-                key={index}
-                mb={3}
-                p={2}
-                color="info"
-                variant="gradient"
-                boxShadow="sm"
-                textAlign="center"
-                sx={{
-                  border: "2px solid",
-                  borderColor: "info.main",
-                  transition: "all 0.2s",
-                  borderRadius: "15px",
-                }}
-                display="flex"
-                flexDirection="column"
-                alignItems="center"
-              >
-                <SoftTypography variant="h6" fontWeight="bold" mb={1}>
-                  Loan Address:
-                </SoftTypography>
-                <SoftTypography variant="body2" mb={2} style={{ wordBreak: "break-all" }}>
-                  {loanAddress}
-                </SoftTypography>
-
-                {loanDetails[loanAddress] && expandedLoans[loanAddress] ? (
-                  <>
-                    <SoftTypography variant="body2" mt={1}>
-                      Repayment Amount:{" "}
-                      {formatEther(
-                        loanDetails[loanAddress].loanAmount +
-                          loanDetails[loanAddress].interest +
-                          loanDetails[loanAddress].feeAmount
-                      )}{" "}
-                      ETH
-                    </SoftTypography>
-
-                    <SoftTypography variant="body2" mt={1}>
-                      Loan Amount: {formatEther(loanDetails[loanAddress].loanAmount)} ETH
-                    </SoftTypography>
-
-                    <SoftTypography variant="body2" mt={1}>
-                      Collateral: {formatEther(loanDetails[loanAddress].collateralAmount)} ETH
-                    </SoftTypography>
-
-                    <SoftBox mt={1} width="100%">
-                      <RepaymentCountdown
-                        timestamp={loanDetails[loanAddress].repayByTimestamp}
-                        creationTimestamp={loanDetails[loanAddress].creationTimestamp}
-                        label="Time remaining to repay:"
-                      />
-                    </SoftBox>
-
-                    <SoftTypography variant="body2" mt={1}>
-                      Rate Type: {rateTypeLabel[loanDetails[loanAddress].rateType] || "Unknown"}
-                    </SoftTypography>
-
-                    <SoftTypography variant="body2" mt={1}>
-                      Fixed Rate: {formatRate(loanDetails[loanAddress].fixedRate)}
-                    </SoftTypography>
-
-                    <SoftTypography variant="body2" mt={1}>
-                      Floating Rate: {formatRate(loanDetails[loanAddress].floatingRate)}
-                    </SoftTypography>
-
-                    <SoftTypography variant="body2" mt={1}>
-                      Status: {formatState(loanDetails[loanAddress].state)}
-                    </SoftTypography>
-
-                    {loanDetails[loanAddress].state === 1 && (
-                      <SoftButton
-                        variant="gradient"
-                        color="info"
-                        onClick={() => handleAcceptLoan(loanAddress)}
-                        style={{ marginTop: "12px" }}
-                      >
-                        Give Collateral
-                      </SoftButton>
-                    )}
-
-                    {loanDetails[loanAddress].state === 2 && (
-                      <SoftButton
-                        variant="gradient"
-                        color="info"
-                        onClick={() => handleTakeLoan(loanAddress)}
-                        style={{ marginTop: "12px" }}
-                      >
-                        Take Loan
-                      </SoftButton>
-                    )}
-
-                    {loanDetails[loanAddress].state === 3 && (
-                      <SoftButton
-                        variant="gradient"
-                        color="info"
-                        onClick={() => handleRepayLoan(loanAddress)}
-                        style={{ marginTop: "12px" }}
-                      >
-                        Repay Loan
-                      </SoftButton>
-                    )}
-
-                    {loanDetails[loanAddress].state < 4 && (
-                      <SoftButton
-                        variant="gradient"
-                        color="info"
-                        onClick={() => handleSwitchRate(loanAddress)}
-                        style={{ marginTop: "12px" }}
-                      >
-                        Switch Rate
-                      </SoftButton>
-                    )}
-
-                    <SoftButton
-                      variant="gradient"
-                      color="info"
-                      onClick={() => getAIAnalysis(loanAddress)}
-                      style={{ marginTop: "12px" }}
-                    >
-                      {aiLoading[loanAddress] ? "Thinking..." : "Get AI Analysis"}
-                    </SoftButton>
-
-                    {aiAnalysis[loanAddress] && (
-                      <SoftBox
-                        mt={2}
-                        p={2}
-                        border="1px dashed"
-                        borderColor="info.main"
-                        borderRadius="10px"
-                        backgroundColor="rgba(0, 142, 255, 0.1)"
-                        width="100%"
-                        textAlign="left"
-                        maxHeight="300px"
-                        maxWidth="800px"
-                        overflow="auto"
-                        mb={3}
-                        sx={{
-                          "&::-webkit-scrollbar": {
-                            width: "8px",
-                            backgroundColor: "rgba(0,0,0,0.05)",
-                          },
-                          "&::-webkit-scrollbar-thumb": {
-                            borderRadius: "4px",
-                            backgroundColor: "rgba(0, 142, 255, 0.3)",
-                          },
-                          wordBreak: "break-word",
-                        }}
-                      >
-                        <SoftTypography variant="h6" fontWeight="bold" color="info.main" mb={1}>
-                          AI Suggestions:
-                        </SoftTypography>
-                        <SoftBox
-                          sx={{
-                            "& h1, & h2, & h3, & h4, & h5, & h6": {
-                              color: "info.main",
-                              fontSize: "1rem",
-                              fontWeight: "bold",
-                              mt: 1,
-                              mb: 0.5,
-                            },
-                            "& ul, & ol": {
-                              pl: 2,
-                            },
-                            "& p": {
-                              mb: 1,
-                            },
-                          }}
-                        >
-                          <ReactMarkdown>{aiAnalysis[loanAddress]}</ReactMarkdown>
-                        </SoftBox>
-                      </SoftBox>
-                    )}
-
-                    <SoftButton
-                      variant="gradient"
-                      color="info"
-                      onClick={() => toggleLoanDetails(loanAddress)}
-                      style={{ marginTop: "12px" }}
-                    >
-                      Hide Details
-                    </SoftButton>
-                  </>
-                ) : (
-                  <SoftButton
-                    variant="gradient"
-                    color="info"
-                    onClick={() => toggleLoanDetails(loanAddress)}
-                  >
-                    View Details
-                  </SoftButton>
-                )}
-              </SoftBox>
-            ))
+          {/* Connection button */}
+          {!isConnected && (
+            <SoftBox textAlign="center" mt={2}>
+              <SoftTypography variant="body2" color="text" mb={1}>
+                Please connect your wallet to view your loans.
+              </SoftTypography>
+              <SoftButton variant="gradient" color="info" onClick={() => config.connect()}>
+                Connect Wallet
+              </SoftButton>
+            </SoftBox>
           )}
-        </>
-      )}
-    </SoftBox>
+
+          {/* Refresh button */}
+          {isConnected && (
+            <SoftBox display="flex" justifyContent="center" mb={2}>
+              <SoftButton
+                variant="gradient"
+                color="info"
+                size="small"
+                onClick={handleRefresh}
+                disabled={isLoading}
+              >
+                {isLoading ? "Loading..." : "Refresh Loans"}
+              </SoftButton>
+            </SoftBox>
+          )}
+
+          {/* Loading state */}
+          {isConnected && isLoading && (
+            <SoftBox textAlign="center" mt={2}>
+              <SoftTypography variant="body2" color="text" mb={1}>
+                Loading loans...
+              </SoftTypography>
+            </SoftBox>
+          )}
+
+          {/* Loans list - make it scrollable */}
+          {isConnected && !isLoading && (
+            <SoftBox
+              sx={{
+                flexGrow: 1,
+                overflowY: "auto",
+                width: "100%",
+                pr: 1,
+              }}
+            >
+              {!userLoans || userLoans.length === 0 ? (
+                <SoftTypography mt={2} textAlign="center" variant="body2">
+                  No loans found.
+                </SoftTypography>
+              ) : (
+                userLoans.map((loanAddress, index) => (
+                  <SoftBox
+                    key={index}
+                    mb={3}
+                    p={2}
+                    variant="gradient"
+                    boxShadow="sm"
+                    textAlign="center"
+                    sx={{
+                      border: "1px solid rgba(0, 0, 0, 0.6)",
+                      borderRadius: "15px",
+                    }}
+                    display="flex"
+                    flexDirection="column"
+                    alignItems="center"
+                  >
+                    <SoftTypography variant="h6" fontWeight="bold" mb={1}>
+                      Loan Address:
+                    </SoftTypography>
+                    <SoftTypography variant="body2" mb={2} style={{ wordBreak: "break-all" }}>
+                      {loanAddress}
+                    </SoftTypography>
+
+                    {/* Loan details when expanded */}
+                    {loanDetails[loanAddress] && expandedLoans[loanAddress] ? (
+                      <>
+                        <SoftTypography variant="body2" mt={1}>
+                          Repayment Amount:{" "}
+                          {formatEther(
+                            loanDetails[loanAddress].loanAmount +
+                              loanDetails[loanAddress].interest +
+                              loanDetails[loanAddress].feeAmount
+                          )}{" "}
+                          ETH
+                        </SoftTypography>
+
+                        <SoftTypography variant="body2" mt={1}>
+                          Loan Amount: {formatEther(loanDetails[loanAddress].loanAmount)} ETH
+                        </SoftTypography>
+
+                        <SoftTypography variant="body2" mt={1}>
+                          Collateral: {formatEther(loanDetails[loanAddress].collateralAmount)} ETH
+                        </SoftTypography>
+
+                        <SoftBox mt={1} width="100%">
+                          <RepaymentCountdown
+                            timestamp={loanDetails[loanAddress].repayByTimestamp}
+                            creationTimestamp={loanDetails[loanAddress].creationTimestamp}
+                            label="Time remaining to repay:"
+                          />
+                        </SoftBox>
+
+                        <SoftTypography variant="body2" mt={1}>
+                          Rate Type: {rateTypeLabel[loanDetails[loanAddress].rateType] || "Unknown"}
+                        </SoftTypography>
+
+                        <SoftTypography variant="body2" mt={1}>
+                          Fixed Rate: {formatRate(loanDetails[loanAddress].fixedRate)}
+                        </SoftTypography>
+
+                        <SoftTypography variant="body2" mt={1}>
+                          Floating Rate: {formatRate(loanDetails[loanAddress].floatingRate)}
+                        </SoftTypography>
+
+                        <SoftTypography variant="body2" mt={1}>
+                          Status: {formatState(loanDetails[loanAddress].state)}
+                        </SoftTypography>
+
+                        {loanDetails[loanAddress].state === 1 && (
+                          <SoftButton
+                            variant="gradient"
+                            color="info"
+                            onClick={() => handleAcceptLoan(loanAddress)}
+                            style={{ marginTop: "12px" }}
+                          >
+                            Give Collateral
+                          </SoftButton>
+                        )}
+
+                        {loanDetails[loanAddress].state === 2 && (
+                          <SoftButton
+                            variant="gradient"
+                            color="info"
+                            onClick={() => handleTakeLoan(loanAddress)}
+                            style={{ marginTop: "12px" }}
+                          >
+                            Take Loan
+                          </SoftButton>
+                        )}
+
+                        {loanDetails[loanAddress].state === 3 && (
+                          <SoftButton
+                            variant="gradient"
+                            color="info"
+                            onClick={() => handleRepayLoan(loanAddress)}
+                            style={{ marginTop: "12px" }}
+                          >
+                            Repay Loan
+                          </SoftButton>
+                        )}
+
+                        {loanDetails[loanAddress].state < 4 && (
+                          <SoftButton
+                            variant="gradient"
+                            color="info"
+                            onClick={() => handleSwitchRate(loanAddress)}
+                            style={{ marginTop: "12px" }}
+                          >
+                            Switch Rate
+                          </SoftButton>
+                        )}
+
+                        {/* Add Get AI Analysis button */}
+                        <SoftButton
+                          variant="gradient"
+                          color="info"
+                          onClick={() => selectLoanForAnalysis(loanAddress)}
+                          style={{ marginTop: "12px" }}
+                        >
+                          {aiLoading[loanAddress] ? "Thinking..." : "Get AI Analysis"}
+                        </SoftButton>
+
+                        {/* Hide Details button */}
+                        <SoftButton
+                          variant="gradient"
+                          color="info"
+                          onClick={() => toggleLoanDetails(loanAddress)}
+                          style={{ marginTop: "12px" }}
+                        >
+                          Hide Details
+                        </SoftButton>
+                      </>
+                    ) : (
+                      <SoftButton
+                        variant="gradient"
+                        color="info"
+                        onClick={() => toggleLoanDetails(loanAddress)}
+                      >
+                        View Details
+                      </SoftButton>
+                    )}
+                  </SoftBox>
+                ))
+              )}
+            </SoftBox>
+          )}
+        </SoftBox>
+      </Grid>
+
+      {/* AI Help Section */}
+      <Grid
+        item
+        xs={12}
+        sm={12}
+        md={6}
+        lg={6}
+        xl={4}
+        sx={{ display: "flex", justifyContent: "center" }}
+      >
+        <SoftBox
+          p={3}
+          mt={5}
+          borderRadius="xl"
+          boxShadow="lg"
+          backgroundColor="rgba(255,255,255,1)"
+          borderColor="error.main"
+          width="100%"
+          maxWidth="800px"
+          display="flex"
+          flexDirection="column"
+          sx={{
+            height: "calc(100vh - 120px)",
+            position: "sticky",
+            top: "80px",
+            boxShadow: "0 20px 27px 0 rgba(0, 0, 0, 0.05)",
+            border: "1px solid rgba(226, 232, 240, 0.6)",
+          }}
+        >
+          <SoftTypography variant="h5" mb={2}>
+            Loan Assistant
+          </SoftTypography>
+
+          {/* AI content area with scrolling */}
+          <SoftBox
+            sx={{
+              flexGrow: 1,
+              overflowY: "auto",
+              mb: 2,
+              pr: 1,
+              width: "100%",
+              maxWidth: "800px",
+            }}
+          >
+            {selectedLoanId && aiAnalysis[selectedLoanId] ? (
+              <SoftBox
+                sx={{
+                  wordBreak: "break-word",
+                  "& h1, & h2, & h3, & h4, & h5, & h6": {
+                    color: "info.main",
+                    fontSize: "1rem",
+                    fontWeight: "bold",
+                    mt: 1,
+                    mb: 0.5,
+                  },
+                  "& ul, & ol": {
+                    pl: 4,
+                  },
+                  "& li": {
+                    display: "list-item",
+                    marginLeft: 1,
+                  },
+                  "& p": {
+                    mb: 1,
+                  },
+                  "& code": {
+                    backgroundColor: "rgba(0,0,0,0.04)",
+                    padding: "0.2em 0.4em",
+                    borderRadius: "3px",
+                    fontFamily: "monospace",
+                  },
+                }}
+              >
+                <ReactMarkdown>{aiAnalysis[selectedLoanId]}</ReactMarkdown>
+              </SoftBox>
+            ) : (
+              <SoftTypography variant="body2" color="text.secondary" fontStyle="italic">
+                Select a loan and click `Get AI Analysis` to get AI insights on loan terms.
+              </SoftTypography>
+            )}
+          </SoftBox>
+        </SoftBox>
+      </Grid>
+    </Grid>
   );
 }

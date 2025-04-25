@@ -11,6 +11,7 @@ import { helpMakeProposal } from "api/openai";
 import ReactMarkdown from "react-markdown";
 import { parseEther } from "viem";
 import { formatRate } from "utils/formatters";
+import Grid from "@mui/material/Grid";
 
 const ORACLE_ABI = [
   {
@@ -237,110 +238,254 @@ export default function CreateProposal() {
   };
 
   return (
-    <SoftBox
-      mt={5}
-      mx="auto"
-      p={4}
-      width="fit-content"
-      backgroundColor="white"
-      borderRadius="xl"
-      boxShadow="lg"
+    <Grid
+      container
+      spacing={3}
+      justifyContent="space-between"
+      alignItems="flex-start"
+      minHeight="100vh"
     >
-      <SoftTypography variant="h4" fontWeight="bold" mb={2} textAlign="center">
-        Create Proposal
-      </SoftTypography>
+      {/* Sidebar compensation */}
+      <Grid
+        item
+        xs={0}
+        sm={1}
+        md={1}
+        lg={1}
+        xl={2}
+        sx={{ display: { xs: "none", sm: "block" } }}
+      ></Grid>
 
-      {!isConnected ? (
-        <SoftBox textAlign="center">
-          <SoftTypography mb={2} textAlign="center">
-            Please connect your wallet to create a proposal.
+      {/* Proposal Form */}
+      <Grid
+        item
+        xs={12}
+        sm={10}
+        md={7}
+        lg={6}
+        xl={6}
+        sx={{ display: "flex", justifyContent: "center" }}
+      >
+        <SoftBox
+          mt={5}
+          mx="auto"
+          p={4}
+          width="100%"
+          maxWidth="600px"
+          backgroundColor="rgba(255,255,255,1)"
+          borderRadius="lg"
+          boxShadow="md"
+          sx={{
+            boxShadow: "0 20px 27px 0 rgba(0, 0, 0, 0.05)",
+            border: "1px solid rgba(226, 232, 240, 0.6)",
+          }}
+        >
+          <SoftTypography variant="h4" fontWeight="bold" mb={2} textAlign="center">
+            Create Proposal
           </SoftTypography>
+
+          {!isConnected ? (
+            <SoftBox textAlign="center">
+              <SoftTypography mb={2} textAlign="center">
+                Please connect your wallet to create a proposal.
+              </SoftTypography>
+            </SoftBox>
+          ) : (
+            <form onSubmit={handleSubmit}>
+              <SoftBox mb={2}>
+                <SoftTypography variant="button" fontWeight="regular">
+                  Loan Amount (ETH)
+                </SoftTypography>
+                <SoftInput
+                  type="number"
+                  name="loanAmount"
+                  placeholder="1.0"
+                  value={form.loanAmount}
+                  onChange={handleEthAmountChange}
+                  required
+                  step="0.01"
+                  icon={{
+                    component: (
+                      <SoftTypography variant="button" fontWeight="regular"></SoftTypography>
+                    ),
+                    direction: direction === "rtl" ? "right" : "right",
+                  }}
+                />
+              </SoftBox>
+              <SoftBox mb={2}>
+                <SoftTypography variant="button" fontWeight="regular">
+                  Fee Amount (ETH)
+                </SoftTypography>
+                <SoftInput
+                  type="number"
+                  name="feeAmount"
+                  placeholder="0.1"
+                  value={form.feeAmount}
+                  onChange={handleEthAmountChange}
+                  required
+                  step="0.01"
+                  icon={{
+                    component: (
+                      <SoftTypography variant="button" fontWeight="regular"></SoftTypography>
+                    ),
+                    direction: direction === "rtl" ? "right" : "right",
+                  }}
+                />
+              </SoftBox>
+              <SoftBox mb={2}>
+                <SoftTypography variant="button" fontWeight="regular">
+                  Collateral (ETH)
+                </SoftTypography>
+                <SoftInput
+                  type="number"
+                  name="collateral"
+                  placeholder="1.5"
+                  value={form.collateral}
+                  onChange={handleEthAmountChange}
+                  required
+                  step="0.01"
+                  icon={{
+                    component: (
+                      <SoftTypography variant="button" fontWeight="regular"></SoftTypography>
+                    ),
+                    direction: direction === "rtl" ? "right" : "right",
+                  }}
+                />
+              </SoftBox>
+              <SoftBox mb={2}>
+                <SoftTypography variant="button" fontWeight="regular">
+                  Repay By
+                </SoftTypography>
+                <SoftInput
+                  type="datetime-local"
+                  name="repayBy"
+                  value={form.repayByDateString} // Use the date string here
+                  onChange={handleDateChange}
+                  required
+                  icon={{
+                    component: <SoftTypography fontWeight="regular"></SoftTypography>,
+                    direction: direction === "rtl" ? "right" : "right",
+                  }}
+                />
+              </SoftBox>
+              <SoftBox mb={2}>
+                <SoftTypography variant="button" fontWeight="regular">
+                  Fixed Rate (%)
+                </SoftTypography>
+                <SoftTypography variant="body2">{formatRate(form.fixedRate)}</SoftTypography>
+              </SoftBox>
+              <SoftBox mb={2}>
+                <SoftTypography variant="button" fontWeight="regular">
+                  Floating Rate (%)
+                </SoftTypography>
+                <SoftTypography variant="body2">{formatRate(form.floatingRate)}</SoftTypography>
+              </SoftBox>
+
+              <SoftBox mb={2}>
+                <SoftButton
+                  type="submit"
+                  variant="gradient"
+                  color="info"
+                  fullWidth
+                  disabled={isWaiting || !form.fixedRate}
+                  onClick={handleSubmit}
+                  gradient={{
+                    from: "info",
+                    to: "success",
+                    deg: 45,
+                  }}
+                >
+                  {isWaiting ? "Creating..." : "Create Proposal"}
+                </SoftButton>
+              </SoftBox>
+            </form>
+          )}
         </SoftBox>
-      ) : (
-        <form onSubmit={handleSubmit}>
-          <SoftBox mb={2}>
-            <SoftTypography variant="button" fontWeight="regular">
-              Loan Amount (ETH)
-            </SoftTypography>
-            <SoftInput
-              type="number"
-              name="loanAmount"
-              placeholder="1.0"
-              value={form.loanAmount}
-              onChange={handleEthAmountChange}
-              required
-              step="0.01"
-              icon={{
-                component: <SoftTypography variant="button" fontWeight="regular"></SoftTypography>,
-                direction: direction === "rtl" ? "right" : "right",
-              }}
-            />
+      </Grid>
+
+      {/* AI Help Section */}
+      <Grid
+        item
+        xs={12}
+        sm={12}
+        md={6}
+        lg={6}
+        xl={4}
+        sx={{ display: "flex", justifyContent: "center" }}
+      >
+        <SoftBox
+          p={3}
+          mt={5}
+          borderRadius="lg"
+          backgroundColor="rgba(255,255,255,1)"
+          width="100%"
+          maxWidth="800px"
+          display="flex"
+          flexDirection="column"
+          sx={{
+            height: "calc(100vh - 120px)",
+            position: "sticky",
+            top: "80px",
+            boxShadow: "0 20px 27px 0 rgba(0, 0, 0, 0.05)",
+            border: "1px solid rgba(226, 232, 240, 0.6)",
+          }}
+        >
+          <SoftTypography variant="h5" mb={2}>
+            Loan Assistant
+          </SoftTypography>
+
+          {/* AI content area with scrolling */}
+          <SoftBox
+            sx={{
+              flexGrow: 1,
+              overflowY: "auto",
+              mb: 2,
+              pr: 1,
+              width: "100%",
+              maxWidth: "800px",
+            }}
+          >
+            {aiSuggestions ? (
+              <SoftBox
+                sx={{
+                  wordBreak: "break-word",
+                  "& h1, & h2, & h3, & h4, & h5, & h6": {
+                    color: "info.main",
+                    fontSize: "1rem",
+                    fontWeight: "bold",
+                    mt: 1,
+                    mb: 0.5,
+                  },
+                  "& ul, & ol": {
+                    pl: 4,
+                  },
+                  "& li": {
+                    display: "list-item",
+                    marginLeft: 1,
+                  },
+                  "& p": {
+                    mb: 1,
+                  },
+                  "& code": {
+                    backgroundColor: "rgba(0,0,0,0.04)",
+                    padding: "0.2em 0.4em",
+                    borderRadius: "3px",
+                    fontFamily: "monospace",
+                  },
+                }}
+              >
+                <ReactMarkdown>{aiSuggestions}</ReactMarkdown>
+              </SoftBox>
+            ) : (
+              <SoftTypography variant="body2" color="text.secondary" fontStyle="italic">
+                Get AI suggestions on your current terms to help optimize your loan proposal. If not
+                sure what a field is leave it blank and the AI will talk to you about it.
+              </SoftTypography>
+            )}
           </SoftBox>
-          <SoftBox mb={2}>
-            <SoftTypography variant="button" fontWeight="regular">
-              Fee Amount (ETH)
-            </SoftTypography>
-            <SoftInput
-              type="number"
-              name="feeAmount"
-              placeholder="0.1"
-              value={form.feeAmount}
-              onChange={handleEthAmountChange}
-              required
-              step="0.01"
-              icon={{
-                component: <SoftTypography variant="button" fontWeight="regular"></SoftTypography>,
-                direction: direction === "rtl" ? "right" : "right",
-              }}
-            />
-          </SoftBox>
-          <SoftBox mb={2}>
-            <SoftTypography variant="button" fontWeight="regular">
-              Collateral (ETH)
-            </SoftTypography>
-            <SoftInput
-              type="number"
-              name="collateral"
-              placeholder="1.5"
-              value={form.collateral}
-              onChange={handleEthAmountChange}
-              required
-              step="0.01"
-              icon={{
-                component: <SoftTypography variant="button" fontWeight="regular"></SoftTypography>,
-                direction: direction === "rtl" ? "right" : "right",
-              }}
-            />
-          </SoftBox>
-          <SoftBox mb={2}>
-            <SoftTypography variant="button" fontWeight="regular">
-              Repay By
-            </SoftTypography>
-            <SoftInput
-              type="datetime-local"
-              name="repayBy"
-              value={form.repayByDateString} // Use the date string here
-              onChange={handleDateChange}
-              required
-              icon={{
-                component: <SoftTypography fontWeight="regular"></SoftTypography>,
-                direction: direction === "rtl" ? "right" : "right",
-              }}
-            />
-          </SoftBox>
-          <SoftBox mb={2}>
-            <SoftTypography variant="button" fontWeight="regular">
-              Fixed Rate (%)
-            </SoftTypography>
-            <SoftTypography variant="body2">{formatRate(form.fixedRate)}</SoftTypography>
-          </SoftBox>
-          <SoftBox mb={2}>
-            <SoftTypography variant="button" fontWeight="regular">
-              Floating Rate (%)
-            </SoftTypography>
-            <SoftTypography variant="body2">{formatRate(form.floatingRate)}</SoftTypography>
-          </SoftBox>
-          <SoftBox mb={2}>
+
+          {/* Button at bottom */}
+          <SoftBox>
             <SoftButton
               variant="gradient"
               color="info"
@@ -351,76 +496,8 @@ export default function CreateProposal() {
               {aiLoading ? "Thinking..." : "Get AI Suggestions"}
             </SoftButton>
           </SoftBox>
-          {aiSuggestions && (
-            <SoftBox
-              mt={2}
-              p={2}
-              border="1px dashed"
-              borderColor="info.main"
-              borderRadius="10px"
-              backgroundColor="rgba(0, 142, 255, 0.1)"
-              width="100%"
-              textAlign="left"
-              maxHeight="300px"
-              maxWidth="800px"
-              overflow="auto"
-              mb={3}
-              sx={{
-                "&::-webkit-scrollbar": {
-                  width: "8px",
-                  backgroundColor: "rgba(0,0,0,0.05)",
-                },
-                "&::-webkit-scrollbar-thumb": {
-                  borderRadius: "4px",
-                  backgroundColor: "rgba(0, 142, 255, 0.3)",
-                },
-                wordBreak: "break-word",
-              }}
-            >
-              <SoftTypography variant="h6" fontWeight="bold" color="info.main" mb={1}>
-                AI Suggestions:
-              </SoftTypography>
-              <SoftBox
-                sx={{
-                  "& h1, & h2, & h3, & h4, & h5, & h6": {
-                    color: "info.main",
-                    fontSize: "1rem",
-                    fontWeight: "bold",
-                    mt: 1,
-                    mb: 0.5,
-                  },
-                  "& ul, & ol": {
-                    pl: 2,
-                  },
-                  "& p": {
-                    mb: 1,
-                  },
-                }}
-              >
-                <ReactMarkdown>{aiSuggestions}</ReactMarkdown>
-              </SoftBox>
-            </SoftBox>
-          )}
-
-          <SoftBox mb={2}>
-            <SoftButton
-              type="submit"
-              variant="gradient"
-              color="info"
-              fullWidth
-              disabled={isWaiting || !form.fixedRate}
-              onClick={handleSubmit}
-              gradient={{
-                from: "info",
-                to: "success",
-                deg: 45,
-              }}
-            >
-              {isWaiting ? "Creating..." : "Create Proposal"}
-            </SoftButton>
-          </SoftBox>
-        </form>
-      )}
-    </SoftBox>
+        </SoftBox>
+      </Grid>
+    </Grid>
   );
 }

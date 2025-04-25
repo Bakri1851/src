@@ -57,6 +57,8 @@ export const analyseLoanTerms = async (loanDetails) => {
     Fixed rate stays same throughout the loan period, while floating rate can change based on market conditions.  
     If the repayment amount is not specified, the lender is the one calling the function so no need to talk about the repayment amount.
 
+    Use British Grammar
+
     `;
 
   return generateCompletion(prompt, config);
@@ -84,6 +86,7 @@ export const analyseProposal = async (proposalDetails) => {
     Format the response in a clear and structured way, using bullet points or numbered lists where appropriate.
     Fixed rate stays same throughout the loan period, while floating rate can change based on market conditions.  
 
+    Use British Grammar
     `;
 
   return generateCompletion(prompt, config);
@@ -113,7 +116,9 @@ export const helpMakeProposal = async (proposalDetails) => {
     The rates cannot be adjusted and are deteremined by the market so keep that in mind.
     Fixed rate stays same throughout the loan period, while floating rate can change based on market conditions. 
     You are talking to the borrower and not the lender so try to make the proposal as attractive as possible for the lender but also beneficial to the borrower. 
+    If fields are not specified, provide general advice for that parameter and define the field means as some people might not know what a field means such as collateral.
 
+    Use British Grammar
     `;
 
   return generateCompletion(prompt, config);
@@ -126,6 +131,9 @@ export const askLoanQuestion = async (question) => {
     ${question}
     
     Provide a clear, concise answer based on best practices in DeFi and blockchain lending.
+    When you do numbering put 2 spaces before the number
+
+    Use British Grammar
     `;
 
   return generateCompletion(prompt, config);

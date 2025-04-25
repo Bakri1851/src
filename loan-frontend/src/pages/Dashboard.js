@@ -6,7 +6,6 @@ import SoftInput from "components/SoftInput";
 import SoftBadge from "components/SoftBadge";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 import { useAccount } from "wagmi";
-import ContractConfig from "constants/ContractConfig";
 import Grid from "@mui/material/Grid";
 import Card from "@mui/material/Card";
 import Icon from "@mui/material/Icon";
@@ -261,7 +260,7 @@ export default function Dashboard() {
         sm={1}
         md={1}
         lg={1}
-        xl={1}
+        xl={2}
         sx={{ display: { xs: "none", sm: "block" } }}
       ></Grid>
 
@@ -272,7 +271,7 @@ export default function Dashboard() {
         sm={10}
         md={7}
         lg={6}
-        xl={7}
+        xl={6}
         sx={{ display: "flex", justifyContent: "center" }}
       >
         <SoftBox
@@ -282,7 +281,7 @@ export default function Dashboard() {
           boxShadow="lg"
           backgroundColor="white"
           width="100%"
-          maxWidth="900px"
+          maxWidth="1000px"
           display="flex"
           flexDirection="column"
           alignItems="center"
@@ -301,8 +300,6 @@ export default function Dashboard() {
 
           <Card sx={{ overflow: "hidden", mb: 4, width: "70%", maxWidth: "100%" }}>
             <SoftBox p={2}>
-              {" "}
-              {/* Reduced padding from p={3} to p={2} */}
               <SoftBox mb={2}>
                 <SoftTypography variant="h5" fontWeight="medium" mb={1}>
                   Ethereum Price
@@ -379,8 +376,6 @@ export default function Dashboard() {
               </SoftBox>
             </SoftBox>
           </Card>
-
-          {/* Add other dashboard components here */}
         </SoftBox>
       </Grid>
 
@@ -399,15 +394,17 @@ export default function Dashboard() {
           mt={5}
           borderRadius="xl"
           boxShadow="lg"
-          backgroundColor="white"
+          backgroundColor="rgba(255,255,255,1)"
           width="100%"
-          maxWidth="400px"
+          maxWidth="800px"
           display="flex"
           flexDirection="column"
           sx={{
             height: "calc(100vh - 120px)",
             position: "sticky",
             top: "80px",
+            boxShadow: "0 20px 27px 0 rgba(0, 0, 0, 0.05)",
+            border: "1px solid rgba(226, 232, 240, 0.6)",
           }}
         >
           <SoftTypography variant="h5" mb={2}>
@@ -445,7 +442,7 @@ export default function Dashboard() {
                         mb: 0.5,
                       },
                       "& ul, & ol": {
-                        pl: 2,
+                        pl: 4,
                       },
                       "& p": {
                         mb: 1,
