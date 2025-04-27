@@ -5,7 +5,10 @@ async function main() {
   console.log("Deploying contracts with the accounts:", deployer.address);
 
   const AA_ORACLE_ADDRESS = "0xceA6Aa74E6A86a7f85B571Ce1C34f1A60B77CD29";
-  const oracle = await hre.ethers.getContractAt("AggregatorV3Interface", AA_ORACLE_ADDRESS);
+  const oracle = await hre.ethers.getContractAt(
+    "AggregatorV3Interface",
+    AA_ORACLE_ADDRESS
+  );
   const latestRoundData = await oracle.latestRoundData();
   console.log("Latest round data:", latestRoundData.answer.toString());
   const marketFloatingRate = Number(latestRoundData[1]);
@@ -14,17 +17,19 @@ async function main() {
   const feeAmount = hre.ethers.parseEther("0.0005");
   const collateralEthAmount = hre.ethers.parseEther("0.001");
   //const repayByTimestamp = Math.floor(Date.now() / 1000) + 60 * 60 * 24 * 7;
-  const repayByTimestamp = Math.floor(Date.now() / 1000) - (60*60);
+  const repayByTimestamp = Math.floor(Date.now() / 1000) - 60 * 60;
 
-
-  const floatingRate = Math.floor(Number(marketFloatingRate)*100/1e6); 
+  const floatingRate = Math.floor((Number(marketFloatingRate) * 100) / 1e6);
   const spread = 1;
   const fixedRate = floatingRate + spread;
 
   // Get the factory contract
   const factoryAddress = "0x24c284CA025A21133194c926E637B74023806fcd";
-  const loanFactory = await hre.ethers.getContractAt("LoanFactory", factoryAddress);
-  
+  const loanFactory = await hre.ethers.getContractAt(
+    "LoanFactory",
+    factoryAddress
+  );
+
   console.log("Creating loan through factory...");
   const tx = await loanFactory.createLoan(
     loanAmount,
@@ -38,7 +43,7 @@ async function main() {
 
   console.log("Transaction sent:", tx.hash);
   console.log("Waiting for transaction to be mined...");
-  
+
   const receipt = await tx.wait();
   console.log("Transaction confirmed in block:", receipt.blockNumber);
 
@@ -48,15 +53,15 @@ async function main() {
   if (receipt.logs) {
     // Look through the logs to find the LoanCreated event
     const loanFactoryInterface = loanFactory.interface;
-    
+
     for (const log of receipt.logs) {
       try {
         // Try to parse each log
         const parsedLog = loanFactoryInterface.parseLog({
           topics: log.topics,
-          data: log.data
+          data: log.data,
         });
-        
+
         if (parsedLog && parsedLog.name === "LoanCreated") {
           loanAddress = parsedLog.args[2]; // loanContract is the 3rd argument (index 2)
           console.log("Loan created at:", loanAddress);

@@ -1,5 +1,27 @@
 import { parseEther } from "viem";
 
+export const TAG_TYPES = {
+  SHORT_TERM: "Short-term",
+  MID_TERM: "Mid-term",
+  LONG_TERM: "Long-term",
+  LOW_COLLATERAL: "Low collateral",
+  OVERCOLLATERALIZED: "Overcollateralized",
+  HIGH_YIELD: "High yield",
+  STABLE: "Stable",
+  MODERATE_YIELD: "Moderate yield",
+};
+
+export const TAG_COLORS = {
+  [TAG_TYPES.SHORT_TERM]: "rgb(194,26,0)",
+  [TAG_TYPES.MID_TERM]: "rgb(245, 225, 2)",
+  [TAG_TYPES.LONG_TERM]: "dark",
+  [TAG_TYPES.LOW_COLLATERAL]: "rgb(194,26,0)",
+  [TAG_TYPES.OVERCOLLATERALIZED]: "rgb(16, 201, 19)",
+  [TAG_TYPES.HIGH_YIELD]: "rgb(194,26,0)",
+  [TAG_TYPES.STABLE]: "rgb(16, 201, 19)",
+  [TAG_TYPES.MODERATE_YIELD]: "rgb(245, 225, 2)",
+};
+
 export const getProposalTags = (proposal) => {
   const tags = [];
 

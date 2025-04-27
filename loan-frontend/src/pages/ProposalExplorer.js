@@ -170,7 +170,7 @@ export default function ProposalExplorer() {
     setIsLoading(true);
     setExpandedProposals({});
     setSelectedProposalId(null);
-    aiAnalysis[loanAddress];
+    setAiAnalysis({});
 
     try {
       await refetch();

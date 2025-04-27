@@ -88,6 +88,13 @@ export const LoanFactoryABI = [
     type: "function",
   },
   {
+    inputs: [],
+    name: "addLiquidity",
+    outputs: [],
+    stateMutability: "payable",
+    type: "function",
+  },
+  {
     inputs: [
       {
         internalType: "uint256",
@@ -257,6 +264,19 @@ export const LoanFactoryABI = [
     type: "function",
   },
   {
+    inputs: [],
+    name: "getCurrentFloatingRate",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
     inputs: [
       {
         internalType: "address",
@@ -370,6 +390,19 @@ export const LoanFactoryABI = [
         internalType: "struct LoanFactory.LoanProposal",
         name: "",
         type: "tuple",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "getUtilizationRate",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
       },
     ],
     stateMutability: "view",
@@ -562,6 +595,63 @@ export const LoanFactoryABI = [
       },
     ],
     name: "recordBorrower",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint256",
+        name: "amount",
+        type: "uint256",
+      },
+    ],
+    name: "removeLiquidity",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "totalBorrowed",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "totalLiquidity",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint256",
+        name: "amountBorrowed",
+        type: "uint256",
+      },
+      {
+        internalType: "bool",
+        name: "isIncrease",
+        type: "bool",
+      },
+    ],
+    name: "updateUtilizationMetrics",
     outputs: [],
     stateMutability: "nonpayable",
     type: "function",

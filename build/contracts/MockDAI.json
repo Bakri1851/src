@@ -6021,15 +6021,9 @@
   "ast": {
     "absolutePath": "project:/contracts/IERC20.sol",
     "exportedSymbols": {
-      "IERC20": [
-        8184
-      ],
-      "MockDAI": [
-        8350
-      ],
-      "console": [
-        8084
-      ]
+      "IERC20": [8184],
+      "MockDAI": [8350],
+      "console": [8084]
     },
     "id": 8351,
     "license": "UNLICENSED",
@@ -6037,11 +6031,7 @@
     "nodes": [
       {
         "id": 8132,
-        "literals": [
-          "solidity",
-          "0.8",
-          ".13"
-        ],
+        "literals": ["solidity", "0.8", ".13"],
         "nodeType": "PragmaDirective",
         "src": "40:23:2"
       },
@@ -6065,9 +6055,7 @@
         "contractKind": "interface",
         "fullyImplemented": false,
         "id": 8184,
-        "linearizedBaseContracts": [
-          8184
-        ],
+        "linearizedBaseContracts": [8184],
         "name": "IERC20",
         "nameLocation": "143:6:2",
         "nodeType": "ContractDefinition",
@@ -6710,10 +6698,7 @@
         "contractKind": "contract",
         "fullyImplemented": true,
         "id": 8350,
-        "linearizedBaseContracts": [
-          8350,
-          8184
-        ],
+        "linearizedBaseContracts": [8350, 8184],
         "name": "MockDAI",
         "nameLocation": "703:7:2",
         "nodeType": "ContractDefinition",
@@ -6851,9 +6836,7 @@
             "visibility": "public"
           },
           {
-            "baseFunctions": [
-              8138
-            ],
+            "baseFunctions": [8138],
             "constant": false,
             "functionSelector": "18160ddd",
             "id": 8198,
@@ -6888,9 +6871,7 @@
             "visibility": "public"
           },
           {
-            "baseFunctions": [
-              8145
-            ],
+            "baseFunctions": [8145],
             "constant": false,
             "functionSelector": "70a08231",
             "id": 8203,
@@ -6944,9 +6925,7 @@
             "visibility": "public"
           },
           {
-            "baseFunctions": [
-              8163
-            ],
+            "baseFunctions": [8163],
             "constant": false,
             "functionSelector": "dd62ed3e",
             "id": 8210,
@@ -7104,10 +7083,7 @@
                       "id": 8215,
                       "name": "require",
                       "nodeType": "Identifier",
-                      "overloadedDeclarations": [
-                        4294967278,
-                        4294967278
-                      ],
+                      "overloadedDeclarations": [4294967278, 4294967278],
                       "referencedDeclaration": 4294967278,
                       "src": "1146:7:2",
                       "typeDescriptions": {
@@ -7315,9 +7291,7 @@
             "visibility": "public"
           },
           {
-            "baseFunctions": [
-              8154
-            ],
+            "baseFunctions": [8154],
             "body": {
               "id": 8269,
               "nodeType": "Block",
@@ -7438,10 +7412,7 @@
                       "id": 8244,
                       "name": "require",
                       "nodeType": "Identifier",
-                      "overloadedDeclarations": [
-                        4294967278,
-                        4294967278
-                      ],
+                      "overloadedDeclarations": [4294967278, 4294967278],
                       "referencedDeclaration": 4294967278,
                       "src": "1464:7:2",
                       "typeDescriptions": {
@@ -7759,9 +7730,7 @@
             "visibility": "public"
           },
           {
-            "baseFunctions": [
-              8172
-            ],
+            "baseFunctions": [8172],
             "body": {
               "id": 8291,
               "nodeType": "Block",
@@ -8015,9 +7984,7 @@
             "visibility": "public"
           },
           {
-            "baseFunctions": [
-              8183
-            ],
+            "baseFunctions": [8183],
             "body": {
               "id": 8348,
               "nodeType": "Block",
@@ -8124,10 +8091,7 @@
                       "id": 8304,
                       "name": "require",
                       "nodeType": "Identifier",
-                      "overloadedDeclarations": [
-                        4294967278,
-                        4294967278
-                      ],
+                      "overloadedDeclarations": [4294967278, 4294967278],
                       "referencedDeclaration": 4294967278,
                       "src": "2057:7:2",
                       "typeDescriptions": {
@@ -8294,10 +8258,7 @@
                       "id": 8313,
                       "name": "require",
                       "nodeType": "Identifier",
-                      "overloadedDeclarations": [
-                        4294967278,
-                        4294967278
-                      ],
+                      "overloadedDeclarations": [4294967278, 4294967278],
                       "referencedDeclaration": 4294967278,
                       "src": "2128:7:2",
                       "typeDescriptions": {

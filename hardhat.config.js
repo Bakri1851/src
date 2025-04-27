@@ -1,8 +1,7 @@
 require("@nomicfoundation/hardhat-toolbox");
-require('dotenv').config();
+require("dotenv").config();
 require("@nomicfoundation/hardhat-ethers");
 require("@nomicfoundation/hardhat-verify");
-
 
 /** @type import('hardhat/config').HardhatUserConfig */
 module.exports = {
@@ -13,18 +12,21 @@ module.exports = {
     },
     sepolia: {
       url: `https://sepolia.infura.io/v3/${process.env.INFURA_PROJECT_ID}`,
-      accounts: [`0x${process.env.PRIVATE_KEY_LENDER}`,`0x${process.env.PRIVATE_KEY_BORROWER}`]
+      accounts: [
+        `0x${process.env.PRIVATE_KEY_LENDER}`,
+        `0x${process.env.PRIVATE_KEY_BORROWER}`,
+      ],
     },
     sourcify: {
       url: "https://sourcify.dev/api",
       enabled: true,
-    }
+    },
   },
   etherscan: {
-    apiKey: process.env.ETHERSCAN_API_KEY // Store API key in .env
-  },  
+    apiKey: process.env.ETHERSCAN_API_KEY, // Store API key in .env
+  },
   mocha: {
-    timeout: 20000
+    timeout: 20000,
   },
 
   paths: {

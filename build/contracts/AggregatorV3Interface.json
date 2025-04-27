@@ -126,9 +126,7 @@
   "ast": {
     "absolutePath": "project:/contracts/AggregatorV3Interface.sol",
     "exportedSymbols": {
-      "AggregatorV3Interface": [
-        8130
-      ]
+      "AggregatorV3Interface": [8130]
     },
     "id": 8131,
     "license": "MIT",
@@ -136,12 +134,7 @@
     "nodes": [
       {
         "id": 8086,
-        "literals": [
-          "solidity",
-          "^",
-          "0.8",
-          ".0"
-        ],
+        "literals": ["solidity", "^", "0.8", ".0"],
         "nodeType": "PragmaDirective",
         "src": "33:23:1"
       },
@@ -153,9 +146,7 @@
         "contractKind": "interface",
         "fullyImplemented": false,
         "id": 8130,
-        "linearizedBaseContracts": [
-          8130
-        ],
+        "linearizedBaseContracts": [8130],
         "name": "AggregatorV3Interface",
         "nameLocation": "70:21:1",
         "nodeType": "ContractDefinition",

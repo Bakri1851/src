@@ -95,6 +95,10 @@ contract LoanRequest {
 
         state = LoanState.Taken;
         loanTakenTimestamp = block.timestamp; // Store when loan was taken
+
+        LoanFactory factoryContract = LoanFactory(factory);
+        factoryContract.updateUtilizationMetrics(loanAmount,true); // Update utilization metrics in LoanFactory
+
         borrower.transfer(loanAmount);
         emit LoanTaken(msg.sender, loanAmount);
 
@@ -109,6 +113,10 @@ contract LoanRequest {
 
         require(msg.value == repaymentAmount, "Incorrect repayment amount");
         state = LoanState.Repaid;
+
+        LoanFactory factoryContract = LoanFactory(factory);
+        factoryContract.updateUtilizationMetrics(loanAmount,false); // Update utilization metrics in LoanFactory
+
         lender.transfer(repaymentAmount);
         borrower.transfer(ethCollateralAmount);
 
@@ -130,10 +138,18 @@ contract LoanRequest {
     }
 
     function updateRates() public {
-        // Update floating rate using oracle
+        // Get oracle base rate
         (, int price, , ,) = oracle.latestRoundData();
-        uint256 newFloatingRate = uint256(price)*100 / 1e6; // Adjust based on the oracle's decimal places
+        uint256 baseRate = uint256(price)*100 / 1e6; // Adjust based on the oracle's decimal places
+
+        // Get utilization rate from LoanFactory
+        LoanFactory loanFactory = LoanFactory(factory);
+        uint256 utilizationRate = loanFactory.getUtilizationRate();
+        uint256 utilizationMultiplier = 15;
+
+        uint256 newFloatingRate = baseRate + (utilizationMultiplier*utilizationRate); // Adjust based on the oracle's decimal places
         floatingRate = newFloatingRate;
+        
         uint256 spread = 1;
         fixedRate = floatingRate + spread;
     }
@@ -156,6 +172,10 @@ contract LoanRequest {
 
     function calculateInterest() external {
         require(state == LoanState.Taken, "Loan is not in Taken state");
+
+        if(currentRateType == InterestRateType.Floating) {
+            updateRates(); 
+        }
         
         uint256 interestRate = (currentRateType == InterestRateType.Fixed) ? fixedRate : floatingRate;
         uint256 timeElapsed = block.timestamp - loanTakenTimestamp;

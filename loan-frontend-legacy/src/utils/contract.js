@@ -1,5 +1,5 @@
-import { getContract } from 'viem';
-import contractABI from './contractABI.json';
+import { getContract } from "viem";
+import contractABI from "./contractABI.json";
 
 const contractAddress = "0x40d3345B2749c95d514523331c741fFC09117B95";
 
@@ -14,6 +14,5 @@ export const getLoanContract = (walletClient) => {
     abi: contractABI,
     address: contractAddress,
     client: walletClient,
-  })
+  });
 };
-

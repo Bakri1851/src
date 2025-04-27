@@ -1,8 +1,11 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.0;
 import "./LoanRequest.sol";
+import {AggregatorV3Interface} from "./AggregatorV3Interface.sol";
 
 contract LoanFactory {
+    AggregatorV3Interface internal oracle = AggregatorV3Interface(0x8e604308BD61d975bc6aE7903747785Db7dE97e2); // Replace with actual oracle address
+
     mapping (address => address[]) public loansByLender;
     mapping (address => address[]) public loansByBorrower;
     address[] public allLoans;
@@ -10,6 +13,11 @@ contract LoanFactory {
     event LoanCreated(address indexed borrower,address indexed lender, address indexed loanContract);
     event LoanProposalCreated(uint256 proposalId, address borrower);
     event LoanProposalAccepted(uint256 proposalId, address lender, address loanAddress);
+
+    // Variabled for liquidity tracking
+    uint256 public totalLiquidity; // Total liquidity provided by lenders
+    uint256 public totalBorrowed; // Total amount borrowed by borrowers
+    
 
     struct LoanProposal {
         uint256 id;
@@ -30,6 +38,7 @@ contract LoanFactory {
     uint256 public nextProposalId;
     mapping(uint256 => LoanProposal) public proposals;
     mapping(uint256 => address) public proposalToAddress;
+
     
     function createProposal(
         uint256 _loanAmount,
@@ -147,4 +156,51 @@ contract LoanFactory {
     function getLoansByBorrower(address _borrower) external view returns (address[] memory) {
         return loansByBorrower[_borrower];
     }
+
+    // Function to update total liquidity provided by lenders
+    function updateUtilizationMetrics(uint256 amountBorrowed, bool isIncrease) public {
+        if (isIncrease) {
+            totalBorrowed += amountBorrowed;
+        } else {
+            if (amountBorrowed > totalBorrowed) {
+                totalBorrowed = 0;
+            } else {
+                totalBorrowed -= amountBorrowed;
+            }
+        }
+    }
+
+    function addLiquidity() public payable {
+        totalLiquidity += msg.value;
+    }
+
+    function removeLiquidity(uint256 amount) public {
+        require(amount <= totalLiquidity - totalBorrowed, "Insufficient liquidity");
+        totalLiquidity -= amount;
+        payable(msg.sender).transfer(amount);
+    }
+
+    function getUtilizationRate() public view returns (uint256) {
+        if (totalLiquidity == 0) return 0;
+        return (totalBorrowed * 10000) / totalLiquidity; // Returns utilization rate as a percentage * 100
+    }
+
+
+    function getCurrentFloatingRate() public view returns (uint256) {
+        (, int price, , ,) = oracle.latestRoundData();
+        uint256 baseRate = uint256(price) * 100 / 1e6; // Convert oracle price to basis points
+            
+        // Get utilization rate
+        uint256 utilizationRate = getUtilizationRate();
+        uint256 utilizationMultiplier = 15;
+        
+        // Calculate floating rate: baseRate + (utilizationMultiplier * utilizationRate / 10000)
+        return baseRate + (utilizationMultiplier * utilizationRate / 10000);
+    }
+
+    constructor() {
+    // Initialize with test values for development
+    //totalLiquidity = 1000 ether;  // 1000 ETH
+    //totalBorrowed = 300 ether;    // This will give 30% utilization
+}
 }
