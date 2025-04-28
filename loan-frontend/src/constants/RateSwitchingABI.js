@@ -51,6 +51,11 @@ export const rateSwitchingABI = [
         name: "_creationTimestamp",
         type: "uint256",
       },
+      {
+        internalType: "uint8",
+        name: "_interestCalculationType",
+        type: "uint8",
+      },
     ],
     stateMutability: "nonpayable",
     type: "constructor",
@@ -283,6 +288,19 @@ export const rateSwitchingABI = [
   },
   {
     inputs: [],
+    name: "getCurrentRateType",
+    outputs: [
+      {
+        internalType: "enum LoanRequest.InterestRateType",
+        name: "",
+        type: "uint8",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
     name: "getEthCollateralAmount",
     outputs: [
       {
@@ -348,6 +366,19 @@ export const rateSwitchingABI = [
   },
   {
     inputs: [],
+    name: "getInterestCalculationType",
+    outputs: [
+      {
+        internalType: "enum LoanRequest.InterestCalculationType",
+        name: "",
+        type: "uint8",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
     name: "getLoanAmount",
     outputs: [
       {
@@ -393,6 +424,19 @@ export const rateSwitchingABI = [
         internalType: "uint256",
         name: "",
         type: "uint256",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "interestCalculationType",
+    outputs: [
+      {
+        internalType: "enum LoanRequest.InterestCalculationType",
+        name: "",
+        type: "uint8",
       },
     ],
     stateMutability: "view",

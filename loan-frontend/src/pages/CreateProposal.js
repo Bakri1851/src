@@ -10,24 +10,9 @@ import { useAccount } from "wagmi";
 import { helpMakeProposal } from "api/openai";
 import ReactMarkdown from "react-markdown";
 import { parseEther } from "viem";
-import { formatRate } from "utils/formatters";
+import { formatRate, interestCalculationTypeLabel } from "utils/formatters";
 import Grid from "@mui/material/Grid";
-
-const ORACLE_ABI = [
-  {
-    inputs: [],
-    name: "latestRoundData",
-    outputs: [
-      { name: "roundId", type: "uint80" },
-      { name: "answer", type: "int256" },
-      { name: "startedAt", type: "uint256" },
-      { name: "updatedAt", type: "uint256" },
-      { name: "answeredInRound", type: "uint80" },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-];
+import { ORACLE_ABI } from "constants/OracleABI.js";
 
 export default function CreateProposal() {
   const [controller] = useSoftUIController();
@@ -35,6 +20,27 @@ export default function CreateProposal() {
 
   const [aiSuggestions, setAiSuggestions] = useState("");
   const [aiLoading, setAiLoading] = useState(false);
+
+  const { data: floatingRate, isLoading: isLoadingFloating } = useReadContract({
+    address: FactoryConfig.address,
+    abi: FactoryConfig.abi,
+    functionName: "getCurrentFloatingRate",
+    watch: true,
+  });
+
+  const { data: utilizationRate, isLoading: isLoadingUtilization } = useReadContract({
+    address: FactoryConfig.address,
+    abi: FactoryConfig.abi,
+    functionName: "getUtilizationRate",
+    watch: true,
+  });
+
+  const formattedFloatingRate = floatingRate ? formatRate(floatingRate) : "Loading...";
+  const formattedUtilizationRate = isLoadingUtilization
+    ? "Loading..."
+    : utilizationRate !== undefined
+    ? (Number(utilizationRate) / 100).toFixed(2) + "%"
+    : "Error loading";
 
   const [form, setForm] = useState({
     loanAmount: "",
@@ -45,6 +51,7 @@ export default function CreateProposal() {
     fixedRate: "",
     floatingRate: "",
     oracle: "0x8e604308BD61d975bc6aE7903747785Db7dE97e2",
+    interestCalculationType: "0",
   });
 
   const { isConnected } = useAccount();
@@ -57,27 +64,20 @@ export default function CreateProposal() {
   });
 
   useEffect(() => {
-    if (oracleData) {
+    if (floatingRate !== undefined) {
       try {
-        const price = Number(oracleData[1]);
-
-        const marketFloatingRate = Math.floor(Number(price) / 1e4);
         const spread = 100;
-        const fixedRate = marketFloatingRate + spread;
+        const fixedRate = Number(floatingRate) + spread;
         setForm((prevForm) => ({
           ...prevForm,
           fixedRate: fixedRate.toString(),
-          floatingRate: marketFloatingRate.toString(),
+          floatingRate: floatingRate.toString(),
         }));
-
-        console.log("Oracle price:", price);
-        console.log("Market floating rate:", marketFloatingRate);
-        console.log("Fixed rate:", fixedRate);
       } catch (error) {
         console.error("Error parsing oracle data:", error);
       }
     }
-  }, [oracleData]);
+  }, [floatingRate]);
 
   const { writeContract, data: txHash, error: writeError } = useWriteContract();
   const { isLoading: isWaiting, isSuccess } = useWaitForTransactionReceipt({
@@ -165,6 +165,7 @@ export default function CreateProposal() {
           BigInt(form.fixedRate),
           BigInt(form.floatingRate),
           form.oracle,
+          form.interestCalculationType,
         ],
         chainId: FactoryConfig.chainId,
       });
@@ -267,7 +268,7 @@ export default function CreateProposal() {
         sx={{ display: "flex", justifyContent: "center" }}
       >
         <SoftBox
-          mt={5}
+          mt={2}
           mx="auto"
           p={4}
           width="100%"
@@ -283,6 +284,23 @@ export default function CreateProposal() {
           <SoftTypography variant="h4" fontWeight="bold" mb={2} textAlign="center">
             Create Proposal
           </SoftTypography>
+          <SoftBox mb={2}>
+            <SoftTypography variant="button" fontWeight="regular">
+              Interest Calculation Type:
+            </SoftTypography>
+            <select
+              className="form-control"
+              name="interestCalculationType"
+              value={form.interestCalculationType}
+              onChange={(e) => setForm({ ...form, interestCalculationType: e.target.value })}
+            >
+              <option value="0">Simple Interest (APR)</option>
+              <option value="1">Compound Interest (APY)</option>
+            </select>
+            <SoftTypography variant="caption" color="text" fontStyle="italic">
+              Simple APR applies interest linearly, while Compound APY compounds interest daily
+            </SoftTypography>
+          </SoftBox>
 
           {!isConnected ? (
             <SoftBox textAlign="center">
@@ -378,7 +396,16 @@ export default function CreateProposal() {
                 <SoftTypography variant="button" fontWeight="regular">
                   Floating Rate (%)
                 </SoftTypography>
-                <SoftTypography variant="body2">{formatRate(form.floatingRate)}</SoftTypography>
+                <SoftTypography variant="body2">{formattedFloatingRate}</SoftTypography>
+              </SoftBox>
+              <SoftBox mb={2}>
+                <SoftTypography variant="button" fontWeight="regular">
+                  Current Utilization (%)
+                </SoftTypography>
+                <SoftTypography variant="body2">{formattedUtilizationRate}</SoftTypography>
+                <SoftTypography variant="caption" color="text" fontStyle="italic">
+                  Higher utilization leads to higher rates
+                </SoftTypography>
               </SoftBox>
 
               <SoftBox mb={2}>

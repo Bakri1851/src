@@ -1,5 +1,10 @@
 export const LoanFactoryABI = [
   {
+    inputs: [],
+    stateMutability: "nonpayable",
+    type: "constructor",
+  },
+  {
     anonymous: false,
     inputs: [
       {
@@ -150,6 +155,11 @@ export const LoanFactoryABI = [
         name: "_oracle",
         type: "address",
       },
+      {
+        internalType: "uint8",
+        name: "_interestCalculationType",
+        type: "uint8",
+      },
     ],
     name: "createProposal",
     outputs: [],
@@ -253,6 +263,11 @@ export const LoanFactoryABI = [
             internalType: "uint256",
             name: "creationTimestamp",
             type: "uint256",
+          },
+          {
+            internalType: "uint8",
+            name: "interestCalculationType",
+            type: "uint8",
           },
         ],
         internalType: "struct LoanFactory.LoanProposal[]",
@@ -385,6 +400,11 @@ export const LoanFactoryABI = [
             internalType: "uint256",
             name: "creationTimestamp",
             type: "uint256",
+          },
+          {
+            internalType: "uint8",
+            name: "interestCalculationType",
+            type: "uint8",
           },
         ],
         internalType: "struct LoanFactory.LoanProposal",
@@ -576,6 +596,11 @@ export const LoanFactoryABI = [
         internalType: "uint256",
         name: "creationTimestamp",
         type: "uint256",
+      },
+      {
+        internalType: "uint8",
+        name: "interestCalculationType",
+        type: "uint8",
       },
     ],
     stateMutability: "view",

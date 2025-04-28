@@ -32,6 +32,7 @@ contract LoanFactory {
         bool accepted;
         address acceptedLender;
         uint256 creationTimestamp;
+        uint8 interestCalculationType; // 0 for SimpleAPR, 1 for CompoundAPY
 
     }
 
@@ -47,7 +48,8 @@ contract LoanFactory {
         uint256 _repayByTimestamp,
         uint256 _fixedRate,
         uint256 _floatingRate,
-        address _oracle
+        address _oracle,
+        uint8 _interestCalculationType // 0 for SimpleAPR, 1 for CompoundAPY
     ) external {
         proposals[nextProposalId] = LoanProposal({
             id: nextProposalId,
@@ -61,7 +63,8 @@ contract LoanFactory {
             oracle: _oracle,
             accepted: false,
             acceptedLender: address(0),
-            creationTimestamp: block.timestamp
+            creationTimestamp: block.timestamp,
+            interestCalculationType: _interestCalculationType // Default to SimpleAPR
         });
         emit LoanProposalCreated(nextProposalId, msg.sender);
         nextProposalId++;
@@ -107,7 +110,8 @@ contract LoanFactory {
             proposal.oracle,
             address(this),
             msg.sender,  // Pass the original sender as lender
-            proposal.creationTimestamp // Pass the creation timestamp to the LoanRequest contract
+            proposal.creationTimestamp, // Pass the creation timestamp to the LoanRequest contract
+            uint8(proposal.interestCalculationType) // Pass the interest calculation type
         );
 
         // Store the loan address in the mapping and array

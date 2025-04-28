@@ -7,6 +7,8 @@ import "./LoanFactory.sol";
 contract LoanRequest {
     enum LoanState { Created, Funded, Accepted, Taken, Repaid, Liquidated }
     enum InterestRateType { Fixed, Floating }
+    enum InterestCalculationType {SimpleAPR, CompoundAPY}
+    InterestCalculationType public interestCalculationType;
 
     LoanState public state;
     uint256 public interest; 
@@ -47,7 +49,8 @@ contract LoanRequest {
         address _oracle,
         address _loanFactory,
         address _lender,
-        uint256 _creationTimestamp
+        uint256 _creationTimestamp,
+        uint8 _interestCalculationType
 
     ) {
         loanAmount = _loanAmount;
@@ -63,6 +66,8 @@ contract LoanRequest {
         state = LoanState.Created;
         currentRateType = InterestRateType.Fixed;
         lender = payable(_lender);  // Set lender to the provided address
+
+        interestCalculationType = InterestCalculationType(_interestCalculationType);
     }
     // Lender funds the loan
     function fundLoan() external payable{
@@ -179,9 +184,30 @@ contract LoanRequest {
         
         uint256 interestRate = (currentRateType == InterestRateType.Fixed) ? fixedRate : floatingRate;
         uint256 timeElapsed = block.timestamp - loanTakenTimestamp;
+        if (interestCalculationType == InterestCalculationType.SimpleAPR) {
+            calculateSimpleInterest(interestRate, timeElapsed);
+        } else if (interestCalculationType == InterestCalculationType.CompoundAPY) {
+            calculateCompoundInterest(interestRate, timeElapsed);
+
         
+        } 
+    }
+
+    function calculateSimpleInterest(uint256 interestRate, uint256 timeElapsed) private {
         interest = (loanAmount * interestRate * timeElapsed) / (100 * 365 days);
+    }
+
+    function calculateCompoundInterest(uint256 interestRate, uint256 timeElapsed) private {
+        uint256 daysElapsed = timeElapsed / 1 days;
         
+        uint256 dailyRate = interestRate / 36500; 
+        uint256 compoundFactor = 100;
+        
+        for (uint i = 0; i < daysElapsed; i++) {
+            compoundFactor = (compoundFactor * (100 + dailyRate)) / 100;
+        }
+        
+        interest = (loanAmount * (compoundFactor - 100)) / 100;
     }
 
     function getInterest() public view returns (uint256) {
@@ -190,7 +216,6 @@ contract LoanRequest {
 
     function getLoanState() public view returns (LoanState) {
         return state;
-        
     }
 
     function getLoanAmount() public view returns (uint256) {
@@ -206,6 +231,13 @@ contract LoanRequest {
     function getRepayByTimestamp() public view returns (uint256) {
         return repayByTimestamp;
     }
+    function getInterestCalculationType() public view returns (InterestCalculationType) {
+        return interestCalculationType;
+    }
+    function getCurrentRateType() public view returns (InterestRateType) {
+        return currentRateType;
+    }
+
     event LoanFunded(address indexed lender, uint256 loanAmount);
     event LoanTermsAccepted(address indexed borrower, uint256 collateralAmount);
     event LoanTaken(address indexed borrower, uint256 loanAmount);

@@ -15,6 +15,7 @@ import {
   formatState,
   formatRate,
   rateTypeLabel,
+  interestCalculationTypeLabel,
 } from "utils/formatters.js";
 import RepaymentCountdown from "components/RepaymentCountdown";
 import Grid from "@mui/material/Grid";
@@ -63,6 +64,8 @@ export default function MyBorrowedLoans() {
         repayByTimestamp: formatTimestamp(loanDetails[loanAddress].repayByTimestamp),
         state: formatState(loanDetails[loanAddress].state),
         rateType: rateTypeLabel[loanDetails[loanAddress].rateType],
+        interestCalculationType:
+          interestCalculationTypeLabel[loanDetails[loanAddress].interestCalculationType],
       });
       setAiAnalysis((prev) => ({ ...prev, [loanAddress]: analysis }));
     } catch (error) {
@@ -221,6 +224,13 @@ export default function MyBorrowedLoans() {
         chainId: FactoryConfig.chainId,
       });
 
+      const interestCalculationType = await readContract(config, {
+        address: loanAddress,
+        abi: ContractConfig.abi,
+        functionName: "interestCalculationType",
+        chainId: FactoryConfig.chainId,
+      });
+
       setLoanDetails((prev) => ({
         ...prev,
         [loanAddress]: {
@@ -234,6 +244,7 @@ export default function MyBorrowedLoans() {
           rateType,
           interest,
           feeAmount,
+          interestCalculationType,
         },
       }));
 
@@ -574,6 +585,12 @@ export default function MyBorrowedLoans() {
 
                         <SoftTypography variant="body2" mt={1}>
                           Floating Rate: {formatRate(loanDetails[loanAddress].floatingRate)}
+                        </SoftTypography>
+                        <SoftTypography variant="body2" mt={1}>
+                          Interest Type:{" "}
+                          {interestCalculationTypeLabel[
+                            loanDetails[loanAddress].interestCalculationType
+                          ] || "Unknown"}
                         </SoftTypography>
 
                         <SoftTypography variant="body2" mt={1}>

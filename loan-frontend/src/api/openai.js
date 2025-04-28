@@ -43,6 +43,7 @@ export const analyseLoanTerms = async (loanDetails) => {
     - Floating Rate : ${loanDetails.floatingRate || "N/A"}
     - Repayment deadline : ${loanDetails.repayByTimestamp}
     - Current Loan Status: ${loanDetails.state}
+    - Loan Calculation Type: ${loanDetails.interestCalculationTypeLabel}
 
     Provide:
     1. An evaluation of these terms

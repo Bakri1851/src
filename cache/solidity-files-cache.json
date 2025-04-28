@@ -8,11 +8,11 @@
       "solcConfig": {
         "version": "0.8.28",
         "settings": {
-          "evmVersion": "paris",
           "optimizer": {
-            "enabled": false,
+            "enabled": true,
             "runs": 200
           },
+          "evmVersion": "paris",
           "outputSelection": {
             "*": {
               "*": [
@@ -38,11 +38,11 @@
       "solcConfig": {
         "version": "0.8.28",
         "settings": {
-          "evmVersion": "paris",
           "optimizer": {
-            "enabled": false,
+            "enabled": true,
             "runs": 200
           },
+          "evmVersion": "paris",
           "outputSelection": {
             "*": {
               "*": [
@@ -62,17 +62,17 @@
       "artifacts": ["AggregatorV3Interface"]
     },
     "C:\\Users\\Bakri\\IdeaProjects\\Loan Switching Smart Contract\\src\\loan-backend\\contracts\\LoanRequest.sol": {
-      "lastModificationDate": 1745763472445,
-      "contentHash": "071706028e63478398b9d79e860f97f9",
+      "lastModificationDate": 1745856450689,
+      "contentHash": "594b639989fb79acb1c9a1067b7dc276",
       "sourceName": "loan-backend/contracts/LoanRequest.sol",
       "solcConfig": {
         "version": "0.8.28",
         "settings": {
-          "evmVersion": "paris",
           "optimizer": {
-            "enabled": false,
+            "enabled": true,
             "runs": 200
           },
+          "evmVersion": "paris",
           "outputSelection": {
             "*": {
               "*": [
@@ -96,17 +96,17 @@
       "artifacts": ["LoanRequest"]
     },
     "C:\\Users\\Bakri\\IdeaProjects\\Loan Switching Smart Contract\\src\\loan-backend\\contracts\\LoanFactory.sol": {
-      "lastModificationDate": 1745769367059,
-      "contentHash": "c1bbfcdc914010b7ac63eb29c95acec4",
+      "lastModificationDate": 1745857158726,
+      "contentHash": "ff3e5aab3a773f70ccbbad7ea14d91a5",
       "sourceName": "loan-backend/contracts/LoanFactory.sol",
       "solcConfig": {
         "version": "0.8.28",
         "settings": {
-          "evmVersion": "paris",
           "optimizer": {
-            "enabled": false,
+            "enabled": true,
             "runs": 200
           },
+          "evmVersion": "paris",
           "outputSelection": {
             "*": {
               "*": [

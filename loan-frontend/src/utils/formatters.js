@@ -35,3 +35,8 @@ export const rateTypeLabel = {
   0: "Fixed",
   1: "Floating",
 };
+
+export const interestCalculationTypeLabel = {
+  0: "Simple Interest (APR)",
+  1: "Compound Interest (APY)",
+};

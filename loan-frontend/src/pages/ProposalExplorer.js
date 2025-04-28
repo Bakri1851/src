@@ -173,7 +173,7 @@ export default function ProposalExplorer() {
     setAiAnalysis({});
 
     try {
-      await refetch();
+      await refetchProposals();
       setRefreshCounter((prev) => prev + 1); // Trigger re-filtering
     } catch (error) {
       console.error("Error refreshing loans:", error);
