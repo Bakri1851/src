@@ -91,10 +91,10 @@ contract LoanFactory {
         return openProposals;
     }
 
-    function acceptProposal(uint256 _proposalId) external returns (address) {
-        //require(_proposalId < nextProposalId, "Invalid proposal ID");
+    function acceptProposal(uint256 _proposalId) external payable returns (address) {
         LoanProposal storage proposal = proposals[_proposalId];
         require(!proposal.accepted, "Proposal already accepted");
+        require(msg.value == proposal.loanAmount, "Incorrect ETH amount sent");
 
         proposal.accepted = true;
         proposal.acceptedLender = msg.sender;
@@ -120,6 +120,9 @@ contract LoanFactory {
         allLoans.push(address(newLoan));
 
         proposalToAddress[_proposalId] = address(newLoan);
+
+        LoanRequest(newLoan).fundLoan{value: msg.value}(); 
+
         emit LoanProposalAccepted(_proposalId, msg.sender, address(newLoan));
         return address(newLoan);
     }
@@ -204,7 +207,7 @@ contract LoanFactory {
 
     constructor() {
     // Initialize with test values for development
-    //totalLiquidity = 1000 ether;  // 1000 ETH
-    //totalBorrowed = 300 ether;    // This will give 30% utilization
+    totalLiquidity = 1000 ether;  // 1000 ETH
+    totalBorrowed = 450 ether;    // This will give 30% utilization
 }
 }

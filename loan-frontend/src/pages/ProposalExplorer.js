@@ -117,6 +117,7 @@ export default function ProposalExplorer() {
         abi: FactoryConfig.abi,
         functionName: "acceptProposal",
         args: [proposalId],
+        value: proposal.loanAmount,
         chainId: FactoryConfig.chainId,
       });
       alert("Please confirm the acceptance in your wallet.");
@@ -130,22 +131,6 @@ export default function ProposalExplorer() {
 
       setAcceptedProposal((prev) => [...prev, proposal]);
 
-      const deployedLoan = await readContract(config, {
-        address: FactoryConfig.address,
-        abi: FactoryConfig.abi,
-        functionName: "getAddressforProposal",
-        args: [proposalId],
-      });
-
-      console.log("Deployed Loan Address:", deployedLoan);
-
-      await writeContract({
-        address: deployedLoan,
-        abi: ContractConfig.abi,
-        functionName: "fundLoan",
-        value: proposal.loanAmount,
-        chainId: FactoryConfig.chainId,
-      });
 
       alert("Please confirm the transaction in your wallet.");
 

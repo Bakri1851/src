@@ -1,7 +1,7 @@
 import { LoanFactoryABI } from "./LoanFactoryABI.js";
 
 const FactoryConfig = {
-  address: "0xBec5e5a9B6580492BBF0F17D2131115652F1c215",
+  address: "0x97bE1eDe2ac0525A63bE38F87E5FffB55be4375c",
   abi: LoanFactoryABI,
   chainId: 11155111, // Sepolia
 };

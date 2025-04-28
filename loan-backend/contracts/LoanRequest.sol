@@ -72,7 +72,7 @@ contract LoanRequest {
     // Lender funds the loan
     function fundLoan() external payable{
         require(state == LoanState.Created, "Loan is not in Created state");
-        require(msg.sender == lender, "Only lender can fund the loan");
+        require(msg.sender == lender || msg.sender == factory  , "Only lender can fund the loan");
         require(msg.value == loanAmount, "Incorrect loan amount");
 
         lender = payable(msg.sender);     
