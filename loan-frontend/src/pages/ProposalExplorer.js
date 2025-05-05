@@ -131,9 +131,6 @@ export default function ProposalExplorer() {
 
       setAcceptedProposal((prev) => [...prev, proposal]);
 
-
-      alert("Please confirm the transaction in your wallet.");
-
       await new Promise((resolve) => setTimeout(resolve, 5000));
       setProposalStatus((prev) => ({
         ...prev,

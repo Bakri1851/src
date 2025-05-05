@@ -630,16 +630,18 @@ export default function MyBorrowedLoans() {
                           </SoftButton>
                         )}
 
-                        {loanDetails[loanAddress].state < 4 && (
-                          <SoftButton
-                            variant="gradient"
-                            color="info"
-                            onClick={() => handleSwitchRate(loanAddress)}
-                            style={{ marginTop: "12px" }}
-                          >
-                            Switch Rate
-                          </SoftButton>
-                        )}
+                        {loanDetails[loanAddress].state < 4 &&
+                          loanDetails[loanAddress].state >
+                            1(
+                              <SoftButton
+                                variant="gradient"
+                                color="info"
+                                onClick={() => handleSwitchRate(loanAddress)}
+                                style={{ marginTop: "12px" }}
+                              >
+                                Switch Rate
+                              </SoftButton>
+                            )}
 
                         {/* Add Get AI Analysis button */}
                         <SoftButton

@@ -16,7 +16,6 @@ async function main() {
   const loanAmount = hre.ethers.parseEther("0.002");
   const feeAmount = hre.ethers.parseEther("0.0005");
   const collateralEthAmount = hre.ethers.parseEther("0.001");
-  //const repayByTimestamp = Math.floor(Date.now() / 1000) + 60 * 60 * 24 * 7;
   const repayByTimestamp = Math.floor(Date.now() / 1000) - 60 * 60;
 
   const floatingRate = Math.floor((Number(marketFloatingRate) * 100) / 1e6);
@@ -24,7 +23,6 @@ async function main() {
   const fixedRate = floatingRate + spread;
 
   // Get the factory contract
-  const factoryAddress = "0x24c284CA025A21133194c926E637B74023806fcd";
   const loanFactory = await hre.ethers.getContractAt(
     "LoanFactory",
     factoryAddress

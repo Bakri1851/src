@@ -297,7 +297,7 @@ export default function CreateProposal() {
               <option value="0">Simple Interest (APR)</option>
               <option value="1">Compound Interest (APY)</option>
             </select>
-            <SoftTypography variant="caption" color="text" fontStyle="italic">
+            <SoftTypography variant="caption" color="text" fontStyle="italic" mt={1}>
               Simple APR applies interest linearly, while Compound APY compounds interest daily
             </SoftTypography>
           </SoftBox>
