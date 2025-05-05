@@ -632,7 +632,7 @@ export default function MyBorrowedLoans() {
 
                         {loanDetails[loanAddress].state < 4 &&
                           loanDetails[loanAddress].state >
-                            1(
+                            (
                               <SoftButton
                                 variant="gradient"
                                 color="info"
