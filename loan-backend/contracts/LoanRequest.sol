@@ -75,7 +75,10 @@ contract LoanRequest {
         require(msg.sender == lender || msg.sender == factory  , "Only lender can fund the loan");
         require(msg.value == loanAmount, "Incorrect loan amount");
 
-        lender = payable(msg.sender);     
+        if (msg.sender != factory) {
+            lender = payable(msg.sender); // Only update lender if direct funding (not from factory)
+        }        
+        
         state = LoanState.Funded;
 
         emit LoanFunded(msg.sender, loanAmount);

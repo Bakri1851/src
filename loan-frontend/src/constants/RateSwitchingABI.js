@@ -1,583 +1,583 @@
-export const rateSwitchingABI = [
+export const rateSwitchingABI =  [
   {
-    inputs: [
+    "inputs": [
       {
-        internalType: "uint256",
-        name: "_loanAmount",
-        type: "uint256",
+        "internalType": "uint256",
+        "name": "_loanAmount",
+        "type": "uint256"
       },
       {
-        internalType: "uint256",
-        name: "_feeAmount",
-        type: "uint256",
+        "internalType": "uint256",
+        "name": "_feeAmount",
+        "type": "uint256"
       },
       {
-        internalType: "uint256",
-        name: "_ethCollateralAmount",
-        type: "uint256",
+        "internalType": "uint256",
+        "name": "_ethCollateralAmount",
+        "type": "uint256"
       },
       {
-        internalType: "uint256",
-        name: "_repayByTimestamp",
-        type: "uint256",
+        "internalType": "uint256",
+        "name": "_repayByTimestamp",
+        "type": "uint256"
       },
       {
-        internalType: "uint256",
-        name: "_fixedRate",
-        type: "uint256",
+        "internalType": "uint256",
+        "name": "_fixedRate",
+        "type": "uint256"
       },
       {
-        internalType: "uint256",
-        name: "_floatingRate",
-        type: "uint256",
+        "internalType": "uint256",
+        "name": "_floatingRate",
+        "type": "uint256"
       },
       {
-        internalType: "address",
-        name: "_oracle",
-        type: "address",
+        "internalType": "address",
+        "name": "_oracle",
+        "type": "address"
       },
       {
-        internalType: "address",
-        name: "_loanFactory",
-        type: "address",
+        "internalType": "address",
+        "name": "_loanFactory",
+        "type": "address"
       },
       {
-        internalType: "address",
-        name: "_lender",
-        type: "address",
+        "internalType": "address",
+        "name": "_lender",
+        "type": "address"
       },
       {
-        internalType: "uint256",
-        name: "_creationTimestamp",
-        type: "uint256",
+        "internalType": "uint256",
+        "name": "_creationTimestamp",
+        "type": "uint256"
       },
       {
-        internalType: "uint8",
-        name: "_interestCalculationType",
-        type: "uint8",
-      },
+        "internalType": "uint8",
+        "name": "_interestCalculationType",
+        "type": "uint8"
+      }
     ],
-    stateMutability: "nonpayable",
-    type: "constructor",
+    "stateMutability": "nonpayable",
+    "type": "constructor"
   },
   {
-    anonymous: false,
-    inputs: [
+    "anonymous": false,
+    "inputs": [
       {
-        indexed: true,
-        internalType: "address",
-        name: "lender",
-        type: "address",
+        "indexed": true,
+        "internalType": "address",
+        "name": "lender",
+        "type": "address"
       },
       {
-        indexed: false,
-        internalType: "uint256",
-        name: "loanAmount",
-        type: "uint256",
-      },
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "loanAmount",
+        "type": "uint256"
+      }
     ],
-    name: "LoanFunded",
-    type: "event",
+    "name": "LoanFunded",
+    "type": "event"
   },
   {
-    anonymous: false,
-    inputs: [
+    "anonymous": false,
+    "inputs": [
       {
-        indexed: true,
-        internalType: "address",
-        name: "borrower",
-        type: "address",
+        "indexed": true,
+        "internalType": "address",
+        "name": "borrower",
+        "type": "address"
       },
       {
-        indexed: true,
-        internalType: "address",
-        name: "lender",
-        type: "address",
+        "indexed": true,
+        "internalType": "address",
+        "name": "lender",
+        "type": "address"
       },
       {
-        indexed: false,
-        internalType: "uint256",
-        name: "collateralAmount",
-        type: "uint256",
-      },
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "collateralAmount",
+        "type": "uint256"
+      }
     ],
-    name: "LoanLiquidated",
-    type: "event",
+    "name": "LoanLiquidated",
+    "type": "event"
   },
   {
-    anonymous: false,
-    inputs: [
+    "anonymous": false,
+    "inputs": [
       {
-        indexed: true,
-        internalType: "address",
-        name: "borrower",
-        type: "address",
+        "indexed": true,
+        "internalType": "address",
+        "name": "borrower",
+        "type": "address"
       },
       {
-        indexed: false,
-        internalType: "uint256",
-        name: "repaymentAmount",
-        type: "uint256",
-      },
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "repaymentAmount",
+        "type": "uint256"
+      }
     ],
-    name: "LoanRepaid",
-    type: "event",
+    "name": "LoanRepaid",
+    "type": "event"
   },
   {
-    anonymous: false,
-    inputs: [
+    "anonymous": false,
+    "inputs": [
       {
-        indexed: true,
-        internalType: "address",
-        name: "borrower",
-        type: "address",
+        "indexed": true,
+        "internalType": "address",
+        "name": "borrower",
+        "type": "address"
       },
       {
-        indexed: false,
-        internalType: "uint256",
-        name: "loanAmount",
-        type: "uint256",
-      },
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "loanAmount",
+        "type": "uint256"
+      }
     ],
-    name: "LoanTaken",
-    type: "event",
+    "name": "LoanTaken",
+    "type": "event"
   },
   {
-    anonymous: false,
-    inputs: [
+    "anonymous": false,
+    "inputs": [
       {
-        indexed: true,
-        internalType: "address",
-        name: "borrower",
-        type: "address",
+        "indexed": true,
+        "internalType": "address",
+        "name": "borrower",
+        "type": "address"
       },
       {
-        indexed: false,
-        internalType: "uint256",
-        name: "collateralAmount",
-        type: "uint256",
-      },
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "collateralAmount",
+        "type": "uint256"
+      }
     ],
-    name: "LoanTermsAccepted",
-    type: "event",
+    "name": "LoanTermsAccepted",
+    "type": "event"
   },
   {
-    inputs: [],
-    name: "acceptLoanTerms",
-    outputs: [],
-    stateMutability: "payable",
-    type: "function",
+    "inputs": [],
+    "name": "acceptLoanTerms",
+    "outputs": [],
+    "stateMutability": "payable",
+    "type": "function"
   },
   {
-    inputs: [],
-    name: "borrower",
-    outputs: [
+    "inputs": [],
+    "name": "borrower",
+    "outputs": [
       {
-        internalType: "address payable",
-        name: "",
-        type: "address",
-      },
+        "internalType": "address payable",
+        "name": "",
+        "type": "address"
+      }
     ],
-    stateMutability: "view",
-    type: "function",
+    "stateMutability": "view",
+    "type": "function"
   },
   {
-    inputs: [],
-    name: "calculateInterest",
-    outputs: [],
-    stateMutability: "nonpayable",
-    type: "function",
+    "inputs": [],
+    "name": "calculateInterest",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
   },
   {
-    inputs: [],
-    name: "creationTimestamp",
-    outputs: [
+    "inputs": [],
+    "name": "creationTimestamp",
+    "outputs": [
       {
-        internalType: "uint256",
-        name: "",
-        type: "uint256",
-      },
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
     ],
-    stateMutability: "view",
-    type: "function",
+    "stateMutability": "view",
+    "type": "function"
   },
   {
-    inputs: [],
-    name: "currentRateType",
-    outputs: [
+    "inputs": [],
+    "name": "currentRateType",
+    "outputs": [
       {
-        internalType: "enum LoanRequest.InterestRateType",
-        name: "",
-        type: "uint8",
-      },
+        "internalType": "enum LoanRequest.InterestRateType",
+        "name": "",
+        "type": "uint8"
+      }
     ],
-    stateMutability: "view",
-    type: "function",
+    "stateMutability": "view",
+    "type": "function"
   },
   {
-    inputs: [],
-    name: "ethCollateralAmount",
-    outputs: [
+    "inputs": [],
+    "name": "ethCollateralAmount",
+    "outputs": [
       {
-        internalType: "uint256",
-        name: "",
-        type: "uint256",
-      },
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
     ],
-    stateMutability: "view",
-    type: "function",
+    "stateMutability": "view",
+    "type": "function"
   },
   {
-    inputs: [],
-    name: "factory",
-    outputs: [
+    "inputs": [],
+    "name": "factory",
+    "outputs": [
       {
-        internalType: "address",
-        name: "",
-        type: "address",
-      },
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
     ],
-    stateMutability: "view",
-    type: "function",
+    "stateMutability": "view",
+    "type": "function"
   },
   {
-    inputs: [],
-    name: "feeAmount",
-    outputs: [
+    "inputs": [],
+    "name": "feeAmount",
+    "outputs": [
       {
-        internalType: "uint256",
-        name: "",
-        type: "uint256",
-      },
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
     ],
-    stateMutability: "view",
-    type: "function",
+    "stateMutability": "view",
+    "type": "function"
   },
   {
-    inputs: [],
-    name: "fixedRate",
-    outputs: [
+    "inputs": [],
+    "name": "fixedRate",
+    "outputs": [
       {
-        internalType: "uint256",
-        name: "",
-        type: "uint256",
-      },
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
     ],
-    stateMutability: "view",
-    type: "function",
+    "stateMutability": "view",
+    "type": "function"
   },
   {
-    inputs: [],
-    name: "floatingRate",
-    outputs: [
+    "inputs": [],
+    "name": "floatingRate",
+    "outputs": [
       {
-        internalType: "uint256",
-        name: "",
-        type: "uint256",
-      },
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
     ],
-    stateMutability: "view",
-    type: "function",
+    "stateMutability": "view",
+    "type": "function"
   },
   {
-    inputs: [],
-    name: "fundLoan",
-    outputs: [],
-    stateMutability: "payable",
-    type: "function",
+    "inputs": [],
+    "name": "fundLoan",
+    "outputs": [],
+    "stateMutability": "payable",
+    "type": "function"
   },
   {
-    inputs: [],
-    name: "getCurrentRateType",
-    outputs: [
+    "inputs": [],
+    "name": "getCurrentRateType",
+    "outputs": [
       {
-        internalType: "enum LoanRequest.InterestRateType",
-        name: "",
-        type: "uint8",
-      },
+        "internalType": "enum LoanRequest.InterestRateType",
+        "name": "",
+        "type": "uint8"
+      }
     ],
-    stateMutability: "view",
-    type: "function",
+    "stateMutability": "view",
+    "type": "function"
   },
   {
-    inputs: [],
-    name: "getEthCollateralAmount",
-    outputs: [
+    "inputs": [],
+    "name": "getEthCollateralAmount",
+    "outputs": [
       {
-        internalType: "uint256",
-        name: "",
-        type: "uint256",
-      },
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
     ],
-    stateMutability: "view",
-    type: "function",
+    "stateMutability": "view",
+    "type": "function"
   },
   {
-    inputs: [],
-    name: "getFeeAmount",
-    outputs: [
+    "inputs": [],
+    "name": "getFeeAmount",
+    "outputs": [
       {
-        internalType: "uint256",
-        name: "",
-        type: "uint256",
-      },
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
     ],
-    stateMutability: "view",
-    type: "function",
+    "stateMutability": "view",
+    "type": "function"
   },
   {
-    inputs: [],
-    name: "getFixedRate",
-    outputs: [
+    "inputs": [],
+    "name": "getFixedRate",
+    "outputs": [
       {
-        internalType: "uint256",
-        name: "",
-        type: "uint256",
-      },
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
     ],
-    stateMutability: "view",
-    type: "function",
+    "stateMutability": "view",
+    "type": "function"
   },
   {
-    inputs: [],
-    name: "getFloatingRate",
-    outputs: [
+    "inputs": [],
+    "name": "getFloatingRate",
+    "outputs": [
       {
-        internalType: "uint256",
-        name: "",
-        type: "uint256",
-      },
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
     ],
-    stateMutability: "view",
-    type: "function",
+    "stateMutability": "view",
+    "type": "function"
   },
   {
-    inputs: [],
-    name: "getInterest",
-    outputs: [
+    "inputs": [],
+    "name": "getInterest",
+    "outputs": [
       {
-        internalType: "uint256",
-        name: "",
-        type: "uint256",
-      },
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
     ],
-    stateMutability: "view",
-    type: "function",
+    "stateMutability": "view",
+    "type": "function"
   },
   {
-    inputs: [],
-    name: "getInterestCalculationType",
-    outputs: [
+    "inputs": [],
+    "name": "getInterestCalculationType",
+    "outputs": [
       {
-        internalType: "enum LoanRequest.InterestCalculationType",
-        name: "",
-        type: "uint8",
-      },
+        "internalType": "enum LoanRequest.InterestCalculationType",
+        "name": "",
+        "type": "uint8"
+      }
     ],
-    stateMutability: "view",
-    type: "function",
+    "stateMutability": "view",
+    "type": "function"
   },
   {
-    inputs: [],
-    name: "getLoanAmount",
-    outputs: [
+    "inputs": [],
+    "name": "getLoanAmount",
+    "outputs": [
       {
-        internalType: "uint256",
-        name: "",
-        type: "uint256",
-      },
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
     ],
-    stateMutability: "view",
-    type: "function",
+    "stateMutability": "view",
+    "type": "function"
   },
   {
-    inputs: [],
-    name: "getLoanState",
-    outputs: [
+    "inputs": [],
+    "name": "getLoanState",
+    "outputs": [
       {
-        internalType: "enum LoanRequest.LoanState",
-        name: "",
-        type: "uint8",
-      },
+        "internalType": "enum LoanRequest.LoanState",
+        "name": "",
+        "type": "uint8"
+      }
     ],
-    stateMutability: "view",
-    type: "function",
+    "stateMutability": "view",
+    "type": "function"
   },
   {
-    inputs: [],
-    name: "getRepayByTimestamp",
-    outputs: [
+    "inputs": [],
+    "name": "getRepayByTimestamp",
+    "outputs": [
       {
-        internalType: "uint256",
-        name: "",
-        type: "uint256",
-      },
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
     ],
-    stateMutability: "view",
-    type: "function",
+    "stateMutability": "view",
+    "type": "function"
   },
   {
-    inputs: [],
-    name: "interest",
-    outputs: [
+    "inputs": [],
+    "name": "interest",
+    "outputs": [
       {
-        internalType: "uint256",
-        name: "",
-        type: "uint256",
-      },
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
     ],
-    stateMutability: "view",
-    type: "function",
+    "stateMutability": "view",
+    "type": "function"
   },
   {
-    inputs: [],
-    name: "interestCalculationType",
-    outputs: [
+    "inputs": [],
+    "name": "interestCalculationType",
+    "outputs": [
       {
-        internalType: "enum LoanRequest.InterestCalculationType",
-        name: "",
-        type: "uint8",
-      },
+        "internalType": "enum LoanRequest.InterestCalculationType",
+        "name": "",
+        "type": "uint8"
+      }
     ],
-    stateMutability: "view",
-    type: "function",
+    "stateMutability": "view",
+    "type": "function"
   },
   {
-    inputs: [],
-    name: "lender",
-    outputs: [
+    "inputs": [],
+    "name": "lender",
+    "outputs": [
       {
-        internalType: "address payable",
-        name: "",
-        type: "address",
-      },
+        "internalType": "address payable",
+        "name": "",
+        "type": "address"
+      }
     ],
-    stateMutability: "view",
-    type: "function",
+    "stateMutability": "view",
+    "type": "function"
   },
   {
-    inputs: [],
-    name: "liquidate",
-    outputs: [],
-    stateMutability: "nonpayable",
-    type: "function",
+    "inputs": [],
+    "name": "liquidate",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
   },
   {
-    inputs: [],
-    name: "loanAmount",
-    outputs: [
+    "inputs": [],
+    "name": "loanAmount",
+    "outputs": [
       {
-        internalType: "uint256",
-        name: "",
-        type: "uint256",
-      },
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
     ],
-    stateMutability: "view",
-    type: "function",
+    "stateMutability": "view",
+    "type": "function"
   },
   {
-    inputs: [],
-    name: "loanTakenTimestamp",
-    outputs: [
+    "inputs": [],
+    "name": "loanTakenTimestamp",
+    "outputs": [
       {
-        internalType: "uint256",
-        name: "",
-        type: "uint256",
-      },
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
     ],
-    stateMutability: "view",
-    type: "function",
+    "stateMutability": "view",
+    "type": "function"
   },
   {
-    inputs: [],
-    name: "repay",
-    outputs: [],
-    stateMutability: "payable",
-    type: "function",
+    "inputs": [],
+    "name": "repay",
+    "outputs": [],
+    "stateMutability": "payable",
+    "type": "function"
   },
   {
-    inputs: [],
-    name: "repayByTimestamp",
-    outputs: [
+    "inputs": [],
+    "name": "repayByTimestamp",
+    "outputs": [
       {
-        internalType: "uint256",
-        name: "",
-        type: "uint256",
-      },
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
     ],
-    stateMutability: "view",
-    type: "function",
+    "stateMutability": "view",
+    "type": "function"
   },
   {
-    inputs: [],
-    name: "state",
-    outputs: [
+    "inputs": [],
+    "name": "state",
+    "outputs": [
       {
-        internalType: "enum LoanRequest.LoanState",
-        name: "",
-        type: "uint8",
-      },
+        "internalType": "enum LoanRequest.LoanState",
+        "name": "",
+        "type": "uint8"
+      }
     ],
-    stateMutability: "view",
-    type: "function",
+    "stateMutability": "view",
+    "type": "function"
   },
   {
-    inputs: [],
-    name: "switchRateType",
-    outputs: [],
-    stateMutability: "nonpayable",
-    type: "function",
+    "inputs": [],
+    "name": "switchRateType",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
   },
   {
-    inputs: [],
-    name: "takeLoan",
-    outputs: [],
-    stateMutability: "payable",
-    type: "function",
+    "inputs": [],
+    "name": "takeLoan",
+    "outputs": [],
+    "stateMutability": "payable",
+    "type": "function"
   },
   {
-    inputs: [],
-    name: "terms",
-    outputs: [
+    "inputs": [],
+    "name": "terms",
+    "outputs": [
       {
-        internalType: "uint256",
-        name: "loanAmount",
-        type: "uint256",
+        "internalType": "uint256",
+        "name": "loanAmount",
+        "type": "uint256"
       },
       {
-        internalType: "uint256",
-        name: "feeAmount",
-        type: "uint256",
+        "internalType": "uint256",
+        "name": "feeAmount",
+        "type": "uint256"
       },
       {
-        internalType: "uint256",
-        name: "ethCollateralAmount",
-        type: "uint256",
+        "internalType": "uint256",
+        "name": "ethCollateralAmount",
+        "type": "uint256"
       },
       {
-        internalType: "uint256",
-        name: "repayByTimestamp",
-        type: "uint256",
+        "internalType": "uint256",
+        "name": "repayByTimestamp",
+        "type": "uint256"
       },
       {
-        internalType: "uint256",
-        name: "fixedRate",
-        type: "uint256",
+        "internalType": "uint256",
+        "name": "fixedRate",
+        "type": "uint256"
       },
       {
-        internalType: "uint256",
-        name: "floatingRate",
-        type: "uint256",
-      },
+        "internalType": "uint256",
+        "name": "floatingRate",
+        "type": "uint256"
+      }
     ],
-    stateMutability: "view",
-    type: "function",
+    "stateMutability": "view",
+    "type": "function"
   },
   {
-    inputs: [],
-    name: "updateRates",
-    outputs: [],
-    stateMutability: "nonpayable",
-    type: "function",
-  },
-];
+    "inputs": [],
+    "name": "updateRates",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  }
+]

@@ -14,9 +14,8 @@ contract LoanFactory {
     event LoanProposalCreated(uint256 proposalId, address borrower);
     event LoanProposalAccepted(uint256 proposalId, address lender, address loanAddress);
 
-    // Variabled for liquidity tracking
-    uint256 public totalLiquidity; // Total liquidity provided by lenders
-    uint256 public totalBorrowed; // Total amount borrowed by borrowers
+    uint256 public totalLiquidity; 
+    uint256 public totalBorrowed; 
     
     // Mapping to track loan proposals
     struct LoanProposal {
@@ -110,9 +109,9 @@ contract LoanFactory {
             proposal.floatingRate,
             proposal.oracle,
             address(this),
-            msg.sender,  // Pass the original sender as lender
-            proposal.creationTimestamp, // Pass the creation timestamp to the LoanRequest contract
-            uint8(proposal.interestCalculationType) // Pass the interest calculation type
+            msg.sender,  
+            proposal.creationTimestamp, 
+            uint8(proposal.interestCalculationType) 
         );
 
         // Store the loan address in the mapping and array
@@ -208,11 +207,9 @@ contract LoanFactory {
         (, int price, , ,) = oracle.latestRoundData();
         uint256 baseRate = uint256(price) * 100 / 1e6; // Convert oracle price to basis points
             
-        // Get utilization rate
         uint256 utilizationRate = getUtilizationRate();
         uint256 utilizationMultiplier = 15;
         
-        // Calculate floating rate: baseRate + (utilizationMultiplier * utilizationRate / 10000)
         return baseRate + (utilizationMultiplier * utilizationRate / 10000);
     }
     

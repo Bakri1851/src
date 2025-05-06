@@ -348,9 +348,10 @@ export default function MyBorrowedLoans() {
       await writeContract(config, {
         address: loanAddress,
         abi: ContractConfig.abi,
-        chainId: FactoryConfig.chainId,
         functionName: "calculateInterest",
+        chainId: FactoryConfig.chainId,
       });
+
 
       const interest = await readContract(config, {
         address: loanAddress,
@@ -374,6 +375,7 @@ export default function MyBorrowedLoans() {
       });
 
       const totalRepayment = BigInt(loanAmount) + BigInt(interest) + BigInt(fee);
+      
       if (balance < totalRepayment) {
         alert("Insufficient balance to repay loan. Please fund your wallet and try again.");
         return;
@@ -630,9 +632,7 @@ export default function MyBorrowedLoans() {
                           </SoftButton>
                         )}
 
-                        {loanDetails[loanAddress].state < 4 &&
-                          loanDetails[loanAddress].state >
-                            (
+                        {loanDetails[loanAddress].state > 1 && (
                               <SoftButton
                                 variant="gradient"
                                 color="info"
@@ -641,7 +641,7 @@ export default function MyBorrowedLoans() {
                               >
                                 Switch Rate
                               </SoftButton>
-                            )}
+                          )}
 
                         {/* Add Get AI Analysis button */}
                         <SoftButton

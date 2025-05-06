@@ -4,84 +4,37 @@ async function main() {
   const [deployer] = await hre.ethers.getSigners();
   console.log("Deploying contracts with the accounts:", deployer.address);
 
-  const AA_ORACLE_ADDRESS = "0xceA6Aa74E6A86a7f85B571Ce1C34f1A60B77CD29";
-  const oracle = await hre.ethers.getContractAt(
-    "AggregatorV3Interface",
-    AA_ORACLE_ADDRESS
-  );
-  const latestRoundData = await oracle.latestRoundData();
-  console.log("Latest round data:", latestRoundData.answer.toString());
-  const marketFloatingRate = Number(latestRoundData[1]);
+  // Determine oracle address based on network (deploy mock if local)
+  let oracleAddress;
+  const networkName = hre.network.name;
+  const sepoliaOracleAddress = "0x8e604308BD61d975bc6aE7903747785Db7dE97e2";
 
-  const loanAmount = hre.ethers.parseEther("0.002");
-  const feeAmount = hre.ethers.parseEther("0.0005");
-  const collateralEthAmount = hre.ethers.parseEther("0.001");
-  const repayByTimestamp = Math.floor(Date.now() / 1000) - 60 * 60;
-
-  const floatingRate = Math.floor((Number(marketFloatingRate) * 100) / 1e6);
-  const spread = 1;
-  const fixedRate = floatingRate + spread;
-
-  // Get the factory contract
-  const loanFactory = await hre.ethers.getContractAt(
-    "LoanFactory",
-    factoryAddress
-  );
-
-  console.log("Creating loan through factory...");
-  const tx = await loanFactory.createLoan(
-    loanAmount,
-    feeAmount,
-    collateralEthAmount,
-    repayByTimestamp,
-    fixedRate,
-    floatingRate,
-    AA_ORACLE_ADDRESS
-  );
-
-  console.log("Transaction sent:", tx.hash);
-  console.log("Waiting for transaction to be mined...");
-
-  const receipt = await tx.wait();
-  console.log("Transaction confirmed in block:", receipt.blockNumber);
-
-  // Find the LoanCreated event - proper handling for ethers v6
-  let loanAddress;
-
-  if (receipt.logs) {
-    // Look through the logs to find the LoanCreated event
-    const loanFactoryInterface = loanFactory.interface;
-
-    for (const log of receipt.logs) {
-      try {
-        // Try to parse each log
-        const parsedLog = loanFactoryInterface.parseLog({
-          topics: log.topics,
-          data: log.data,
-        });
-
-        if (parsedLog && parsedLog.name === "LoanCreated") {
-          loanAddress = parsedLog.args[2]; // loanContract is the 3rd argument (index 2)
-          console.log("Loan created at:", loanAddress);
-          break;
-        }
-      } catch (e) {
-        // Skip logs that can't be parsed
-      }
-    }
+  if (networkName === "localhost" || networkName === "hardhat") {
+    console.log("Deploying MockV3Aggregator for local network...");
+    const initialPrice = 3000 * 10**8; // Example: 3000 USD with 8 decimals
+    const MockV3Aggregator = await hre.ethers.getContractFactory("MockV3Aggregator");
+    const mockOracle = await MockV3Aggregator.deploy(initialPrice);
+    await mockOracle.waitForDeployment();
+    oracleAddress = await mockOracle.getAddress();
+    console.log("MockV3Aggregator deployed to:", oracleAddress);
+  } else if (networkName === "sepolia") {
+    console.log("Using Sepolia Oracle Address:", sepoliaOracleAddress);
+    oracleAddress = sepoliaOracleAddress;
+  } else {
+     throw new Error(`Unsupported network: ${networkName}. Add oracle address or mock deployment.`);
   }
 
-  if (!loanAddress) {
-    // Fallback: query the factory for the latest loan
-    console.log("Could not find loan address in logs, checking getAllLoans...");
-    const allLoans = await loanFactory.getAllLoans();
-    if (allLoans.length > 0) {
-      loanAddress = allLoans[allLoans.length - 1];
-      console.log("Latest loan from getAllLoans:", loanAddress);
-    } else {
-      console.log("No loans found in factory.");
-    }
-  }
+  // Deploy LoanFactory using the determined oracleAddress
+  console.log("Deploying LoanFactory with oracle:", oracleAddress);
+  const LoanFactory = await hre.ethers.getContractFactory("LoanFactory");
+  const loanFactory = await LoanFactory.deploy(oracleAddress); // Ensure constructor accepts address
+  await loanFactory.waitForDeployment();
+  const loanFactoryAddress = await loanFactory.getAddress();
+  console.log("LoanFactory deployed to:", loanFactoryAddress);
+
+  // --- Deploy other contracts if needed ---
+
+  console.log("Deployment complete.");
 }
 
 main()

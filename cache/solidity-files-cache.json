@@ -1,42 +1,6 @@
 {
   "_format": "hh-sol-cache-2",
   "files": {
-    "C:\\Users\\Bakri\\IdeaProjects\\Loan Switching Smart Contract\\src\\node_modules\\hardhat\\console.sol": {
-      "lastModificationDate": 1740614400605,
-      "contentHash": "681c532e816169606d13a5fe8b475074",
-      "sourceName": "hardhat/console.sol",
-      "solcConfig": {
-        "version": "0.8.28",
-        "settings": {
-          "optimizer": {
-            "enabled": true,
-            "runs": 200
-          },
-          "evmVersion": "paris",
-          "outputSelection": {
-            "*": {
-              "*": [
-                "abi",
-                "evm.bytecode",
-                "evm.deployedBytecode",
-                "evm.methodIdentifiers",
-                "metadata"
-              ],
-              "": [
-                "ast"
-              ]
-            }
-          }
-        }
-      },
-      "imports": [],
-      "versionPragmas": [
-        ">=0.4.22 <0.9.0"
-      ],
-      "artifacts": [
-        "console"
-      ]
-    },
     "C:\\Users\\Bakri\\IdeaProjects\\Loan Switching Smart Contract\\src\\loan-backend\\contracts\\AggregatorV3Interface.sol": {
       "lastModificationDate": 1740267793636,
       "contentHash": "fcda3ff0e1bb776a8dbe175885c9dd35",
@@ -73,9 +37,47 @@
         "AggregatorV3Interface"
       ]
     },
+    "C:\\Users\\Bakri\\IdeaProjects\\Loan Switching Smart Contract\\src\\loan-backend\\contracts\\mocks\\MockV3Aggregator.sol": {
+      "lastModificationDate": 1746476962171,
+      "contentHash": "602456117c30d9a799197d0d408a77d1",
+      "sourceName": "loan-backend/contracts/mocks/MockV3Aggregator.sol",
+      "solcConfig": {
+        "version": "0.8.28",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "evmVersion": "paris",
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [
+        "../AggregatorV3Interface.sol"
+      ],
+      "versionPragmas": [
+        "^0.8.0"
+      ],
+      "artifacts": [
+        "MockV3Aggregator"
+      ]
+    },
     "C:\\Users\\Bakri\\IdeaProjects\\Loan Switching Smart Contract\\src\\loan-backend\\contracts\\LoanRequest.sol": {
-      "lastModificationDate": 1746028452971,
-      "contentHash": "0b83c0b6f4f6f7a802e8f55ac85a4e1d",
+      "lastModificationDate": 1746489256905,
+      "contentHash": "2eb4d88970f7a5b1dcfbabb8edf4a974",
       "sourceName": "loan-backend/contracts/LoanRequest.sol",
       "solcConfig": {
         "version": "0.8.28",
@@ -114,8 +116,8 @@
       ]
     },
     "C:\\Users\\Bakri\\IdeaProjects\\Loan Switching Smart Contract\\src\\loan-backend\\contracts\\LoanFactory.sol": {
-      "lastModificationDate": 1746022574907,
-      "contentHash": "6bd85962ea53b34ed1a4f363154c9ae0",
+      "lastModificationDate": 1746471011861,
+      "contentHash": "5a0a9f1a93be636e560aeed8fa3d65ec",
       "sourceName": "loan-backend/contracts/LoanFactory.sol",
       "solcConfig": {
         "version": "0.8.28",
@@ -150,6 +152,42 @@
       ],
       "artifacts": [
         "LoanFactory"
+      ]
+    },
+    "C:\\Users\\Bakri\\IdeaProjects\\Loan Switching Smart Contract\\src\\node_modules\\hardhat\\console.sol": {
+      "lastModificationDate": 1740614400605,
+      "contentHash": "681c532e816169606d13a5fe8b475074",
+      "sourceName": "hardhat/console.sol",
+      "solcConfig": {
+        "version": "0.8.28",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "evmVersion": "paris",
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [],
+      "versionPragmas": [
+        ">=0.4.22 <0.9.0"
+      ],
+      "artifacts": [
+        "console"
       ]
     }
   }
