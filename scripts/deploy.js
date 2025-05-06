@@ -11,8 +11,10 @@ async function main() {
 
   if (networkName === "localhost" || networkName === "hardhat") {
     console.log("Deploying MockV3Aggregator for local network...");
-    const initialPrice = 3000 * 10**8; // Example: 3000 USD with 8 decimals
-    const MockV3Aggregator = await hre.ethers.getContractFactory("MockV3Aggregator");
+    const initialPrice = 3000 * 10 ** 8; // Example: 3000 USD with 8 decimals
+    const MockV3Aggregator = await hre.ethers.getContractFactory(
+      "MockV3Aggregator"
+    );
     const mockOracle = await MockV3Aggregator.deploy(initialPrice);
     await mockOracle.waitForDeployment();
     oracleAddress = await mockOracle.getAddress();
@@ -21,7 +23,9 @@ async function main() {
     console.log("Using Sepolia Oracle Address:", sepoliaOracleAddress);
     oracleAddress = sepoliaOracleAddress;
   } else {
-     throw new Error(`Unsupported network: ${networkName}. Add oracle address or mock deployment.`);
+    throw new Error(
+      `Unsupported network: ${networkName}. Add oracle address or mock deployment.`
+    );
   }
 
   // Deploy LoanFactory using the determined oracleAddress

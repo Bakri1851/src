@@ -21,7 +21,6 @@ const ApiConfig = {
             maxTokens: 1200,
             temperature: 0.3,
         }, */
-    
   },
 };
 
